@@ -39,11 +39,7 @@ public class Manager {
     //TODO п.2.4 получение задачи любого типа по идентификатору разделен на 3 метода
     public Epic getEpicByUuid(UUID uuid) {
         if (!epicMap.containsKey(uuid)) {
-            try {
-                throw new Exception("This method accept only Epic key");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("This method accept only Epic key");
         }
         List<Epic> epicList = new ArrayList<>(epicMap.values());
         Epic epic = new Epic();
@@ -71,11 +67,7 @@ public class Manager {
             }
         }
         if (uuidFound == 0) {
-            try {
-                throw new Exception("This method accept only Subtask key");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("This method accept only Subtask key");
         }
         return subtask;
     }
@@ -91,12 +83,10 @@ public class Manager {
                 break;
             }
         }
-        if (uuidFound == 0) {
-            try {
-                throw new Exception("This method accept only RealTask key");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (taskList.isEmpty()) {
+            throw new RuntimeException("Before use this method need to add one or more RealTask in taskList");
+        } else if (uuidFound == 0) {
+            throw new RuntimeException("Cannot find this UUID in taskList");
         }
         return task;
     }
@@ -131,7 +121,7 @@ public class Manager {
     }
 
     //TODO п.2.5 Добавление нового таска в таск лист.  +
-    public void addTask(RealTask task) {
+    public void addRealTask(RealTask task) {
         UUID uuid = task.getUuid();
         for (RealTask currentTask : taskList) {
             if (currentTask.getUuid().equals(uuid)) {
@@ -147,6 +137,12 @@ public class Manager {
 
     //TODO п.2.5 Добавление нового сабтастка в существующий эпик.  +
     public void addSubtaskInCreatedEpic(Epic epic, Subtask subtask) {
+
+        for (Subtask currentSubtask : epic.getSubtaskList()) {
+            if(currentSubtask.getUuid().equals(subtask.getUuid())) {
+                throw new RuntimeException("Have not to add two same Subtask in one Epic");
+            }
+        }
         epic.getSubtaskList().add(subtask);
         this.changeEpicStatus(epic);
     }
@@ -164,11 +160,7 @@ public class Manager {
             }
         }
         if (uuidFound == 0) {
-            try {
-                throw new Exception("This method find only Epic by subtask uuid");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("This method find only Epic by subtask uuid");
         }
         return epic;
     }
