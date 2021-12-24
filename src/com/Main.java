@@ -40,14 +40,16 @@ public class Main {
         System.out.println(t4.getUuid());
         System.out.println(t5.getUuid());
 
-        manager.addTask(t1, t2, t3); //добавление тасков в тасклист +
+        manager.addTask(t1); //добавление тасков в тасклист +
+        manager.addTask(t2);
+        manager.addTask(t1);
         System.out.println(Manager.taskList);
 
         manager.addEpicWithSubtask(epic1, st1, st2, st3); //добавление эпиков с сабтаской +
         manager.addEpicWithSubtask(epic2, st4, st5, st6);
         System.out.println(Manager.epicMap);
 
-        manager.addTask(t1, t2, t3, t4); // стоит ли таскам иметь возможно дважны добавлять в лист?
+        //manager.addTask(t1, t2, t3, t4); // стоит ли таскам иметь возможно дважны добавлять в лист?
         System.out.println(Manager.taskList);
 
         System.out.println(manager.getListEpics()); //получение списка всех эпиков +
@@ -63,13 +65,25 @@ public class Main {
 
         Subtask subtask = new Subtask();
         subtask.setName("YA subtask");
-        manager.changeSubtask(st1.getUuid(), subtask);
+        manager.changeSubtaskByUuid(st1.getUuid(), subtask);
         System.out.println(st1.getName());
         System.out.println(subtask.getName());
 
-        manager.clearTaskByUuid(t1.getUuid());
-        System.out.println(t1);
-//        System.out.println(Manager.epicMap);
+        manager.clearSubtaskByUuid(st1.getUuid());
+        manager.clearEpicByUuid(epic1.getUuid());
+
+        Epic epic4 = new Epic();
+        System.out.println(epic4.getStatus());
+        manager.changeEpicStatus(epic4);
+        Subtask st9 = new Subtask();
+        Subtask st10 = new Subtask();
+        Subtask st11 = new Subtask();
+        st11.setStatus(StatusTask.DONE);
+        manager.addSubtaskInCreatedEpic(epic4, st9, st10, st11);
+        manager.changeEpicStatus(epic4);
+        System.out.println(epic4.getStatus());
+        manager.addEpic(epic4);
+       // manager.addEpic(epic4);
 
     }
 }

@@ -86,18 +86,36 @@ public class Manager {
 
     //TODO п.2.5 Добавление нового Эпика в мапу. Добавление новой задачи, эпика и подзадачи разделен на 4. +
     public void addEpic(Epic epic) {
-        this.epicMap.put(epic.getUuid(), epic);
+        if (!epicMap.containsKey(epic.getUuid())) {
+            this.changeEpicStatus(epic);
+            Manager.epicMap.put(epic.getUuid(), epic);
+        } else {
+            try {
+                throw new Exception("Have not to put two same Epic in Map");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    //TODO п.2.5 Добавление нового сабтаска для эпика. +
+    //TODO п.2.5 Добавление эпика сразу с сабтасками  +
     public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
-        epic.getSubtaskList().addAll(Arrays.asList(subtask));
-        this.epicMap.put(epic.getUuid(), epic);
+        if (!epicMap.containsKey(epic.getUuid())) {
+            this.changeEpicStatus(epic);
+            epic.getSubtaskList().addAll(Arrays.asList(subtask));
+            Manager.epicMap.put(epic.getUuid(), epic);
+        } else {
+            try {
+                throw new Exception("Have not to put two same Epic in Map");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //TODO п.2.5 Добавление нового таска в таск лист.  +
-    public void addTask(RealTask... task) {
-        this.taskList.addAll(Arrays.asList(task));
+    public void addTask(RealTask task) {
+        Manager.taskList.add(task);
     }
 
     //TODO п.2.5 Добавление нового сабтастка в существующий эпик.  +
@@ -114,7 +132,7 @@ public class Manager {
     }
 
     //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра. +
-    public void changeEpic(UUID uuid, Epic newTask) {
+    public void changeEpicByUuid(UUID uuid, Epic newTask) {
         Epic oldTask = this.getEpicByUuid(uuid);
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
@@ -122,7 +140,7 @@ public class Manager {
     }
 
     //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра. +
-    public void changeSubtask(UUID uuid, Subtask newTask) {
+    public void changeSubtaskByUuid(UUID uuid, Subtask newTask) {
         Subtask oldTask = this.getSubtaskByUuid(uuid);
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
@@ -150,53 +168,53 @@ public class Manager {
         taskList.removeIf(t -> t.getUuid().equals(uuid));
     }
 
-    //TODO п.2.7 Удаление ранее добавленных сабтасков по идентификатору.
+    //TODO п.2.7 Удаление ранее добавленных сабтасков по идентификатору.+
     public void clearSubtaskByUuid(UUID uuid) {
-        if (getSubtaskByUuid(uuid).getClass().getName().equals("Subtask")) {
-            epicMap.values().forEach(epic -> epic.getSubtaskList().
-                    removeIf(subtask -> subtask.getUuid().equals(uuid)));
-        } else {
+        boolean done = false;
+        for (Epic epic : epicMap.values()) {
+            boolean deleteSubtask = epic.getSubtaskList().
+                    removeIf(currentSubtask -> currentSubtask.getUuid().equals(uuid));
+            if (deleteSubtask) {
+                done = true;
+            }
+        }
+        if (!done) {
             throw new IllegalArgumentException("This method cannot clear epic or other task by uuid only one subtask");
         }
     }
 
-    //TODO п.2.7 Удаление ранее добавленных эпиков вместе с сабтасками, т.к. они сами по себе не живут по идентификатору.
+    //TODO п.2.7 Удаление ранее добавленных эпиков вместе с сабтасками, т.к. они сами по себе не живут по идентификатору.+
     public void clearEpicByUuid(UUID uuid) {
-        if (getEpicByUuid(uuid).getClass().getName().equals("Epic")) {
-            epicMap.values().forEach(e -> e.getSubtaskList().removeIf(epic -> epic.getUuid().equals(uuid)));
-            epicMap.values().removeIf(epic -> epic.getUuid().equals(uuid));
-        } else {
+        boolean done = epicMap.values().removeIf(epic -> epic.getUuid().equals(uuid));
+        if (!done) {
             throw new IllegalArgumentException("This method cannot clear task or subtask by uuid only one Epic with" +
-                    "its subtask list");
+                    " its subtask list");
         }
     }
 
     //TODO п.3.1 Управление стутусами задачи.
-
-    //Получили статус лист для эпика
-    public List<StatusTask> getListSubtaskStatus(Epic epic) {
-        List<StatusTask> statusTaskList = new ArrayList<>();
-        if (!getListSubtasks().isEmpty()) {
-            epic.getSubtaskList().forEach(subtask -> statusTaskList.add(subtask.getStatus()));
-        } else {
-            return null;
-        }
-        return statusTaskList;
-    }
-
-    //TODO п.3.2. Управление статусами для эпиков
     public void changeEpicStatus(Epic epic) {
-        if (getListSubtaskStatus(epic).isEmpty() &&
-                getListSubtaskStatus(epic) != null ||
-                getListSubtaskStatus(epic).contains(StatusTask.NEW)) {
+        if (epic.getSubtaskList().isEmpty()) {
             epic.setStatus(StatusTask.NEW);
-        } else if (!getListSubtaskStatus(epic).isEmpty() &&
-                getListSubtaskStatus(epic) != null &&
-                !getListSubtaskStatus(epic).contains(StatusTask.NEW) &&
-                !getListSubtaskStatus(epic).contains(StatusTask.IN_PROGRESS)) {
-            epic.setStatus(StatusTask.DONE);
-        } else {
-            epic.setStatus(StatusTask.IN_PROGRESS);
+        } else if (!epic.getSubtaskList().isEmpty()) {
+            int counterNew = 0;
+            int counterDone = 0;
+            List<Subtask> subtaskList = epic.getSubtaskList();
+            for (Subtask currentSubtask : subtaskList) {
+                if (currentSubtask.getStatus().equals(StatusTask.NEW)) {
+                    counterNew++;
+                } else if (currentSubtask.getStatus().equals(StatusTask.DONE)) {
+                    counterDone++;
+                }
+            }
+            if (counterDone == subtaskList.size()) {
+                epic.setStatus(StatusTask.DONE);
+            } else if (counterNew == subtaskList.size()) {
+                epic.setStatus(StatusTask.NEW);
+            } else {
+                epic.setStatus(StatusTask.IN_PROGRESS);
+            }
         }
     }
 }
+

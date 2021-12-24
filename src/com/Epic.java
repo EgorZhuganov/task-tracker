@@ -5,13 +5,20 @@ import java.util.List;
 
 public class Epic extends AbstractTask {
 
-    private List<Subtask> subtaskList = new ArrayList<>();
+    private final List<Subtask> subtaskList = new ArrayList<>();
 
     public List<Subtask> getSubtaskList() {
         return subtaskList;
     }
 
-    public void setSubtaskList(List<Subtask> subtaskList) {
-        this.subtaskList = subtaskList;
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", uuid=" + getUuid() +
+                "subtaskList=" + subtaskList +
+                '}';
     }
 }
