@@ -25,6 +25,8 @@ public class Manager {
         return new ArrayList<>(epicMap.values());
     }
 
+    public List<RealTask> getListRealTask () { return  new ArrayList<>(taskList); }
+
     //TODO п.2.3 получение всех подзадач конкретного эпика +
     public List<Subtask> getListSubtasksByEpic(Epic epic) {
         List<Subtask> subtaskList = new ArrayList<>();
@@ -67,7 +69,8 @@ public class Manager {
             }
         }
         if (uuidFound == 0) {
-            throw new RuntimeException("This method accept only Subtask key");
+            throw new RuntimeException("Cannot find this UUID in subtaskList. " +
+                    "taskList might be empty or incorrect uuid");
         }
         return subtask;
     }
@@ -188,7 +191,6 @@ public class Manager {
             Epic oldEpic = this.getEpicByUuid(uuid);
             oldEpic.setName(newEpic.getName());
             oldEpic.setDescription(newEpic.getDescription());
-            oldEpic.setStatus(newEpic.getStatus());
             changeEpicStatus(oldEpic);
         } else if (epicMap.isEmpty()) {
             try {
@@ -198,7 +200,7 @@ public class Manager {
             }
         } else {
             try {
-                throw new Exception("This is Epic have not found in Map");
+                throw new Exception("Cannot find this UUID in epicMap");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -208,6 +210,9 @@ public class Manager {
     //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра. +
     /*Before change subtask you have to put in Map Epic with Subtask*/
     public void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) {
+        if (uuid.equals(newSubtask.getUuid())){
+            throw new RuntimeException("Trying changing two subtasks with the same uuid");
+        }
         Subtask oldSubtask = getSubtaskByUuid(uuid);
         oldSubtask.setName(newSubtask.getName());
         oldSubtask.setDescription(newSubtask.getDescription());
@@ -227,12 +232,19 @@ public class Manager {
     }
 
     //TODO п.2.7 Удаление ранее добавленных сабтасков, т.к. эпик живет без сабтаска. +
-    public void clearListSubtasks() {
+    public void clearListSubtasksInMap() {
         epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
+    }
+
+    public void clearListSubtasksInEpic(Epic epic) {
+        epic.getSubtaskList().clear();
     }
 
     //TODO п.2.7 Удаление ранее добавленных задач по идентификатору. +
     public void clearTaskByUuid(UUID uuid) {
+        if (taskList.isEmpty() || !taskList.contains(getTaskByUuid(uuid))){
+            throw new RuntimeException("Cannot find this uuid");
+        }
         taskList.removeIf(t -> t.getUuid().equals(uuid));
     }
 
@@ -247,7 +259,8 @@ public class Manager {
             }
         }
         if (!done) {
-            throw new IllegalArgumentException("This method cannot clear epic or other task by uuid only one subtask");
+            throw new IllegalArgumentException("Cannot find this uuid.This method cannot clear epic or other task by " +
+                    "uuid only one subtask");
         }
     }
 
