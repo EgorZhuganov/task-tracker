@@ -7,7 +7,6 @@ class ManagerTest {
 
     @Test
     void findEpicBySubtaskUuid() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -26,7 +25,6 @@ class ManagerTest {
 
     @Test
     void getSubtaskByUuid() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -45,7 +43,6 @@ class ManagerTest {
 
     @Test
     void getListSubtasks() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -63,7 +60,6 @@ class ManagerTest {
 
     @Test
     void getListEpics() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -91,7 +87,6 @@ class ManagerTest {
 
     @Test
     void getListSubtasksByEpic() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -154,18 +149,15 @@ class ManagerTest {
 
     @Test
     void addEpic() {
-
         Epic epic1 = new Epic();
         manager.addEpic(epic1);
         manager.addEpic(epic1); //done an exception was expected, there is not two same Epic by one uuid in epicMap
         Epic epic2 = new Epic();
         manager.addEpic(epic2);
-
     }
 
     @Test
     void addEpicWithSubtask() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -193,7 +185,6 @@ class ManagerTest {
 
     @Test
     void addRealTask() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -205,12 +196,10 @@ class ManagerTest {
         manager.addRealTask(realTask1);
         manager.addRealTask(realTask1); //done an exception was expected
         manager.addRealTask(realTask2);
-
     }
 
     @Test
     void addSubtaskInCreatedEpic() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -221,12 +210,10 @@ class ManagerTest {
 //        manager.addSubtaskInCreatedEpic(epic1, subtask1); //done an exception was expected
         manager.addSubtaskInCreatedEpic(epic1, subtask2);
         System.out.println(epic1.getSubtaskList().size()); //2
-
     }
 
     @Test
     void changeTaskByUuid() {
-
         Subtask subtask1 = new Subtask();
         RealTask realTask1 = new RealTask();
         RealTask realTask2 = new RealTask();
@@ -242,12 +229,10 @@ class ManagerTest {
 //        manager.changeTaskByUuid(subtask1.getUuid(), realTask2); //find by uuid subtask - done, exception was expected
         manager.changeTaskByUuid(realTask1.getUuid(), realTask2);
         System.out.println(realTask1.getName() + " " + realTask1.getDescription() + " " + realTask1.getStatus());
-
     }
 
     @Test
     void changeEpicByUuid() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic4 = new Epic();
@@ -268,12 +253,10 @@ class ManagerTest {
         manager.changeEpicByUuid(realTask1.getUuid(), epic4);  //done exception was expected
         manager.changeEpicByUuid(epic4.getUuid(), epic5);
         System.out.println(epic4.getName() + " " + epic4.getDescription() + " " + epic4.getStatus());
-
     }
 
     @Test
     void changeSubtaskByUuid() {
-
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -289,14 +272,11 @@ class ManagerTest {
         subtask2.setDescription("I have to do something important");
         manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
         System.out.println(subtask2.getName() + " " + subtask2.getDescription() + " " + subtask2.getStatus());
-
 //        manager.changeSubtaskByUuid(subtask1.getUuid(), subtask1); //done exception was expected
-
     }
 
     @Test
     void clearListTasks() {
-
         RealTask realTask1 = new RealTask();
         RealTask realTask2 = new RealTask();
 
@@ -310,7 +290,6 @@ class ManagerTest {
 
     @Test
     void clearListEpics() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
@@ -326,7 +305,6 @@ class ManagerTest {
 
     @Test
     void clearListSubtasksInMap() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -350,12 +328,10 @@ class ManagerTest {
         manager.clearListSubtasksInMap();
         System.out.println(epic1.getSubtaskList().size());
         System.out.println(epic2.getSubtaskList().size());
-
     }
 
     @Test
     void clearListSubtasksInEpic() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -367,12 +343,10 @@ class ManagerTest {
         manager.clearListSubtasksInEpic(epic1);
         System.out.println(epic1.getSubtaskList().size());
         System.out.println(epic2.getSubtaskList().size());
-
     }
 
     @Test
     void clearTaskByUuid() {
-
         Epic epic = new Epic();
         RealTask realTask1 = new RealTask();
         RealTask realTask2 = new RealTask();
@@ -385,7 +359,6 @@ class ManagerTest {
 
     @Test
     void clearSubtaskByUuid() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -405,12 +378,10 @@ class ManagerTest {
 
         manager.clearSubtaskByUuid(subtask2.getUuid());
         System.out.println(manager.getListSubtasksByEpic(epic1));
-
     }
 
     @Test
     void clearEpicByUuid() {
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -428,15 +399,32 @@ class ManagerTest {
         manager.clearEpicByUuid(epic1.getUuid());
         System.out.println(manager.getListEpics().size()); //done 1
         System.out.println(manager.getListSubtasksByEpic(epic1).size()); //done 0
-
     }
 
     @Test
     void changeEpicStatus() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask();
+        Subtask subtask2 = new Subtask();
+        Subtask subtask3 = new Subtask();
+        Subtask subtask4 = new Subtask();
+        Subtask subtask5 = new Subtask();
 
+        manager.addEpic(epic1);
+        System.out.println(epic1.getStatus()); //done NEW without subtasks
 
+        manager.addSubtaskInCreatedEpic(epic1, subtask1);
+        System.out.println(epic1.getStatus()); //done NEW with subtask status NEW
 
+        subtask2.setStatus(StatusTask.DONE);
+        manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
+        System.out.println(epic1.getStatus()); //done DONE with subtask changed from NEW to DONE
+
+        manager.addSubtaskInCreatedEpic(epic1, subtask3);
+        System.out.println(epic1.getStatus()); //done IN_PROGRESS if add new subtask with status NEW
+
+        subtask4.setStatus(StatusTask.DONE);
+        manager.changeSubtaskByUuid(subtask3.getUuid(), subtask4);
+        System.out.println(epic1.getStatus()); //done DONE if change status subtask, status Epic also change
     }
-
-
 }
