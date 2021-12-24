@@ -1,7 +1,5 @@
 package com;
 
-import java.util.UUID;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -18,12 +16,14 @@ public class Main {
         Subtask st4 = new Subtask();
         Subtask st5 = new Subtask();
         Subtask st6 = new Subtask();
+        Subtask st7 = new Subtask();
+        Subtask st8 = new Subtask();
 
-        Task t1 = new Task();
-        Task t2 = new Task();
-        Task t3 = new Task();
-        Task t4 = new Task();
-        Task t5 = new Task();
+        RealTask t1 = new RealTask();
+        RealTask t2 = new RealTask();
+        RealTask t3 = new RealTask();
+        RealTask t4 = new RealTask();
+        RealTask t5 = new RealTask();
 
         System.out.println(epic1.getUuid());
         System.out.println(epic2.getUuid());
@@ -40,19 +40,36 @@ public class Main {
         System.out.println(t4.getUuid());
         System.out.println(t5.getUuid());
 
-        manager.addTask(t1, t2, t3); //добавление тасков в тасклист
-        System.out.println(manager.taskList);
+        manager.addTask(t1, t2, t3); //добавление тасков в тасклист +
+        System.out.println(Manager.taskList);
 
-        manager.addEpicWithSubtask(epic1, st1, st2, st3); //добавление эпиков с сабтаской
+        manager.addEpicWithSubtask(epic1, st1, st2, st3); //добавление эпиков с сабтаской +
         manager.addEpicWithSubtask(epic2, st4, st5, st6);
-        System.out.println(manager.epicMap);
+        System.out.println(Manager.epicMap);
 
-        System.out.println(manager.getListSubtasks());
+        manager.addTask(t1, t2, t3, t4); // стоит ли таскам иметь возможно дважны добавлять в лист?
+        System.out.println(Manager.taskList);
 
-//        manager.getListSubtasksByEpic(epic1);
-//        System.out.println(manager.getListSubtasksByEpic(epic1));
+        System.out.println(manager.getListEpics()); //получение списка всех эпиков +
+        System.out.println(manager.getListSubtasks()); //получение списка всех сабтасков +
+        System.out.println(manager.getListSubtasksByEpic(epic2));//получение списка подзадач конкретного эпика +
+        System.out.println(manager.getEpicByUuid(epic1.getUuid())); //получение задачи эпик по идентификатору +
+        System.out.println(manager.getTaskByUuid(t1.getUuid())); //получение таски по идентификатору +
+        System.out.println(manager.getSubtaskByUuid(st1.getUuid())); //получение субтаски по идентификатору +
 
+        manager.addEpic(epic3); //добавление нового эпика в мапу +
+        System.out.println(Manager.epicMap);
+        manager.addSubtaskInCreatedEpic(epic3, st7, st8); //добавление нового сабтаска в эпик +
 
+        Subtask subtask = new Subtask();
+        subtask.setName("YA subtask");
+        manager.changeSubtask(st1.getUuid(), subtask);
+        System.out.println(st1.getName());
+        System.out.println(subtask.getName());
+
+        manager.clearTaskByUuid(t1.getUuid());
+        System.out.println(t1);
+//        System.out.println(Manager.epicMap);
 
     }
 }

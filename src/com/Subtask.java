@@ -1,5 +1,5 @@
 package com;
 
-public class Subtask extends Task {
+public class Subtask extends AbstractTask {
 
 }

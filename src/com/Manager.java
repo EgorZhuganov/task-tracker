@@ -5,14 +5,21 @@ import java.util.stream.Collectors;
 
 public class Manager {
 
-    Map<UUID, Epic> epicMap;
-    List<Task> taskList;
+    static Map<UUID, Epic> epicMap;
+    static List<RealTask> taskList;
 
     public Manager() {
         System.out.println("Начинаем строить грандиозный план!");
         this.epicMap = new HashMap<>();
         this.taskList = new ArrayList<>();
     }
+
+//    //TODO п.2.0 проверка на наличие такого uuid в мапе
+//    public void checkUuid(UUID uuid) {
+//        if (epicMap != null && !epicMap.isEmpty() && !epicMap.containsKey(uuid)) {
+//
+//        }
+//    }
 
     //TODO п.2.1 получение списка всех сабтасков +
     public List<Subtask> getListSubtasks() {
@@ -21,61 +28,54 @@ public class Manager {
         return subtaskList;
     }
 
-    //TODO п.2.2 получение списка всех эпиков
+    //TODO п.2.2 получение списка всех эпиков +
     public List<Epic> getListEpics() {
         return new ArrayList<>(epicMap.values());
     }
 
-    //TODO п.2.3 получение всех подзадач конкретного эпика
-    public List<Subtask> getListSubtasksByEpicUuid(UUID epicUuid) {
-        List<Epic> epicList = new ArrayList<>();
-        epicMap.values().addAll(epicList);
+    //TODO п.2.3 получение всех подзадач конкретного эпика +
+    public List<Subtask> getListSubtasksByEpic(Epic epic) {
         List<Subtask> subtaskList = new ArrayList<>();
-        for (Epic currentEpic : epicList) {
-            if (currentEpic.getUuid().equals(epicUuid)) {
-                subtaskList = currentEpic.getSubtaskList();
+        for (Epic currentEpic : epicMap.values()) {
+            if (currentEpic.getUuid().equals(epic.getUuid())) {
+                subtaskList.addAll(currentEpic.getSubtaskList());
             }
         }
         return subtaskList;
     }
 
-    //TODO п.2.3 получение всех подзадач конкретного эпика
-    public List<Subtask> getListSubtasksByEpic(Epic epic) {
-        List<Subtask> subtaskList = new ArrayList<>();
-        epicMap.values().forEach(ep -> ep.getSubtaskList().stream().
-                filter(epi -> epi.getUuid().equals(epic.getUuid())).
-                collect(Collectors.toList()).addAll(subtaskList));
-        return subtaskList;
-    }
-
-    //TODO п.2.4 получение задачи типа Эпик или Сабтаск по идентификатору разделен на 2 метода
-    public Task getEpicOrSubtaskByUuid(UUID uuid) { //не нравится что возвращает Таск, а не эпик или сабтаск отдельно
-        List<Epic> epicList = new ArrayList<>();
-        epicMap.values().addAll(epicList);
-        Task task = new Task(); //или создать Epic и второй Subtask? в зависимости от резльтата писать, либо разбить на два метода
-        //Epic epic = new Epic();
-        //Subtask subtask =  new Subtask();
+    //TODO п.2.4 получение задачи типа любого типа по идентификатору разделен на 3 метода
+    public Epic getEpicByUuid(UUID uuid) { //
+        List<Epic> epicList = new ArrayList<>(epicMap.values());
+        Epic epic = new Epic();
         for (Epic currentEpic : epicList) {
             if (uuid.equals(currentEpic.getUuid())) {
-                task = currentEpic;
-                break;
-            } else {
-                List<Subtask> subtaskList = currentEpic.getSubtaskList();
-                for (Subtask subtask : subtaskList) {
-                    if (uuid.equals(subtask.getUuid())) {
-                        task = subtask;
-                        break;
-                    }
+                epic = currentEpic;
+            }
+        }
+        return epic;
+    }
+
+    //TODO п.2.4 получение сабтаски по индентификатору
+    public Subtask getSubtaskByUuid(UUID uuid) {
+        List<Epic> epicList = new ArrayList<>(epicMap.values());
+        Subtask subtask = new Subtask();
+        for (Epic currentEpic : epicList) {
+            List<Subtask> subtaskList = currentEpic.getSubtaskList();
+            for (Subtask currentSubtask : subtaskList) {
+                if (uuid.equals(currentSubtask.getUuid())) {
+                    subtask = currentSubtask;
+                    break;
                 }
             }
         }
-        return task;
+        return subtask;
     }
 
     //TODO п.2.4 получение задачи типа Таск по идентификатору
-    public Task getTaskByUuid(UUID uuid) {
-        Task task = new Task();
-        for (Task currentTask : taskList) {
+    public RealTask getTaskByUuid(UUID uuid) {
+        RealTask task = new RealTask();
+        for (RealTask currentTask : taskList) {
             if (uuid.equals(currentTask.getUuid())) {
                 task = currentTask;
                 break;
@@ -84,78 +84,85 @@ public class Manager {
         return task;
     }
 
-    //TODO п.2.5 Добавление нового Эпика в мапу. Добавление новой задачи, эпика и подзадачи разделен на 4.
+    //TODO п.2.5 Добавление нового Эпика в мапу. Добавление новой задачи, эпика и подзадачи разделен на 4. +
     public void addEpic(Epic epic) {
         this.epicMap.put(epic.getUuid(), epic);
     }
 
-    //TODO п.2.5 Добавление нового сабтаска для эпика. Добавление новой задачи, эпика и подзадачи
+    //TODO п.2.5 Добавление нового сабтаска для эпика. +
     public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
         epic.getSubtaskList().addAll(Arrays.asList(subtask));
         this.epicMap.put(epic.getUuid(), epic);
     }
 
-    //TODO п.2.5 Добавление нового таска в таск лист. Добавление новой задачи, эпика и подзадачи
-    public void addTask(Task... task) {
+    //TODO п.2.5 Добавление нового таска в таск лист.  +
+    public void addTask(RealTask... task) {
         this.taskList.addAll(Arrays.asList(task));
     }
 
-    //TODO п.2.5 Добавление нового сабтастка в существующий эпик. Добавление новой задачи, эпика и подзадачи
-    public void addSubtaskInCreatedEpic(Epic epic, Subtask subtask) {
-        epic.getSubtaskList().add(subtask);
+    //TODO п.2.5 Добавление нового сабтастка в существующий эпик.  +
+    public void addSubtaskInCreatedEpic(Epic epic, Subtask... subtask) {
+        epic.getSubtaskList().addAll(Arrays.asList(subtask));
     }
 
-    //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра разделен на 2
-    public void changeTaskByUuid(UUID uuid, Task newTask) {
-        Task oldTask = this.getTaskByUuid(uuid);
+    //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра разделен на 3 +
+    public void changeTaskByUuid(UUID uuid, RealTask newTask) {
+        RealTask oldTask = this.getTaskByUuid(uuid);
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
         oldTask.setStatus(newTask.getStatus());
     }
 
-    //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра.
-    public void changeEpicOrSubtask(UUID uuid, Epic newTask) {
-        Task oldTask = this.getEpicOrSubtaskByUuid(uuid); //Тут тоже не нравится что работаем через Таску
+    //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра. +
+    public void changeEpic(UUID uuid, Epic newTask) {
+        Epic oldTask = this.getEpicByUuid(uuid);
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
         oldTask.setStatus(newTask.getStatus());
     }
 
-    //TODO п.2.7 Удаление ранее добавленных тасков — всех и по идентификатору. разделен на 5
+    //TODO п.2.6 Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра. +
+    public void changeSubtask(UUID uuid, Subtask newTask) {
+        Subtask oldTask = this.getSubtaskByUuid(uuid);
+        oldTask.setName(newTask.getName());
+        oldTask.setDescription(newTask.getDescription());
+        oldTask.setStatus(newTask.getStatus());
+    }
+
+    //TODO п.2.7 Удаление ранее добавленных тасков — всех и по идентификатору. разделен на 5 +
     public void clearListTasks() { //чистим лист тасков
         taskList.clear();
     }
 
-    //TODO п.2.7 Удаление ранее добавленных эпиков с сабтасками, т.к. сабтаск без эпика не живет.
+    //TODO п.2.7 Удаление ранее добавленных эпиков с сабтасками, т.к. сабтаск без эпика не живет. +
     public void clearListEpics() {
         epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
         epicMap.values().clear();
     }
 
-    //TODO п.2.7 Удаление ранее добавленных сабтасков, т.к. эпика живет без сабтаска.
+    //TODO п.2.7 Удаление ранее добавленных сабтасков, т.к. эпик живет без сабтаска. +
     public void clearListSubtasks() {
         epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
     }
 
-    //TODO п.2.7 Удаление ранее добавленных задач по идентификатору.
+    //TODO п.2.7 Удаление ранее добавленных задач по идентификатору. +
     public void clearTaskByUuid(UUID uuid) {
         taskList.removeIf(t -> t.getUuid().equals(uuid));
     }
 
     //TODO п.2.7 Удаление ранее добавленных сабтасков по идентификатору.
     public void clearSubtaskByUuid(UUID uuid) {
-        if (getEpicOrSubtaskByUuid(uuid).getClass().getName().equals("Subtask")) {
+        if (getSubtaskByUuid(uuid).getClass().getName().equals("Subtask")) {
             epicMap.values().forEach(epic -> epic.getSubtaskList().
                     removeIf(subtask -> subtask.getUuid().equals(uuid)));
         } else {
             throw new IllegalArgumentException("This method cannot clear epic or other task by uuid only one subtask");
         }
-
     }
 
     //TODO п.2.7 Удаление ранее добавленных эпиков вместе с сабтасками, т.к. они сами по себе не живут по идентификатору.
     public void clearEpicByUuid(UUID uuid) {
-        if (getEpicOrSubtaskByUuid(uuid).getClass().getName().equals("Epic")) {
+        if (getEpicByUuid(uuid).getClass().getName().equals("Epic")) {
             epicMap.values().forEach(e -> e.getSubtaskList().removeIf(epic -> epic.getUuid().equals(uuid)));
             epicMap.values().removeIf(epic -> epic.getUuid().equals(uuid));
         } else {
