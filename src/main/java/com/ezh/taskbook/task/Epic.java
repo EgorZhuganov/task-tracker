@@ -1,4 +1,4 @@
-package com;
+package main.java.com.ezh.taskbook.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,5 +10,4 @@ public class Epic extends AbstractTask {
     public List<Subtask> getSubtaskList() {
         return subtaskList;
     }
-
 }
