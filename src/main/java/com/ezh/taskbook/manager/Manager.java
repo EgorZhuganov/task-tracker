@@ -2,7 +2,6 @@ package main.java.com.ezh.taskbook.manager;
 
 import main.java.com.ezh.taskbook.task.Epic;
 import main.java.com.ezh.taskbook.task.RealTask;
-import main.java.com.ezh.taskbook.task.StatusTask;
 import main.java.com.ezh.taskbook.task.Subtask;
 
 import java.util.*;
@@ -97,7 +96,6 @@ public class Manager {
 
     public void addEpic(Epic epic) {
         if (!getEpicMap().containsKey(epic.getUuid())) {
-            this.changeEpicStatus(epic);
             getEpicMap().put(epic.getUuid(), epic);
         } else {
             throw new RuntimeException("Have not to put two same Epic in Map");
@@ -107,7 +105,6 @@ public class Manager {
     public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
         if (!getEpicMap().containsKey(epic.getUuid())) {
             epic.getSubtaskList().addAll(Arrays.asList(subtask));
-            this.changeEpicStatus(epic);
             getEpicMap().put(epic.getUuid(), epic);
         } else {
             throw new RuntimeException("Have not to put two same Epic in Map");
@@ -125,17 +122,14 @@ public class Manager {
     }
 
     public void addSubtaskInCreatedEpic(Epic epic, Subtask subtask) {
-
         for (Subtask currentSubtask : epic.getSubtaskList()) {
             if (currentSubtask.getUuid().equals(subtask.getUuid())) {
                 throw new RuntimeException("Have not to add two same Subtask in one Epic");
             }
         }
         epic.getSubtaskList().add(subtask);
-        this.changeEpicStatus(epic);
     }
 
-    //TODO необходим для 210 строки, подумать
     public Epic findEpicBySubtaskUuid(UUID subtaskUuid) {
         Epic epic = new Epic();
         int uuidFound = 0;
@@ -174,7 +168,6 @@ public class Manager {
             Epic oldEpic = this.getEpicByUuid(uuid);
             oldEpic.setName(newEpic.getName());
             oldEpic.setDescription(newEpic.getDescription());
-            changeEpicStatus(oldEpic);
         } else if (getEpicMap().isEmpty()) {
             try {
                 throw new Exception("Need to add in epicMap one or more Epic, before use this method");
@@ -199,7 +192,6 @@ public class Manager {
         oldSubtask.setName(newSubtask.getName());
         oldSubtask.setDescription(newSubtask.getDescription());
         oldSubtask.setStatus(newSubtask.getStatus());
-        changeEpicStatus(findEpicBySubtaskUuid(uuid));
     }
 
     public void clearListTasks() {
@@ -249,30 +241,6 @@ public class Manager {
         }
     }
 
-    public void changeEpicStatus(Epic epic) {
-        if (epic.getSubtaskList().isEmpty()) {
-            epic.setStatus(StatusTask.NEW);
-        } else if (!epic.getSubtaskList().isEmpty()) {
-            int counterNew = 0;
-            int counterDone = 0;
-            List<Subtask> subtaskList = epic.getSubtaskList();
-            for (Subtask currentSubtask : subtaskList) {
-                if (currentSubtask.getStatus().equals(StatusTask.NEW)) {
-                    counterNew++;
-                } else if (currentSubtask.getStatus().equals(StatusTask.DONE)) {
-                    counterDone++;
-                }
-            }
-            if (counterDone == subtaskList.size()) {
-                epic.setStatus(StatusTask.DONE);
-            } else if (counterNew == subtaskList.size()) {
-                epic.setStatus(StatusTask.NEW);
-            } else {
-                epic.setStatus(StatusTask.IN_PROGRESS);
-            }
-        }
-    }
-
     public Map<UUID, Epic> getEpicMap() {
         return epicMap;
     }
@@ -285,8 +253,6 @@ public class Manager {
         return taskList;
     }
 
-    public void setTaskList(List<RealTask> taskList) {
-        this.taskList = taskList;
-    }
+    public void setTaskList(List<RealTask> taskList) { this.taskList = taskList; }
 }
 
