@@ -7,6 +7,11 @@ public class Epic extends AbstractTask {
 
     private final List<Subtask> subtaskList = new ArrayList<>();
 
+    public Epic() {
+        setName(getName());
+        setDescription(getDescription());
+    }
+
     public List<Subtask> getSubtaskList() {
         return subtaskList;
     }
@@ -31,5 +36,10 @@ public class Epic extends AbstractTask {
             status = StatusTask.IN_PROGRESS;
         }
         return status;
+    }
+
+    @Override
+    public void setStatus(StatusTask status) {
+
     }
 }
