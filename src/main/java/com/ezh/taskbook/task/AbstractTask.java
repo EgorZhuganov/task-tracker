@@ -13,7 +13,6 @@ abstract class AbstractTask {
     private static final List<UUID> uuidStorage = new ArrayList<>();
 
     public AbstractTask()  {
-        this.status = StatusTask.NEW;
         this.uuid = UUID.randomUUID();
         if (uuidStorage.contains(uuid)){
             throw new RuntimeException("Duplicate keys, try create new Task");
