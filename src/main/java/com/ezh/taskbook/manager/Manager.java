@@ -57,19 +57,17 @@ public class Manager {
 
     public Subtask getSubtaskByUuid(UUID uuid) {
         List<Epic> epicList = new ArrayList<>(getEpicMap().values());
-        Subtask subtask = new Subtask();
-        int uuidFound = 0;
+        Subtask subtask = null;
         for (Epic currentEpic : epicList) {
             List<Subtask> subtaskList = currentEpic.getSubtaskList();
             for (Subtask currentSubtask : subtaskList) {
                 if (uuid.equals(currentSubtask.getUuid())) {
                     subtask = currentSubtask;
-                    uuidFound++;
                     break;
                 }
             }
         }
-        if (uuidFound == 0) {
+        if (subtask == null) {
             throw new RuntimeException("Cannot find this UUID in subtaskList. " +
                     "taskList might be empty or incorrect uuid");
         }
@@ -77,18 +75,16 @@ public class Manager {
     }
 
     public RealTask getTaskByUuid(UUID uuid) {
-        RealTask task = new RealTask();
-        int uuidFound = 0;
+        RealTask task = null;
         for (RealTask currentTask : getTaskList()) {
             if (uuid.equals(currentTask.getUuid())) {
                 task = currentTask;
-                uuidFound++;
                 break;
             }
         }
         if (getTaskList().isEmpty()) {
             throw new RuntimeException("Before use this method need to add one or more RealTask in taskList");
-        } else if (uuidFound == 0) {
+        } else if (task == null) {
             throw new RuntimeException("Cannot find this UUID in taskList");
         }
         return task;
@@ -131,17 +127,16 @@ public class Manager {
     }
 
     public Epic findEpicBySubtaskUuid(UUID subtaskUuid) {
-        Epic epic = new Epic();
-        int uuidFound = 0;
+        Epic epic = null;
         for (Epic currentEpic : getEpicMap().values()) {
             for (Subtask subtask : currentEpic.getSubtaskList()) {
                 if (subtask.getUuid().equals(subtaskUuid)) {
                     epic = currentEpic;
-                    uuidFound++;
+                    break;
                 }
             }
         }
-        if (uuidFound == 0) {
+        if (epic == null) {
             throw new RuntimeException("This method find only Epic by subtask uuid");
         }
         return epic;
