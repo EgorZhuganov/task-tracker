@@ -1,12 +1,13 @@
 package main.java.com.ezh.taskbook;
 
-import main.java.com.ezh.taskbook.manager.InMemoryTasksManager;
+import main.java.com.ezh.taskbook.manager.Managers;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTasksManager manager = new InMemoryTasksManager();
+        Managers manager = new Managers();
+        manager.getDefault();
 
     }
 }
