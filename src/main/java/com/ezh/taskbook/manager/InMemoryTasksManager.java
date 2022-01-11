@@ -289,14 +289,5 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void setSingleTaskList(List<SingleTask> taskList) { this.taskList = taskList; }
 
-    @Override
-    public List<AbstractTask> getHistoryLastTenTasks () {
-        return historyLastTenTasks;
-    }
-
-    @Override
-    public void setHistoryLastTenTasks (List<AbstractTask> historyLastTenTasks) {
-        this.historyLastTenTasks = historyLastTenTasks;
-    }
 }
 

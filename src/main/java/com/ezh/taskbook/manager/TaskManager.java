@@ -67,7 +67,4 @@ public interface TaskManager {
 
     void setSingleTaskList(List<SingleTask> taskList);
 
-    List<AbstractTask> getHistoryLastTenTasks();
-
-    void setHistoryLastTenTasks(List<AbstractTask> historyLastTenTasks);
 }
