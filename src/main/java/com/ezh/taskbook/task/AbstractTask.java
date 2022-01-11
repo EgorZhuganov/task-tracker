@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-abstract class AbstractTask {
+public class AbstractTask {
 
     private String name;
     private String description;
