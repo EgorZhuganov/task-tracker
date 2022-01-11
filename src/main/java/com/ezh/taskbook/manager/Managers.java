@@ -2,7 +2,7 @@ package main.java.com.ezh.taskbook.manager;
 
 public class Managers  {
 
-    public void getDefault() {
-        new InMemoryTasksManager();
+    public InMemoryTasksManager getDefault() {
+        return new InMemoryTasksManager();
     }
 }
