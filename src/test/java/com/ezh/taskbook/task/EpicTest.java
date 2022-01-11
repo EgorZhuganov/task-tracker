@@ -1,16 +1,14 @@
 package test.java.com.ezh.taskbook.task;
 
-import main.java.com.ezh.taskbook.manager.Manager;
+import main.java.com.ezh.taskbook.manager.InMemoryTasksManager;
 import main.java.com.ezh.taskbook.task.Epic;
 import main.java.com.ezh.taskbook.task.StatusTask;
 import main.java.com.ezh.taskbook.task.Subtask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class EpicTest {
-    Manager manager = new Manager();
+    InMemoryTasksManager manager = new InMemoryTasksManager();
 
     @Test
     void getStatus() {

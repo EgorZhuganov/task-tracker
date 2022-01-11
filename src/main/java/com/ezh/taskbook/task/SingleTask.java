@@ -1,8 +1,8 @@
 package main.java.com.ezh.taskbook.task;
 
-public class RealTask extends AbstractTask {
+public class SingleTask extends AbstractTask {
 
-    public RealTask() {
+    public SingleTask() {
         setStatus(StatusTask.NEW);
         setName(getName());
         setDescription(getDescription());
