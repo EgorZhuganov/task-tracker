@@ -268,7 +268,8 @@ public class InMemoryTasksManager implements TaskManager {
         if (historyLastTenTasks.size()<10) {
             return historyLastTenTasks;
         }
-        return historyLastTenTasks.subList(historyLastTenTasks.size()-10, historyLastTenTasks.size());
+        this.historyLastTenTasks = historyLastTenTasks.subList(historyLastTenTasks.size()-10, historyLastTenTasks.size());
+        return historyLastTenTasks;
     }
 
     @Override
