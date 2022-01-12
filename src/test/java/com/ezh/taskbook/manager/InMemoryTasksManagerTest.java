@@ -1,14 +1,14 @@
 package test.java.com.ezh.taskbook.manager;
 
-import main.java.com.ezh.taskbook.manager.InMemoryTasksManager;
+import main.java.com.ezh.taskbook.manager.Managers;
+import main.java.com.ezh.taskbook.manager.TaskManager;
 import main.java.com.ezh.taskbook.task.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 class InMemoryTasksManagerTest {
-    InMemoryTasksManager manager = new InMemoryTasksManager();
+
+    TaskManager manager = new Managers().getDefault();
 
     @Test
     void findEpicBySubtaskUuid() {
