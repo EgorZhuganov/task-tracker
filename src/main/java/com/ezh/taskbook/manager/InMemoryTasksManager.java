@@ -12,6 +12,7 @@ public class InMemoryTasksManager implements TaskManager {
     private Map<UUID, Epic> epicMap;
     private List<SingleTask> taskList;
     private List<AbstractTask> historyLastTenTasks = new ArrayList<>();
+    static final int MAXIMUM_HISTORY_LENGTH = 10;
 
     public InMemoryTasksManager() {
         System.out.println("Начинаем строить грандиозный план!");
@@ -60,6 +61,7 @@ public class InMemoryTasksManager implements TaskManager {
             }
         }
         historyLastTenTasks.add(epic);
+        cleanHistory();
         return epic;
     }
 
@@ -81,6 +83,7 @@ public class InMemoryTasksManager implements TaskManager {
                     "taskList might be empty or incorrect uuid");
         }
         historyLastTenTasks.add(subtask);
+        cleanHistory();
         return subtask;
     }
 
@@ -99,6 +102,7 @@ public class InMemoryTasksManager implements TaskManager {
             throw new RuntimeException("Cannot find this UUID in taskList");
         }
         historyLastTenTasks.add(task);
+        cleanHistory();
         return task;
     }
 
@@ -265,11 +269,14 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public List<AbstractTask> history() {
-        if (historyLastTenTasks.size()<10) {
-            return historyLastTenTasks;
-        }
-        this.historyLastTenTasks = historyLastTenTasks.subList(historyLastTenTasks.size()-10, historyLastTenTasks.size());
         return historyLastTenTasks;
+    }
+
+    public void cleanHistory(){
+        if (historyLastTenTasks.size() > MAXIMUM_HISTORY_LENGTH) {
+            this.historyLastTenTasks = historyLastTenTasks.
+                    subList(historyLastTenTasks.size() - MAXIMUM_HISTORY_LENGTH, historyLastTenTasks.size());
+        }
     }
 
     @Override
