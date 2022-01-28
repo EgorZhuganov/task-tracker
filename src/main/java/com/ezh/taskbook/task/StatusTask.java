@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
 public enum StatusTask {
     NEW,

@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.manager;
+package com.ezh.taskbook.manager;
 
 public class Managers {
 

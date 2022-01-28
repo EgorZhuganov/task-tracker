@@ -1,9 +1,6 @@
-package test.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
-import main.java.com.ezh.taskbook.manager.InMemoryTasksManager;
-import main.java.com.ezh.taskbook.task.Epic;
-import main.java.com.ezh.taskbook.task.StatusTask;
-import main.java.com.ezh.taskbook.task.Subtask;
+import com.ezh.taskbook.manager.InMemoryTasksManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

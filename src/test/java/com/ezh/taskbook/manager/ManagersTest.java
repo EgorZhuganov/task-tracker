@@ -1,8 +1,6 @@
-package test.java.com.ezh.taskbook.manager;
+package com.ezh.taskbook.manager;
 
-import main.java.com.ezh.taskbook.manager.Managers;
-import main.java.com.ezh.taskbook.manager.TaskManager;
-import main.java.com.ezh.taskbook.task.Epic;
+import com.ezh.taskbook.task.Epic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

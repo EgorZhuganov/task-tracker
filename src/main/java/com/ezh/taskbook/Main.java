@@ -1,7 +1,7 @@
-package main.java.com.ezh.taskbook;
+package com.ezh.taskbook;
 
-import main.java.com.ezh.taskbook.manager.Managers;
-import main.java.com.ezh.taskbook.manager.TaskManager;
+import com.ezh.taskbook.manager.Managers;
+import com.ezh.taskbook.manager.TaskManager;
 
 public class Main {
 
