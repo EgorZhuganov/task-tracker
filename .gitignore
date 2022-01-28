@@ -23,6 +23,9 @@
 hs_err_pid*
 
 # User-specific stuff:
+.idea/
+*.iml
+*.iws
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/dictionaries
