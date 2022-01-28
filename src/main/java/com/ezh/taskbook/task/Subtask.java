@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
 public class Subtask extends AbstractTask {
 
@@ -6,5 +6,15 @@ public class Subtask extends AbstractTask {
         setStatus(StatusTask.NEW);
         setName(getName());
         setDescription(getDescription());
+    }
+
+    @Override
+    public String toString() {
+        return "Subtask{" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", uuid=" + getUuid() +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
 public class SingleTask extends AbstractTask {
 
@@ -6,5 +6,15 @@ public class SingleTask extends AbstractTask {
         setStatus(StatusTask.NEW);
         setName(getName());
         setDescription(getDescription());
+    }
+
+    @Override
+    public String toString() {
+        return "SingleTask{" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", uuid=" + getUuid() +
+                '}';
     }
 }

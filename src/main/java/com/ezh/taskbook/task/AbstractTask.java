@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,4 +35,13 @@ public class AbstractTask {
 
     public void setStatus(StatusTask status) { this.status = status; }
 
+    @Override
+    public String toString() {
+        return "AbstractTask{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", uuid=" + uuid +
+                '}';
+    }
 }

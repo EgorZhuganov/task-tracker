@@ -1,4 +1,4 @@
-package main.java.com.ezh.taskbook.task;
+package com.ezh.taskbook.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +41,16 @@ public class Epic extends AbstractTask {
     @Override
     public void setStatus(StatusTask status) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", uuid=" + getUuid() +
+                ", subtaskList=" + subtaskList +
+                '}';
     }
 }
