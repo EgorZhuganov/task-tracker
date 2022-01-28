@@ -1,9 +1,8 @@
-package main.java.com.ezh.taskbook.manager;
+package com.ezh.taskbook.manager;
 
-import main.java.com.ezh.taskbook.task.AbstractTask;
-import main.java.com.ezh.taskbook.task.Epic;
-import main.java.com.ezh.taskbook.task.SingleTask;
-import main.java.com.ezh.taskbook.task.Subtask;
+import com.ezh.taskbook.task.Epic;
+import com.ezh.taskbook.task.SingleTask;
+import com.ezh.taskbook.task.Subtask;
 
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public interface TaskManager {
 
     void removeEpicByUuid(UUID uuid);
 
-    List<AbstractTask> history();
+    HistoryManager getHistoryManager();
 
     Map<UUID, Epic> getEpicMap();
 
