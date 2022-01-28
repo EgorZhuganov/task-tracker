@@ -1,8 +1,6 @@
-package test.java.com.ezh.taskbook.manager;
+package com.ezh.taskbook.manager;
 
-import main.java.com.ezh.taskbook.manager.Managers;
-import main.java.com.ezh.taskbook.manager.TaskManager;
-import main.java.com.ezh.taskbook.task.*;
+import com.ezh.taskbook.task.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -396,48 +394,5 @@ class InMemoryTasksManagerTest {
         manager.removeEpicByUuid(epic1.getUuid());
         Assertions.assertEquals(1, manager.getListEpics().size());
         Assertions.assertEquals(0, manager.getListSubtasksByEpic(epic1).size());
-    }
-
-    @Test
-    void history() {
-
-        Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
-        Subtask subtask5 = new Subtask();
-        SingleTask singleTask1 = new SingleTask();
-        SingleTask singleTask2 = new SingleTask();
-        SingleTask singleTask3 = new SingleTask();
-        SingleTask singleTask4 = new SingleTask();
-        SingleTask singleTask5 = new SingleTask();
-
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5);
-        manager.addSingleTask(singleTask1);
-        manager.addSingleTask(singleTask2);
-        manager.addSingleTask(singleTask3);
-        manager.addSingleTask(singleTask4);
-        manager.addSingleTask(singleTask5);
-
-        manager.getSubtaskByUuid(subtask1.getUuid());
-        manager.getSubtaskByUuid(subtask2.getUuid());
-        manager.getSubtaskByUuid(subtask3.getUuid());
-        manager.getSubtaskByUuid(subtask4.getUuid());
-        manager.getSubtaskByUuid(subtask5.getUuid());
-
-        manager.getEpicByUuid(epic1.getUuid());
-        manager.getEpicByUuid(epic2.getUuid());
-
-        manager.getSingleTaskByUuid(singleTask1.getUuid());
-        manager.getSingleTaskByUuid(singleTask2.getUuid());
-        manager.getSingleTaskByUuid(singleTask3.getUuid());
-        manager.getSingleTaskByUuid(singleTask4.getUuid());
-        manager.getSingleTaskByUuid(singleTask5.getUuid());
-
-        System.out.println(manager.history());
-
     }
 }

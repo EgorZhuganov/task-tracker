@@ -1,9 +1,9 @@
-package main.java.com.ezh.taskbook.manager;
+package com.ezh.taskbook.manager;
 
-import main.java.com.ezh.taskbook.task.AbstractTask;
-import main.java.com.ezh.taskbook.task.Epic;
-import main.java.com.ezh.taskbook.task.SingleTask;
-import main.java.com.ezh.taskbook.task.Subtask;
+import com.ezh.taskbook.task.AbstractTask;
+import com.ezh.taskbook.task.Epic;
+import com.ezh.taskbook.task.SingleTask;
+import com.ezh.taskbook.task.Subtask;
 
 import java.util.*;
 
@@ -11,13 +11,13 @@ public class InMemoryTasksManager implements TaskManager {
 
     private Map<UUID, Epic> epicMap;
     private List<SingleTask> taskList;
-    private List<AbstractTask> historyLastTenTasks = new ArrayList<>();
-    static final int MAXIMUM_HISTORY_LENGTH = 10;
+    private HistoryManager inMemoryHistoryManager;
 
     public InMemoryTasksManager() {
         System.out.println("Начинаем строить грандиозный план!");
         this.epicMap = new HashMap<>();
         this.taskList = new ArrayList<>();
+        this.inMemoryHistoryManager = new InMemoryHistoryManager();
     }
 
     @Override
@@ -60,8 +60,8 @@ public class InMemoryTasksManager implements TaskManager {
                 epic = currentEpic;
             }
         }
-        historyLastTenTasks.add(epic);
-        cleanHistory();
+        inMemoryHistoryManager.add(epic);
+        inMemoryHistoryManager.cleanHistory();
         return epic;
     }
 
@@ -82,8 +82,8 @@ public class InMemoryTasksManager implements TaskManager {
             throw new RuntimeException("Cannot find this UUID in subtaskList. " +
                     "taskList might be empty or incorrect uuid");
         }
-        historyLastTenTasks.add(subtask);
-        cleanHistory();
+        inMemoryHistoryManager.add(subtask);
+        inMemoryHistoryManager.cleanHistory();
         return subtask;
     }
 
@@ -101,8 +101,8 @@ public class InMemoryTasksManager implements TaskManager {
         } else if (task == null) {
             throw new RuntimeException("Cannot find this UUID in taskList");
         }
-        historyLastTenTasks.add(task);
-        cleanHistory();
+        inMemoryHistoryManager.add(task);
+        inMemoryHistoryManager.cleanHistory();
         return task;
     }
 
@@ -268,15 +268,8 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public List<AbstractTask> history() {
-        return historyLastTenTasks;
-    }
-
-    public void cleanHistory(){
-        if (historyLastTenTasks.size() > MAXIMUM_HISTORY_LENGTH) {
-            this.historyLastTenTasks = historyLastTenTasks.
-                    subList(historyLastTenTasks.size() - MAXIMUM_HISTORY_LENGTH, historyLastTenTasks.size());
-        }
+    public HistoryManager getHistoryManager() {
+        return inMemoryHistoryManager;
     }
 
     @Override
