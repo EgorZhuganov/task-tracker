@@ -17,7 +17,7 @@ public class InMemoryTasksManager implements TaskManager {
         System.out.println("Начинаем строить грандиозный план!");
         this.epicMap = new HashMap<>();
         this.taskList = new ArrayList<>();
-        this.inMemoryHistoryManager = new InMemoryHistoryManager();
+        this.inMemoryHistoryManager = new InMemoryHistoryManagerV2();
     }
 
     @Override
@@ -278,17 +278,10 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void setEpicMap(Map<UUID, Epic> epicMap) {
-        this.epicMap = epicMap;
-    }
-
-    @Override
     public List<SingleTask> getSingleTaskList() {
         return taskList;
     }
 
-    @Override
-    public void setSingleTaskList(List<SingleTask> taskList) { this.taskList = taskList; }
 
 }
 

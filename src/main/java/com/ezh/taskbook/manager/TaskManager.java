@@ -1,5 +1,6 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.task.AbstractTask;
 import com.ezh.taskbook.task.Epic;
 import com.ezh.taskbook.task.SingleTask;
 import com.ezh.taskbook.task.Subtask;
@@ -60,10 +61,6 @@ public interface TaskManager {
 
     Map<UUID, Epic> getEpicMap();
 
-    void setEpicMap(Map<UUID, Epic> epicMap);
-
     List<SingleTask> getSingleTaskList();
-
-    void setSingleTaskList(List<SingleTask> taskList);
 
 }
