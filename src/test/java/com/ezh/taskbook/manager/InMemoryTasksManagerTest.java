@@ -242,7 +242,6 @@ class InMemoryTasksManagerTest {
         manager.changeEpicByUuid(epic1.getUuid(), epic2); //done exception was expected
         manager.addEpic(epic4);
 
-        epic5.setStatus(StatusTask.DONE);
         epic5.setName("Find yourself");
         epic5.setDescription("Wake up at 8 am");
         manager.changeEpicByUuid(subtask1.getUuid(), epic5); //done exception was expected
