@@ -39,11 +39,6 @@ public class Epic extends AbstractTask {
     }
 
     @Override
-    public void setStatus(StatusTask status) {
-
-    }
-
-    @Override
     public String toString() {
         return "Epic{" +
                 "name='" + getName() + '\'' +

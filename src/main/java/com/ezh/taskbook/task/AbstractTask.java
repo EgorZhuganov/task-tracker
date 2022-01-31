@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AbstractTask {
+public abstract class AbstractTask {
 
     private String name;
     private String description;
-    private StatusTask status;
     private final UUID uuid;
     private static final List<UUID> uuidStorage = new ArrayList<>();
 
@@ -31,17 +30,6 @@ public class AbstractTask {
 
     public UUID getUuid() { return uuid; }
 
-    public StatusTask getStatus() { return status; }
+    abstract StatusTask getStatus();
 
-    public void setStatus(StatusTask status) { this.status = status; }
-
-    @Override
-    public String toString() {
-        return "AbstractTask{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", uuid=" + uuid +
-                '}';
-    }
 }
