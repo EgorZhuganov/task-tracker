@@ -17,7 +17,7 @@ public class InMemoryTasksManager implements TaskManager {
         System.out.println("Начинаем строить грандиозный план!");
         this.epicMap = new HashMap<>();
         this.taskList = new ArrayList<>();
-        this.inMemoryHistoryManager = new InMemoryHistoryManagerV2();
+        this.inMemoryHistoryManager = new InMemoryHistoryManager();
     }
 
     @Override
