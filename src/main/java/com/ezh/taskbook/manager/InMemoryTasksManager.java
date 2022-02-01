@@ -61,7 +61,6 @@ public class InMemoryTasksManager implements TaskManager {
             }
         }
         inMemoryHistoryManager.add(epic);
-        inMemoryHistoryManager.cleanHistory();
         return epic;
     }
 
@@ -83,7 +82,6 @@ public class InMemoryTasksManager implements TaskManager {
                     "taskList might be empty or incorrect uuid");
         }
         inMemoryHistoryManager.add(subtask);
-        inMemoryHistoryManager.cleanHistory();
         return subtask;
     }
 
@@ -102,7 +100,6 @@ public class InMemoryTasksManager implements TaskManager {
             throw new RuntimeException("Cannot find this UUID in taskList");
         }
         inMemoryHistoryManager.add(task);
-        inMemoryHistoryManager.cleanHistory();
         return task;
     }
 

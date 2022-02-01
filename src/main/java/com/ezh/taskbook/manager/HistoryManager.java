@@ -13,6 +13,4 @@ public interface HistoryManager {
 
     List<AbstractTask> getHistory();
 
-    void cleanHistory();
-
 }

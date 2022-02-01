@@ -21,7 +21,13 @@ public class InMemoryHistoryManager implements HistoryManager {
             historyLastTenTasks.put(task.getUuid(), head);
         else
             historyLastTenTasks.put(task.getUuid(), tail);
+        cleanHistory();
+    }
 
+    private void cleanHistory() {
+        if (historyLastTenTasks.size() > MAXIMUM_HISTORY_LENGTH) {
+            remove(head.element.getUuid());
+        }
     }
 
     @Override
@@ -41,30 +47,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         for (Node<AbstractTask> x = head; x != null; x = x.next)
         result.add(i++, x.element);
         return result;
-    }
-
-    @Override
-    public void cleanHistory() {
-        if (historyLastTenTasks.size() > MAXIMUM_HISTORY_LENGTH) {
-            remove(head.element.getUuid());
-        }
-    }
-
-
-    private Node<AbstractTask> head;
-    private Node<AbstractTask> tail;
-    private int size = 0;
-
-    private static class Node<E> {
-        E element;
-        Node<E> next;
-        Node<E> prev;
-
-        Node(Node<E> prev, E element, Node<E> next) {
-            this.element = element;
-            this.next = next;
-            this.prev = prev;
-        }
     }
 
     private void linkLast(AbstractTask element) {
