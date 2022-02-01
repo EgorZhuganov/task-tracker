@@ -6,8 +6,6 @@ public class Subtask extends AbstractTask {
 
     public Subtask() {
         setStatus(StatusTask.NEW);
-        setName(getName());
-        setDescription(getDescription());
     }
 
     @Override

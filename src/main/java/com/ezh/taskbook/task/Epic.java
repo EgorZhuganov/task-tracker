@@ -8,8 +8,6 @@ public class Epic extends AbstractTask {
     private final List<Subtask> subtaskList = new ArrayList<>();
 
     public Epic() {
-        setName(getName());
-        setDescription(getDescription());
     }
 
     public List<Subtask> getSubtaskList() {
