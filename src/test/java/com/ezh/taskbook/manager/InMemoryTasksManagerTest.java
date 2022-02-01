@@ -9,7 +9,7 @@ class InMemoryTasksManagerTest {
     TaskManager manager = new Managers().getDefault();
 
     @Test
-    void findEpicBySubtaskUuid() {
+    void getEpicBySubtaskUuid() {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         Subtask subtask2 = new Subtask();
@@ -131,7 +131,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void getTaskByUuid() {
+    void getSingleTaskByUuid() {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
 
@@ -187,7 +187,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void addRealTask() {
+    void addSingleTask() {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask();
         SingleTask singleTask1 = new SingleTask();
@@ -212,7 +212,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void changeTaskByUuid() {
+    void changeSingleTaskByUuid() {
         Subtask subtask1 = new Subtask();
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -221,11 +221,13 @@ class InMemoryTasksManagerTest {
         singleTask2.setDescription("About something");
         singleTask2.setStatus(StatusTask.DONE);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2));
+        Assertions.assertThrows(RuntimeException.class, () ->
+                manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2));
         manager.addSingleTask(singleTask1);
         System.out.println(singleTask1.getName() + " " + singleTask1.getDescription() + " " + singleTask1.getStatus());
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.changeSingleTaskByUuid(subtask1.getUuid(), singleTask2));
+        Assertions.assertThrows(RuntimeException.class, () ->
+                manager.changeSingleTaskByUuid(subtask1.getUuid(), singleTask2));
         manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2);
         System.out.println(singleTask1.getName() + " " + singleTask1.getDescription() + " " + singleTask1.getStatus());
     }
@@ -274,7 +276,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearListTasks() {
+    void clearListSingleTasks() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -342,7 +344,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearTaskByUuid() {
+    void removeSingleTaskByUuid() {
         Epic epic = new Epic();
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -354,7 +356,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearSubtaskByUuid() {
+    void removeSubtaskByUuid() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -377,7 +379,7 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearEpicByUuid() {
+    void removeEpicByUuid() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
