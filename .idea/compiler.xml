@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="java-sprint2-hw" />
+        <module name="task-tracker" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="java-sprint2-hw" target="11" />
+      <module name="task-tracker" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
