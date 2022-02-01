@@ -37,7 +37,8 @@ class EpicTest {
         Subtask subtask7 = new Subtask();
         manager.addEpicWithSubtask(epic2, subtask6, subtask7);
         subtask6.setStatus(StatusTask.IN_PROGRESS);
-        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic2.getStatus()); //if change status subtask, status Epic also change
+        //if change status subtask, status Epic also change
+        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic2.getStatus());
 
         Epic epic3 = new Epic();
         Subtask subtask8 = new Subtask();
