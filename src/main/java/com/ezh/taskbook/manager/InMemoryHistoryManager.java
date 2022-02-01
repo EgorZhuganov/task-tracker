@@ -8,6 +8,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Map<UUID, Node<AbstractTask>> historyLastTenTasks = new HashMap<>();
     static final int MAXIMUM_HISTORY_LENGTH = 10;
+    private Node<AbstractTask> head;
+    private Node<AbstractTask> tail;
+    private int size = 0;
 
     @Override
     public void add(AbstractTask task) {
@@ -96,4 +99,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         size--;
     }
 
+    private static class Node<E> {
+        E element;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.element = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
 }
