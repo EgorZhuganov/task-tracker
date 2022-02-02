@@ -6,12 +6,14 @@ import com.ezh.taskbook.task.Subtask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
 
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -27,12 +29,13 @@ class InMemoryHistoryManagerTest {
     @Test
     void remove() {
 
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
         Epic epic4 = new Epic();
+        Epic epic5 = new Epic();
 
         historyManager.add(epic1);
         historyManager.add(epic2);
@@ -41,12 +44,15 @@ class InMemoryHistoryManagerTest {
 
         historyManager.remove(epic2.getUuid());
         Assertions.assertEquals(3, historyManager.getHistory().size());
+
+        Assertions.assertThrows(NoSuchElementException.class, () -> historyManager.remove(epic5.getUuid()));
+
     }
 
     @Test
     void getHistory() {
 
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
 
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
