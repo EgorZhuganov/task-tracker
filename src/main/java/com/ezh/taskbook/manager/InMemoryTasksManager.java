@@ -233,6 +233,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSingleTaskByUuid(UUID uuid) {
+        removeTaskFromHistory(getSingleTaskByUuid(uuid));
         if (getSingleTaskList().isEmpty() || !getSingleTaskList().contains(getSingleTaskByUuid(uuid))) {
             throw new RuntimeException("Cannot find this uuid");
         }
@@ -241,6 +242,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSubtaskByUuid(UUID uuid) {
+        removeTaskFromHistory(getSubtaskByUuid(uuid));
         boolean done = false;
         for (Epic epic : getEpicMap().values()) {
             boolean deleteSubtask = epic.getSubtaskList().
@@ -257,6 +259,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeEpicByUuid(UUID uuid) {
+        removeTaskFromHistory(getEpicByUuid(uuid));
         boolean done = getEpicMap().values().removeIf(epic -> epic.getUuid().equals(uuid));
         if (!done) {
             throw new IllegalArgumentException("Cannot find Epic with this uuid. This method cannot clear task or " +
