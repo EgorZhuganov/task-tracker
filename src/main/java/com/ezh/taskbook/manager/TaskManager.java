@@ -59,8 +59,6 @@ public interface TaskManager {
 
     List<AbstractTask> getHistory();
 
-    void removeTaskFromHistory(UUID id);
-
     Map<UUID, Epic> getEpicMap();
 
     List<SingleTask> getSingleTaskList();

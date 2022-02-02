@@ -250,8 +250,8 @@ public class InMemoryTasksManager implements TaskManager {
             }
         }
         if (!done) {
-            throw new IllegalArgumentException("Cannot find this uuid.This method cannot clear epic or other task by " +
-                    "uuid only one subtask");
+            throw new IllegalArgumentException("Cannot find this uuid.This method cannot remove epic or other task " +
+                    "by uuid only one subtask");
         }
     }
 
@@ -264,14 +264,14 @@ public class InMemoryTasksManager implements TaskManager {
         }
     }
 
-    @Override
-    public List<AbstractTask> getHistory() {
-        return inMemoryHistoryManager.getHistory();
+    private void removeTaskFromHistory(AbstractTask task) {
+        if (inMemoryHistoryManager.getHistory().contains(task))
+        inMemoryHistoryManager.remove(task.getUuid());
     }
 
     @Override
-    public void removeTaskFromHistory(UUID id) {
-        inMemoryHistoryManager.remove(id);
+    public List<AbstractTask> getHistory() {
+        return inMemoryHistoryManager.getHistory();
     }
 
     @Override
