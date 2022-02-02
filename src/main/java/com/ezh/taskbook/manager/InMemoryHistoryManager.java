@@ -43,8 +43,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<AbstractTask> getHistory() {
         List<AbstractTask> result = new ArrayList<>(size);
-        for (Node<AbstractTask> x = head; x != null; x = x.next)
-        result.add(x.element);
+        for (Node<AbstractTask> x = head; x != null; x = x.next) {
+            result.add(x.element);
+        }
         return result;
     }
 
