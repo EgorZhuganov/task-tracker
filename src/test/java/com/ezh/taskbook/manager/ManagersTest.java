@@ -11,8 +11,8 @@ class ManagersTest {
         TaskManager manager = new Managers().getDefault();
         Epic epic = new Epic();
         manager.addEpic(epic);
-        manager.getEpicMap();
+        manager.getListEpics();
         System.out.println(manager.getEpicByUuid(epic.getUuid()));
-        Assertions.assertEquals(1,manager.getEpicMap().size());
+        Assertions.assertEquals(1, manager.getListEpics().size());
     }
 }
