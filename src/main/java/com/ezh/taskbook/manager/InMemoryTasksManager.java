@@ -10,37 +10,37 @@ import java.util.*;
 public class InMemoryTasksManager implements TaskManager {
 
     private Map<UUID, Epic> epicMap;
-    private List<SingleTask> taskList;
+    private List<SingleTask> singleTaskList;
     private HistoryManager inMemoryHistoryManager;
 
     public InMemoryTasksManager() {
         System.out.println("Начинаем строить грандиозный план!");
         this.epicMap = new HashMap<>();
-        this.taskList = new ArrayList<>();
+        this.singleTaskList = new ArrayList<>();
         this.inMemoryHistoryManager = new InMemoryHistoryManager();
     }
 
     @Override
     public List<Subtask> getListSubtasks() {
         List<Subtask> subtaskList = new ArrayList<>();
-        getEpicMap().values().forEach(epic -> subtaskList.addAll(epic.getSubtaskList()));
+        epicMap.values().forEach(epic -> subtaskList.addAll(epic.getSubtaskList()));
         return subtaskList;
     }
 
     @Override
     public List<Epic> getListEpics() {
-        return new ArrayList<>(getEpicMap().values());
+        return new ArrayList<>(epicMap.values());
     }
 
     @Override
     public List<SingleTask> getListSingleTasks() {
-        return new ArrayList<>(getSingleTaskList());
+        return new ArrayList<>(singleTaskList);
     }
 
     @Override
     public List<Subtask> getListSubtasksByEpic(Epic epic) {
         List<Subtask> subtaskList = new ArrayList<>();
-        for (Epic currentEpic : getEpicMap().values()) {
+        for (Epic currentEpic : epicMap.values()) {
             if (currentEpic.getUuid().equals(epic.getUuid())) {
                 subtaskList.addAll(currentEpic.getSubtaskList());
             }
@@ -50,30 +50,23 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public Epic getEpicByUuid(UUID uuid) {
-        if (!getEpicMap().containsKey(uuid)) {
-            throw new RuntimeException("This method accept only Epic key");
+        if (!epicMap.containsKey(uuid)) {
+            throw new RuntimeException("Can not find Epic with this UUID");
         }
-        List<Epic> epicList = new ArrayList<>(getEpicMap().values());
-        Epic epic = new Epic();
-        for (Epic currentEpic : epicList) {
-            if (uuid.equals(currentEpic.getUuid())) {
-                epic = currentEpic;
-            }
-        }
-        inMemoryHistoryManager.add(epic);
-        return epic;
+        inMemoryHistoryManager.add(epicMap.get(uuid));
+        return epicMap.get(uuid);
     }
 
     @Override
     public Subtask getSubtaskByUuid(UUID uuid) {
-        List<Epic> epicList = new ArrayList<>(getEpicMap().values());
         Subtask subtask = null;
-        for (Epic currentEpic : epicList) {
+        OUTER:
+        for (Epic currentEpic : epicMap.values()) {
             List<Subtask> subtaskList = currentEpic.getSubtaskList();
             for (Subtask currentSubtask : subtaskList) {
                 if (uuid.equals(currentSubtask.getUuid())) {
                     subtask = currentSubtask;
-                    break;
+                    break OUTER;
                 }
             }
         }
@@ -88,25 +81,44 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public SingleTask getSingleTaskByUuid(UUID uuid) {
         SingleTask task = null;
-        for (SingleTask currentTask : getSingleTaskList()) {
+        for (SingleTask currentTask : singleTaskList) {
             if (uuid.equals(currentTask.getUuid())) {
                 task = currentTask;
                 break;
             }
         }
-        if (getSingleTaskList().isEmpty()) {
-            throw new RuntimeException("Before use this method need to add one or more RealTask in taskList");
+        if (singleTaskList.isEmpty()) {
+            throw new RuntimeException("Before use this method need to add one or more SingleTask");
         } else if (task == null) {
-            throw new RuntimeException("Cannot find this UUID in taskList");
+            throw new RuntimeException("Cannot find this UUID");
         }
         inMemoryHistoryManager.add(task);
         return task;
     }
 
     @Override
+    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) {
+        Epic epic = null;
+        OUTER:
+        for (Epic currentEpic : epicMap.values()) {
+            for (Subtask subtask : currentEpic.getSubtaskList()) {
+                if (subtask.getUuid().equals(subtaskUuid)) {
+                    epic = currentEpic;
+                    break OUTER;
+                }
+            }
+        }
+        if (epic == null) {
+            throw new RuntimeException("This uuid must be subtask uuid and subtask must belong to Epic");
+        }
+        inMemoryHistoryManager.add(epic);
+        return epic;
+    }
+
+    @Override
     public void addEpic(Epic epic) {
-        if (!getEpicMap().containsKey(epic.getUuid())) {
-            getEpicMap().put(epic.getUuid(), epic);
+        if (!epicMap.containsKey(epic.getUuid())) {
+            epicMap.put(epic.getUuid(), epic);
         } else {
             throw new RuntimeException("Have not to put two same Epic in Map");
         }
@@ -114,9 +126,9 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
-        if (!getEpicMap().containsKey(epic.getUuid())) {
+        if (!epicMap.containsKey(epic.getUuid())) {
             epic.getSubtaskList().addAll(Arrays.asList(subtask));
-            getEpicMap().put(epic.getUuid(), epic);
+            epicMap.put(epic.getUuid(), epic);
         } else {
             throw new RuntimeException("Have not to put two same Epic in Map");
         }
@@ -125,12 +137,12 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void addSingleTask(SingleTask task) {
         UUID uuid = task.getUuid();
-        for (SingleTask currentTask : getSingleTaskList()) {
+        for (SingleTask currentTask : singleTaskList) {
             if (currentTask.getUuid().equals(uuid)) {
                 throw new RuntimeException("Have not to add two same RealTask in taskList");
             }
         }
-        getSingleTaskList().add(task);
+        singleTaskList.add(task);
     }
 
     @Override
@@ -143,32 +155,11 @@ public class InMemoryTasksManager implements TaskManager {
         epic.getSubtaskList().add(subtask);
     }
 
-    @Override
-    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) {
-        Epic epic = null;
-        for (Epic currentEpic : getEpicMap().values()) {
-            for (Subtask subtask : currentEpic.getSubtaskList()) {
-                if (subtask.getUuid().equals(subtaskUuid)) {
-                    epic = currentEpic;
-                    break;
-                }
-            }
-        }
-        if (epic == null) {
-            throw new RuntimeException("This method find only Epic by subtask uuid");
-        }
-        return epic;
-    }
-
     /*Before change RealTask you have to put in taskList one or more RealTask*/
     @Override
     public void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) {
-        if (getSingleTaskList().isEmpty()) {
-            try {
-                throw new Exception("Need to add in taskList one or more RealTask, before use this method");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (singleTaskList.isEmpty()) {
+            throw new RuntimeException("Need to add in taskList one or more RealTask, before use this method");
         }
         SingleTask oldTask = this.getSingleTaskByUuid(uuid);
         oldTask.setName(newTask.getName());
@@ -179,22 +170,14 @@ public class InMemoryTasksManager implements TaskManager {
     /*Before change subtask you have to put in Map Epic with old Subtask*/
     @Override
     public void changeEpicByUuid(UUID uuid, Epic newEpic) {
-        if (getEpicMap().containsKey(uuid)) {
+        if (epicMap.containsKey(uuid)) {
             Epic oldEpic = this.getEpicByUuid(uuid);
             oldEpic.setName(newEpic.getName());
             oldEpic.setDescription(newEpic.getDescription());
-        } else if (getEpicMap().isEmpty()) {
-            try {
-                throw new Exception("Need to add in epicMap one or more Epic, before use this method");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } else if (epicMap.isEmpty()) {
+            throw new RuntimeException("Need to add in epicMap one or more Epic, before use this method");
         } else {
-            try {
-                throw new Exception("Cannot find this UUID in epicMap");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new RuntimeException("Cannot find this UUID in epicMap");
         }
     }
 
@@ -237,7 +220,7 @@ public class InMemoryTasksManager implements TaskManager {
         if (getSingleTaskList().isEmpty() || !getSingleTaskList().contains(getSingleTaskByUuid(uuid))) {
             throw new RuntimeException("Cannot find this uuid");
         }
-        getSingleTaskList().removeIf(t -> t.getUuid().equals(uuid));
+        singleTaskList.removeIf(t -> t.getUuid().equals(uuid));
     }
 
     @Override
@@ -262,13 +245,12 @@ public class InMemoryTasksManager implements TaskManager {
         removeTaskFromHistory(getEpicByUuid(uuid));
         boolean done = getEpicMap().values().removeIf(epic -> epic.getUuid().equals(uuid));
         if (!done) {
-            throw new IllegalArgumentException("Cannot find Epic with this uuid. This method cannot clear task or " +
+            throw new IllegalArgumentException("Cannot find Epic with this uuid. This method cannot remove task or " +
                     "subtask by uuid only one Epic with its subtask list");
         }
     }
 
     private void removeTaskFromHistory(AbstractTask task) {
-        if (inMemoryHistoryManager.getHistory().contains(task))
         inMemoryHistoryManager.remove(task.getUuid());
     }
 
