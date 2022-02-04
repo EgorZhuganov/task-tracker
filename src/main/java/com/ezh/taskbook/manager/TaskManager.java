@@ -42,13 +42,13 @@ public interface TaskManager {
     /*Before change subtask you have to put in Map Epic with Subtask*/
     void changeSubtaskByUuid(UUID uuid, Subtask newSubtask);
 
-    void clearListSingleTasks();
+    void clearSingleTasks();
 
-    void clearListEpics();
+    void clearEpics();
 
-    void clearListSubtasksInMap();
+    void clearSubtasksInAllEpic();
 
-    void clearListSubtasksInEpic(Epic epic);
+    void clearSubtasksInEpic(Epic epic);
 
     void removeSingleTaskByUuid(UUID uuid);
 
