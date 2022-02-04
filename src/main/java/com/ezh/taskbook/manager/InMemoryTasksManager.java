@@ -277,16 +277,5 @@ public class InMemoryTasksManager implements TaskManager {
         return inMemoryHistoryManager.getHistory();
     }
 
-    @Override
-    public Map<UUID, Epic> getEpicMap() {
-        return epicMap;
-    }
-
-    @Override
-    public List<SingleTask> getSingleTaskList() {
-        return taskList;
-    }
-
-
 }
 

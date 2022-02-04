@@ -6,7 +6,6 @@ import com.ezh.taskbook.task.SingleTask;
 import com.ezh.taskbook.task.Subtask;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public interface TaskManager {
@@ -58,9 +57,5 @@ public interface TaskManager {
     void removeEpicByUuid(UUID uuid);
 
     List<AbstractTask> getHistory();
-
-    Map<UUID, Epic> getEpicMap();
-
-    List<SingleTask> getSingleTaskList();
 
 }
