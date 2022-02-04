@@ -221,8 +221,8 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSingleTaskByUuid(UUID uuid) {
-        removeTaskFromHistory(getSingleTaskByUuid(uuid));
-        if (getSingleTaskList().isEmpty() || !getSingleTaskList().contains(getSingleTaskByUuid(uuid))) {
+        singleTaskList.stream().filter(task -> task.getUuid().equals(uuid)).forEach(this::removeTaskFromHistory);
+        if (singleTaskList.isEmpty() || singleTaskList.stream().noneMatch(t -> t.getUuid().equals(uuid))) {
             throw new RuntimeException("Cannot find this uuid");
         }
         singleTaskList.removeIf(t -> t.getUuid().equals(uuid));
@@ -230,11 +230,11 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeSubtaskByUuid(UUID uuid) {
-        removeTaskFromHistory(getSubtaskByUuid(uuid));
         boolean done = false;
-        for (Epic epic : getEpicMap().values()) {
-            boolean deleteSubtask = epic.getSubtaskList().
-                    removeIf(currentSubtask -> currentSubtask.getUuid().equals(uuid));
+        for (Epic epic : epicMap.values()) {
+            epic.getSubtaskList().stream().filter(sub -> sub.getUuid().equals(uuid)).
+                    forEach(this::removeTaskFromHistory);
+            boolean deleteSubtask = epic.getSubtaskList().removeIf(subtask -> subtask.getUuid().equals(uuid));
             if (deleteSubtask) {
                 done = true;
             }
@@ -247,8 +247,9 @@ public class InMemoryTasksManager implements TaskManager {
 
     @Override
     public void removeEpicByUuid(UUID uuid) {
-        removeTaskFromHistory(getEpicByUuid(uuid));
-        boolean done = getEpicMap().values().removeIf(epic -> epic.getUuid().equals(uuid));
+        removeTaskFromHistory(epicMap.get(uuid));
+        epicMap.get(uuid).getSubtaskList().forEach(this::removeTaskFromHistory);
+        boolean done = epicMap.values().removeIf(epic -> epic.getUuid().equals(uuid));
         if (!done) {
             throw new IllegalArgumentException("Cannot find Epic with this uuid. This method cannot remove task or " +
                     "subtask by uuid only one Epic with its subtask list");
