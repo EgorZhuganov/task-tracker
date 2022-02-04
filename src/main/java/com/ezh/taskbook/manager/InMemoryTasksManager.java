@@ -194,23 +194,28 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void clearListSingleTasks() {
-        getSingleTaskList().clear();
+    public void clearSingleTasks() {
+        singleTaskList.forEach(this::removeTaskFromHistory);
+        singleTaskList.clear();
     }
 
     @Override
-    public void clearListEpics() {
-        getEpicMap().values().forEach(epic -> epic.getSubtaskList().clear());
-        getEpicMap().values().clear();
+    public void clearEpics() {
+        epicMap.values().forEach(this::removeTaskFromHistory);
+        epicMap.values().forEach(epic -> epic.getSubtaskList().forEach(this::removeTaskFromHistory));
+        epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
+        epicMap.clear();
     }
 
     @Override
-    public void clearListSubtasksInMap() {
-        getEpicMap().values().forEach(epic -> epic.getSubtaskList().clear());
+    public void clearSubtasksInAllEpic() {
+        epicMap.values().forEach(epic -> epic.getSubtaskList().forEach(this::removeTaskFromHistory));
+        epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
     }
 
     @Override
-    public void clearListSubtasksInEpic(Epic epic) {
+    public void clearSubtasksInEpic(Epic epic) {
+        epic.getSubtaskList().forEach(this::removeTaskFromHistory);
         epic.getSubtaskList().clear();
     }
 
