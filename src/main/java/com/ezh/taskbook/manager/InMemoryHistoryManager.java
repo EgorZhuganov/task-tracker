@@ -35,8 +35,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (historyLastTenTasks.containsKey(id)) {
             removeNode(historyLastTenTasks.get(id));
             historyLastTenTasks.remove(id);
-        } else {
-            throw new NoSuchElementException("This ID is not found in history");
         }
     }
 
