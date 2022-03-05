@@ -10,7 +10,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
-
         HistoryManager historyManager = new InMemoryHistoryManager();
 
         Epic epic1 = new Epic();
@@ -26,7 +25,6 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void remove() {
-
         HistoryManager historyManager = new InMemoryHistoryManager();
 
         Epic epic1 = new Epic();
@@ -49,23 +47,22 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void getHistory() {
-
         HistoryManager historyManager = new InMemoryHistoryManager();
 
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
-        Subtask subtask5 = new Subtask();
-        Subtask subtask6 = new Subtask();
-        Subtask subtask7 = new Subtask();
-        Subtask subtask8 = new Subtask();
-
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
+        Subtask subtask5 = new Subtask(epic2);
+        Subtask subtask6 = new Subtask(epic2);
+        Subtask subtask7 = new Subtask(epic2);
+        Subtask subtask8 = new Subtask(epic2);
 
         historyManager.add(singleTask2);
         historyManager.add(epic1);
@@ -84,6 +81,5 @@ class InMemoryHistoryManagerTest {
         Assertions.assertEquals(10, historyManager.getHistory().size());
         Assertions.assertEquals(historyManager.getHistory().get(0).getUuid(), epic2.getUuid());
         Assertions.assertEquals(historyManager.getHistory().get(8).getUuid(), subtask7.getUuid());
-
     }
 }

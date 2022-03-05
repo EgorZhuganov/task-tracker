@@ -10,19 +10,18 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void getEpicBySubtaskUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
 
         manager.addEpicWithSubtask(epic2);
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
+        //subtask4 not added in storage with help of manager
         Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicBySubtaskUuid(subtask4.getUuid()));
         Assertions.assertEquals(0, manager.getHistory().size());
 
@@ -38,15 +37,14 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void getSubtaskByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
         SingleTask singleTask = new SingleTask();
 
         manager.addEpicWithSubtask(epic2);
@@ -55,6 +53,7 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.getSubtaskByUuid(subtask1.getUuid());
         manager.getSubtaskByUuid(subtask1.getUuid());
 
+        //subtask4 not added in storage with help of manager
         Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(subtask4.getUuid()));
         Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(singleTask.getUuid()));
         Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
@@ -67,19 +66,18 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void getEpicByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
         Epic epic4 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
-        Subtask subtask5 = new Subtask();
-        Subtask subtask6 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
+        Subtask subtask5 = new Subtask(epic2);
+        Subtask subtask6 = new Subtask(epic2);
 
         SingleTask singleTask = new SingleTask();
 
@@ -91,7 +89,7 @@ public class InMemoryTasksManagerIntegrationTest {
 
         manager.getEpicByUuid(epic1.getUuid());
         Assertions.assertEquals(1, manager.getHistory().size());
-        Assertions.assertThrows(RuntimeException.class, () ->manager.getEpicByUuid(epic4.getUuid()));
+        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(epic4.getUuid()));
 
         manager.addEpic(epic3);
         manager.getEpicByUuid(epic3.getUuid());
@@ -105,11 +103,10 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void getSingleTaskByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
         Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(singleTask1.getUuid()));
@@ -124,7 +121,6 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void clearSingleTasks() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         SingleTask singleTask1 = new SingleTask();
@@ -150,16 +146,15 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void clearEpics() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
         Epic epic4 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
+        Subtask subtask1 = new Subtask(epic2);
+        Subtask subtask2 = new Subtask(epic2);
+        Subtask subtask3 = new Subtask(epic2);
 
         manager.addEpic(epic1);
         manager.addEpicWithSubtask(epic2, subtask2, subtask3, subtask1);
@@ -181,26 +176,25 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void clearSubtasksInAllEpic() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
 
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
-        Subtask subtask5 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
+        Subtask subtask5 = new Subtask(epic2);
 
         Assertions.assertEquals(0, epic1.getSubtaskList().size());
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         Assertions.assertEquals(3, epic1.getSubtaskList().size());
 
         manager.addEpic(epic2);
-        manager.addSubtaskInCreatedEpic(epic2, subtask4);
-        manager.addSubtaskInCreatedEpic(epic2, subtask5);
+        manager.addSubtaskInAddedEpic(epic2, subtask4);
+        manager.addSubtaskInAddedEpic(epic2, subtask5);
         Assertions.assertEquals(2, epic2.getSubtaskList().size());
 
         manager.addEpic(epic3);
@@ -217,16 +211,15 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void clearSubtasksInEpic() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask4 = new Subtask();
-        Subtask subtask5 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask4 = new Subtask(epic2);
+        Subtask subtask5 = new Subtask(epic2);
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         manager.addEpicWithSubtask(epic2, subtask4, subtask5);
@@ -246,7 +239,6 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void removeSingleTaskByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         SingleTask singleTask1 = new SingleTask();
@@ -266,22 +258,19 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.removeSingleTaskByUuid(singleTask1.getUuid());
 
         Assertions.assertEquals(2, manager.getHistory().size());
-
-
     }
 
     @Test
     void removeSubtaskByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask3 = new Subtask();
-        Subtask subtask5 = new Subtask();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask5 = new Subtask(epic2);
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         manager.addEpicWithSubtask(epic2, subtask5);
@@ -303,18 +292,18 @@ public class InMemoryTasksManagerIntegrationTest {
         Epic epic3 = new Epic();
         Epic epic4 = new Epic();
 
-        Subtask subtask6 = new Subtask();
-        Subtask subtask7 = new Subtask();
-        Subtask subtask8 = new Subtask();
-        Subtask subtask9 = new Subtask();
-        Subtask subtask10 = new Subtask();
-        Subtask subtask11 = new Subtask();
-        Subtask subtask12 = new Subtask();
-        Subtask subtask13 = new Subtask();
-        Subtask subtask14= new Subtask();
-        Subtask subtask15 = new Subtask();
+        Subtask subtask6 = new Subtask(epic3);
+        Subtask subtask7 = new Subtask(epic3);
+        Subtask subtask8 = new Subtask(epic3);
+        Subtask subtask9 = new Subtask(epic3);
+        Subtask subtask10 = new Subtask(epic3);
+        Subtask subtask11 = new Subtask(epic4);
+        Subtask subtask12 = new Subtask(epic4);
+        Subtask subtask13 = new Subtask(epic4);
+        Subtask subtask14 = new Subtask(epic4);
+        Subtask subtask15 = new Subtask(epic4);
 
-        manager.addEpicWithSubtask(epic3, subtask6, subtask7, subtask8, subtask9,subtask10);
+        manager.addEpicWithSubtask(epic3, subtask6, subtask7, subtask8, subtask9, subtask10);
         manager.addEpicWithSubtask(epic4, subtask11, subtask12, subtask13, subtask14, subtask15);
 
         manager.getSubtaskByUuid(subtask6.getUuid());
@@ -336,15 +325,14 @@ public class InMemoryTasksManagerIntegrationTest {
 
     @Test
     void removeEpicByUuid() {
-
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
-        Subtask subtask1 = new Subtask();
-        Subtask subtask2 = new Subtask();
-        Subtask subtask5 = new Subtask();
+        Subtask subtask1 = new Subtask(epic2);
+        Subtask subtask2 = new Subtask(epic2);
+        Subtask subtask5 = new Subtask(epic2);
 
         Assertions.assertThrows(RuntimeException.class, () -> manager.removeEpicByUuid(epic1.getUuid()));
         manager.addEpic(epic1);
