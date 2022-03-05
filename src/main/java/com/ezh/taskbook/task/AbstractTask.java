@@ -1,7 +1,5 @@
 package com.ezh.taskbook.task;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class AbstractTask {
@@ -9,16 +7,10 @@ public abstract class AbstractTask {
     private String name;
     private String description;
     private final UUID uuid;
-    private static final List<UUID> uuidStorage = new ArrayList<>();
 
-    public AbstractTask()  {
-        this.uuid = UUID.randomUUID();
-        if (uuidStorage.contains(uuid)){
-            throw new RuntimeException("Duplicate keys, try create new Task");
-        } else {
-            uuidStorage.add(uuid);
-        }
-    }
+    public AbstractTask(String id){ this.uuid = UUID.fromString(id); }
+    
+    public AbstractTask()  { this.uuid = UUID.randomUUID(); }
 
     public String getName() { return name; }
 
