@@ -31,7 +31,7 @@ public interface TaskManager {
 
     void addSingleTask(SingleTask task);
 
-    void addSubtaskInCreatedEpic(Epic epic, Subtask subtask);
+    void addSubtaskInAddedEpic(Epic epic, Subtask subtask);
 
     /*Before change SingleTask you have to put in taskList one or more SingleTask*/
     void changeSingleTaskByUuid(UUID uuid, SingleTask newTask);
