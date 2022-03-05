@@ -1,259 +1,228 @@
 package com.ezh.taskbook.manager;
 
-import com.ezh.taskbook.task.AbstractTask;
-import com.ezh.taskbook.task.Epic;
-import com.ezh.taskbook.task.SingleTask;
-import com.ezh.taskbook.task.Subtask;
+import com.ezh.taskbook.task.*;
 
 import java.util.*;
 
 public class InMemoryTasksManager implements TaskManager {
 
-    private Map<UUID, Epic> epicMap;
-    private List<SingleTask> singleTaskList;
-    private HistoryManager inMemoryHistoryManager;
+    protected Map<UUID, AbstractTask> storage;
+    protected HistoryManager inMemoryHistoryManager;
 
     public InMemoryTasksManager() {
         System.out.println("Начинаем строить грандиозный план!");
-        this.epicMap = new HashMap<>();
-        this.singleTaskList = new ArrayList<>();
+        this.storage = new HashMap<>();
         this.inMemoryHistoryManager = new InMemoryHistoryManager();
+    }
+
+    private void checkUuid(AbstractTask task) {
+        if (storage.containsKey(task.getUuid())) {
+            throw new RuntimeException("Duplicate keys, try create new Task");
+        }
     }
 
     @Override
     public List<Subtask> getListSubtasks() {
         List<Subtask> subtaskList = new ArrayList<>();
-        epicMap.values().forEach(epic -> subtaskList.addAll(epic.getSubtaskList()));
+        for (AbstractTask task : storage.values()) {
+            if (task instanceof Subtask) {
+                subtaskList.add((Subtask) task);
+            }
+        }
         return subtaskList;
     }
 
     @Override
     public List<Epic> getListEpics() {
-        return new ArrayList<>(epicMap.values());
+        List<Epic> epicList = new ArrayList<>();
+        for (AbstractTask task : storage.values()) {
+            if (task instanceof Epic) {
+                epicList.add((Epic) task);
+            }
+        }
+        return epicList;
     }
 
     @Override
     public List<SingleTask> getListSingleTasks() {
-        return new ArrayList<>(singleTaskList);
+        List<SingleTask> singleTasksList = new ArrayList<>();
+        for (AbstractTask task : storage.values()) {
+            if (task instanceof SingleTask) {
+                singleTasksList.add((SingleTask) task);
+            }
+        }
+        return singleTasksList;
     }
 
     @Override
     public List<Subtask> getListSubtasksByEpic(Epic epic) {
-        List<Subtask> subtaskList = new ArrayList<>();
-        for (Epic currentEpic : epicMap.values()) {
-            if (currentEpic.getUuid().equals(epic.getUuid())) {
-                subtaskList.addAll(currentEpic.getSubtaskList());
-            }
-        }
-        return subtaskList;
+        return new ArrayList<>(((Epic)storage.get(epic.getUuid())).getSubtaskList());
     }
 
     @Override
     public Epic getEpicByUuid(UUID uuid) {
-        if (!epicMap.containsKey(uuid)) {
-            throw new RuntimeException("Can not find Epic with this UUID");
+        if (storage.get(uuid) instanceof Epic) {
+            inMemoryHistoryManager.add(storage.get(uuid));
+            return (Epic) storage.get(uuid);
         }
-        inMemoryHistoryManager.add(epicMap.get(uuid));
-        return epicMap.get(uuid);
+        throw new RuntimeException("Can not find task with this UUID");
     }
 
     @Override
     public Subtask getSubtaskByUuid(UUID uuid) {
-        Subtask subtask = null;
-        OUTER:
-        for (Epic currentEpic : epicMap.values()) {
-            List<Subtask> subtaskList = currentEpic.getSubtaskList();
-            for (Subtask currentSubtask : subtaskList) {
-                if (uuid.equals(currentSubtask.getUuid())) {
-                    subtask = currentSubtask;
-                    break OUTER;
-                }
-            }
+        if (storage.get(uuid) instanceof Subtask) {
+            inMemoryHistoryManager.add(storage.get(uuid));
+            return (Subtask) storage.get(uuid);
         }
-        if (subtask == null) {
-            throw new RuntimeException("Cannot find this UUID in subtaskList. " +
-                    "taskList might be empty or incorrect uuid");
-        }
-        inMemoryHistoryManager.add(subtask);
-        return subtask;
+        throw new RuntimeException("Can not find task with this UUID");
     }
 
     @Override
     public SingleTask getSingleTaskByUuid(UUID uuid) {
-        SingleTask task = null;
-        for (SingleTask currentTask : singleTaskList) {
-            if (uuid.equals(currentTask.getUuid())) {
-                task = currentTask;
-                break;
-            }
+        if (storage.get(uuid) instanceof SingleTask) {
+            inMemoryHistoryManager.add(storage.get(uuid));
+            return (SingleTask) storage.get(uuid);
         }
-        if (singleTaskList.isEmpty()) {
-            throw new RuntimeException("Before use this method need to add one or more SingleTask");
-        } else if (task == null) {
-            throw new RuntimeException("Cannot find this UUID");
-        }
-        inMemoryHistoryManager.add(task);
-        return task;
+        throw new RuntimeException("Can not find task with this UUID");
     }
 
     @Override
     public Epic getEpicBySubtaskUuid(UUID subtaskUuid) {
-        Epic epic = null;
-        OUTER:
-        for (Epic currentEpic : epicMap.values()) {
-            for (Subtask subtask : currentEpic.getSubtaskList()) {
-                if (subtask.getUuid().equals(subtaskUuid)) {
-                    epic = currentEpic;
-                    break OUTER;
-                }
-            }
-        }
-        if (epic == null) {
-            throw new RuntimeException("This uuid must be subtask uuid and subtask must belong to Epic");
-        }
-        inMemoryHistoryManager.add(epic);
-        return epic;
+        Subtask subtask = (Subtask) storage.get(subtaskUuid);
+        inMemoryHistoryManager.add(subtask.getEpic());
+        return subtask.getEpic();
     }
 
     @Override
     public void addEpic(Epic epic) {
-        if (!epicMap.containsKey(epic.getUuid())) {
-            epicMap.put(epic.getUuid(), epic);
-        } else {
-            throw new RuntimeException("Have not to put two same Epic in Map");
-        }
+        checkUuid(epic);
+        storage.put(epic.getUuid(), epic);
     }
 
     @Override
-    public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
-        if (!epicMap.containsKey(epic.getUuid())) {
-            epic.getSubtaskList().addAll(Arrays.asList(subtask));
-            epicMap.put(epic.getUuid(), epic);
-        } else {
-            throw new RuntimeException("Have not to put two same Epic in Map");
-        }
+    public void addEpicWithSubtask(Epic epic, Subtask... subtasks) {
+        checkUuid(epic);
+        Arrays.stream(subtasks).forEach(this::checkUuid);
+        epic.getSubtaskList().addAll(Arrays.asList(subtasks));
+        storage.put(epic.getUuid(), epic);
+        Arrays.stream(subtasks).forEach(subtask -> subtask.setEpic(epic));
+        Arrays.stream(subtasks).forEach(subtask -> storage.put(subtask.getUuid(), subtask));
     }
 
     @Override
-    public void addSingleTask(SingleTask task) {
-        UUID uuid = task.getUuid();
-        for (SingleTask currentTask : singleTaskList) {
-            if (currentTask.getUuid().equals(uuid)) {
-                throw new RuntimeException("Have not to add two same RealTask in taskList");
-            }
-        }
-        singleTaskList.add(task);
-    }
-
-    @Override
-    public void addSubtaskInCreatedEpic(Epic epic, Subtask subtask) {
-        for (Subtask currentSubtask : epic.getSubtaskList()) {
+    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) {
+        for (Subtask currentSubtask : ((Epic)storage.get(epic.getUuid())).getSubtaskList()) {
             if (currentSubtask.getUuid().equals(subtask.getUuid())) {
                 throw new RuntimeException("Have not to add two same Subtask in one Epic");
             }
         }
-        epic.getSubtaskList().add(subtask);
+        if (subtask.getEpic() == null || !epic.getUuid().equals(subtask.getEpic().getUuid())){
+            subtask.setEpic(epic);
+        }
+        ((Epic)storage.get(epic.getUuid())).getSubtaskList().add(subtask);
+        storage.put(subtask.getUuid(), subtask);
     }
 
-    /*Before change RealTask you have to put in taskList one or more RealTask*/
     @Override
-    public void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) {
-        if (singleTaskList.isEmpty()) {
-            throw new RuntimeException("Need to add in taskList one or more RealTask, before use this method");
+    public void addSingleTask(SingleTask task) {
+        checkUuid(task);
+        storage.put(task.getUuid(), task);
+    }
+
+    /*Before change SingleTask you have to put in storage old SingleTask*/
+    @Override
+    public void changeSingleTaskByUuid(UUID uuidOldSingleTask, SingleTask newTask) {
+        if (uuidOldSingleTask.equals(newTask.getUuid())) {
+            throw new RuntimeException("Trying changing two task with the same uuid");
         }
-        SingleTask oldTask = this.getSingleTaskByUuid(uuid);
+        SingleTask oldTask = (SingleTask) storage.get(uuidOldSingleTask);
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
         oldTask.setStatus(newTask.getStatus());
     }
 
-    /*Before change subtask you have to put in Map Epic with old Subtask*/
+    /*Before change Epic you have to put in storage old Epic*/
     @Override
-    public void changeEpicByUuid(UUID uuid, Epic newEpic) {
-        if (epicMap.containsKey(uuid)) {
-            Epic oldEpic = this.getEpicByUuid(uuid);
-            oldEpic.setName(newEpic.getName());
-            oldEpic.setDescription(newEpic.getDescription());
-        } else if (epicMap.isEmpty()) {
-            throw new RuntimeException("Need to add in epicMap one or more Epic, before use this method");
-        } else {
-            throw new RuntimeException("Cannot find this UUID in epicMap");
+    public void changeEpicByUuid(UUID uuidOldEpic, Epic newEpic) {
+        if (uuidOldEpic.equals(newEpic.getUuid())) {
+            throw new RuntimeException("Trying changing two task with the same uuid");
         }
+        Epic oldEpic = (Epic) storage.get(uuidOldEpic);
+        oldEpic.setName(newEpic.getName());
+        oldEpic.setDescription(newEpic.getDescription());
     }
 
-    /*Before change subtask you have to put in Map Epic with Subtask*/
+    /*Before change subtask you have to put in storage Epic with old Subtask*/
     @Override
-    public void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) {
-        if (uuid.equals(newSubtask.getUuid())) {
-            throw new RuntimeException("Trying changing two subtasks with the same uuid");
+    public void changeSubtaskByUuid(UUID uuidOldSubtask, Subtask newSubtask) {
+        Subtask oldSubtask = (Subtask) storage.get(uuidOldSubtask);
+        if (uuidOldSubtask.equals(newSubtask.getUuid())) {
+            throw new RuntimeException("Trying changing two task with the same uuid");
+        } else if (oldSubtask.getEpic().getUuid() != newSubtask.getEpic().getUuid()) {
+            throw new RuntimeException("Old subtask and new cannot exist in different epic");
+        } else {
+            oldSubtask.setName(newSubtask.getName());
+            oldSubtask.setDescription(newSubtask.getDescription());
+            oldSubtask.setStatus(newSubtask.getStatus());
         }
-        Subtask oldSubtask = getSubtaskByUuid(uuid);
-        oldSubtask.setName(newSubtask.getName());
-        oldSubtask.setDescription(newSubtask.getDescription());
-        oldSubtask.setStatus(newSubtask.getStatus());
     }
 
     @Override
     public void clearSingleTasks() {
-        singleTaskList.forEach(this::removeTaskFromHistory);
-        singleTaskList.clear();
+        storage.values().stream().
+                filter(task -> task instanceof SingleTask).forEach(this::removeTaskFromHistory);
+        storage.values().removeIf(task -> task instanceof SingleTask);
     }
 
     @Override
     public void clearEpics() {
-        epicMap.values().forEach(this::removeTaskFromHistory);
-        epicMap.values().forEach(epic -> epic.getSubtaskList().forEach(this::removeTaskFromHistory));
-        epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
-        epicMap.clear();
+        storage.values().stream().
+                filter(task -> task instanceof Epic).
+                peek(this::removeTaskFromHistory).
+                peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory)).
+                forEach(epic -> ((Epic) epic).getSubtaskList().clear());
+        storage.values().removeIf(task -> task instanceof Epic);
     }
 
     @Override
     public void clearSubtasksInAllEpic() {
-        epicMap.values().forEach(epic -> epic.getSubtaskList().forEach(this::removeTaskFromHistory));
-        epicMap.values().forEach(epic -> epic.getSubtaskList().clear());
+        storage.values().stream().
+                filter(at -> at instanceof Epic).
+                peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory)).
+                forEach(epic -> ((Epic) epic).getSubtaskList().clear());
     }
 
     @Override
     public void clearSubtasksInEpic(Epic epic) {
+        epic = ((Epic)storage.get(epic.getUuid()));
         epic.getSubtaskList().forEach(this::removeTaskFromHistory);
         epic.getSubtaskList().clear();
     }
 
     @Override
     public void removeSingleTaskByUuid(UUID uuid) {
-        singleTaskList.stream().filter(task -> task.getUuid().equals(uuid)).forEach(this::removeTaskFromHistory);
-        if (singleTaskList.isEmpty() || singleTaskList.stream().noneMatch(t -> t.getUuid().equals(uuid))) {
-            throw new RuntimeException("Cannot find this uuid");
-        }
-        singleTaskList.removeIf(t -> t.getUuid().equals(uuid));
+        removeTaskFromHistory(storage.get(uuid));
+        storage.remove(uuid);
     }
 
     @Override
     public void removeSubtaskByUuid(UUID uuid) {
-        boolean done = false;
-        for (Epic epic : epicMap.values()) {
-            epic.getSubtaskList().stream().filter(sub -> sub.getUuid().equals(uuid)).
-                    forEach(this::removeTaskFromHistory);
-            boolean deleteSubtask = epic.getSubtaskList().removeIf(subtask -> subtask.getUuid().equals(uuid));
-            if (deleteSubtask) {
-                done = true;
-            }
-        }
-        if (!done) {
-            throw new IllegalArgumentException("Cannot find this uuid.This method cannot remove epic or other task " +
-                    "by uuid only one subtask");
-        }
+        Subtask subtask = (Subtask) storage.get(uuid);
+        Epic epic = (Epic) storage.get(subtask.getEpic().getUuid());
+        removeTaskFromHistory(subtask);
+        epic.getSubtaskList().remove(subtask);
+        storage.remove(subtask.getUuid());
     }
 
     @Override
-    public void removeEpicByUuid(UUID uuid) {
-        removeTaskFromHistory(epicMap.get(uuid));
-        epicMap.get(uuid).getSubtaskList().forEach(this::removeTaskFromHistory);
-        boolean done = epicMap.values().removeIf(epic -> epic.getUuid().equals(uuid));
-        if (!done) {
-            throw new IllegalArgumentException("Cannot find Epic with this uuid. This method cannot remove task or " +
-                    "subtask by uuid only one Epic with its subtask list");
+    public void removeEpicByUuid(UUID uuid) { //из сторожа нужно тащить все сабтаски принадлежащие эпику и удалять их
+        Epic epic = (Epic) storage.get(uuid);
+        for (Subtask subtask : epic.getSubtaskList()) {
+            removeTaskFromHistory(subtask);
+            storage.remove(subtask.getUuid());
         }
+        removeTaskFromHistory(epic);
+        storage.remove(uuid);
     }
 
     private void removeTaskFromHistory(AbstractTask task) {
@@ -264,6 +233,5 @@ public class InMemoryTasksManager implements TaskManager {
     public List<AbstractTask> getHistory() {
         return inMemoryHistoryManager.getHistory();
     }
-
 }
 
