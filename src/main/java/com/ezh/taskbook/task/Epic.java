@@ -7,12 +7,14 @@ public class Epic extends AbstractTask {
 
     private final List<Subtask> subtaskList = new ArrayList<>();
 
-    public Epic() {
-    }
+    public Epic() { super(); }
 
-    public List<Subtask> getSubtaskList() {
-        return subtaskList;
-    }
+    public Epic(String id) { super(id); }
+
+    public List<Subtask> getSubtaskList() { return subtaskList; }
+
+    @Override
+    public TypeTask getType() { return TypeTask.EPIC; }
 
     @Override
     public StatusTask getStatus() {

@@ -22,6 +22,7 @@ public abstract class AbstractTask {
 
     public UUID getUuid() { return uuid; }
 
-    abstract StatusTask getStatus();
+    public abstract StatusTask getStatus();
 
+    public abstract TypeTask getType();
 }

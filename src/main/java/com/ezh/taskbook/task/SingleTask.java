@@ -5,8 +5,17 @@ public class SingleTask extends AbstractTask {
     private StatusTask status;
 
     public SingleTask() {
+        super();
         setStatus(StatusTask.NEW);
     }
+
+    public SingleTask(String id) {
+        super(id);
+        setStatus(StatusTask.NEW);
+    }
+
+    @Override
+    public TypeTask getType() { return TypeTask.SINGLE_TASK; }
 
     @Override
     public StatusTask getStatus() {
