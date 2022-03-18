@@ -5,51 +5,70 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class EpicTest {
+
     InMemoryTasksManager manager = new InMemoryTasksManager();
+    Epic epic1 = new Epic();
+    Subtask subtask1 = new Subtask(epic1);
+    Subtask subtask2 = new Subtask(epic1);
+    Subtask subtask3 = new Subtask(epic1);
 
     @Test
-    void getStatus() {
-        Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask4 = new Subtask(epic1);
-
+    public void test1_checkStatusEpicWithoutAnySubtaskShouldStatusNew() {
         manager.addEpic(epic1);
-        Assertions.assertEquals(StatusTask.NEW, epic1.getStatus()); //without subtasks
+        Assertions.assertEquals(StatusTask.NEW, epic1.getStatus());
+    }
 
-        manager.addSubtaskInAddedEpic(epic1, subtask1);
-        Assertions.assertEquals(StatusTask.NEW, epic1.getStatus()); //with subtask status NEW
+    @Test
+    public void test2_checkStatusEpicWithOneSubtaskWhichHasStatusNewShouldStatusNew() {
+        manager.addEpicWithSubtask(epic1, subtask1);
+        Assertions.assertEquals(StatusTask.NEW, epic1.getStatus());
+    }
 
+    @Test
+    public void test3_checkStatusEpicWithOneSubtaskWhichHasStatusDoneShouldStatusDone() {
+        subtask1.setStatus(StatusTask.DONE);
+        manager.addEpicWithSubtask(epic1, subtask1);
+        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus());
+    }
+
+    @Test
+    public void test4_checkStatusEpicWithTwoSubtasksWhichHaveStatusDoneAndNewShouldStatusInProgress() {
+        subtask1.setStatus(StatusTask.DONE);
+        subtask2.setStatus(StatusTask.NEW);
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
+    }
+
+    @Test
+    public void test5_checkStatusEpicWithOneSubtaskWhichHasStatusInProgressAndNewShouldStatusInProgress() {
+        subtask1.setStatus(StatusTask.IN_PROGRESS);
+        manager.addEpicWithSubtask(epic1, subtask1);
+        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
+    }
+
+    @Test
+    public void test6_checkStatusEpicIfStatusSubtaskWillChangeFromNewToDoneShouldStatusDone() {
+        manager.addEpicWithSubtask(epic1, subtask1);
         subtask2.setStatus(StatusTask.DONE);
         manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
-        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus()); //with subtask changed from NEW to DONE
-
-        manager.addSubtaskInAddedEpic(epic1, subtask3);
-        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus()); // if add new subtask with status NEW
-
-        subtask4.setStatus(StatusTask.DONE);
-        manager.changeSubtaskByUuid(subtask3.getUuid(), subtask4);
-        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus()); //if change status subtask, status Epic also change
-
-        Epic epic2 = new Epic();
-        Subtask subtask6 = new Subtask(epic2);
-        Subtask subtask7 = new Subtask(epic2);
-        manager.addEpicWithSubtask(epic2, subtask6, subtask7);
-        subtask6.setStatus(StatusTask.IN_PROGRESS);
-        //if change status subtask, status Epic also change
-        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic2.getStatus());
-
-        Epic epic3 = new Epic();
-        Subtask subtask8 = new Subtask(epic3);
-        Subtask subtask9 = new Subtask(epic3);
-        subtask8.setStatus(StatusTask.DONE);
-        subtask9.setStatus(StatusTask.IN_PROGRESS);
-
-        manager.addEpicWithSubtask(epic3, subtask8, subtask9);
-        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic3.getStatus());
-
-        manager.changeEpicByUuid(epic2.getUuid(), epic3);
-        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic3.getStatus());
+        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus());
     }
+
+    @Test
+    public void test7_checkStatusEpicIfStatusSubtaskWillChangeFromNewToInProgressShouldStatusInProgress() {
+        manager.addEpicWithSubtask(epic1, subtask1);
+        subtask2.setStatus(StatusTask.IN_PROGRESS);
+        manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
+        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus());
+    }
+
+    @Test
+    public void test8_checkStatusEpicIfItHasSubtaskWithStatusDoneAndWillAddSubtaskWithStatusNewShouldStatusInProgress() {
+        subtask1.setStatus(StatusTask.DONE);
+        manager.addEpicWithSubtask(epic1, subtask1);
+        subtask3.setStatus(StatusTask.NEW);
+        manager.addSubtaskInAddedEpic(epic1, subtask3);
+        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
+    }
+
 }
