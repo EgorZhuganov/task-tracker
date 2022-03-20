@@ -1,5 +1,6 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
 import com.ezh.taskbook.task.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,212 +10,332 @@ class InMemoryTasksManagerTest {
     InMemoryTasksManager manager = new InMemoryTasksManager();
 
     @Test
-    void getEpicBySubtaskUuid() {
+    void test1_getEpicBySubtaskUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Epic epic2 = new Epic();
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
-        SingleTask singleTask = new SingleTask();
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        manager.getEpicBySubtaskUuid(subtask5.getUuid());
-
-        System.out.println(manager.getEpicBySubtaskUuid(subtask5.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(singleTask.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicBySubtaskUuid(subtask2.getUuid()));
     }
 
     @Test
-    void getSubtaskByUuid() {
+    void test2_getEpicBySubtaskUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Epic epic2 = new Epic();
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
-        SingleTask singleTask = new SingleTask();
+        SingleTask singleTask1 = new SingleTask();
 
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        manager.getSubtaskByUuid(subtask1.getUuid());
+        manager.addSingleTask(singleTask1);
+        manager.addEpic(epic1);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(singleTask.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(singleTask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
     }
 
     @Test
-    void getListSubtasks() {
-        TaskManager manager = new InMemoryTasksManager();
-
+    void test3_getEpicBySubtaskUuidShouldReturnEpic() {
         Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
-
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        Assertions.assertEquals(6, manager.getListSubtasks().size());
-        Assertions.assertEquals(0, manager.getHistory().size());
+        manager.addEpicWithSubtask(epic1, subtask2);
+        Assertions.assertEquals(epic1, manager.getEpicBySubtaskUuid(subtask2.getUuid()));
     }
 
     @Test
-    void getListEpics() {
-        TaskManager manager = new InMemoryTasksManager();
-
+    void test4_getSubtaskByUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-        Epic epic3 = new Epic();
-        Epic epic4 = new Epic();
+        Subtask subtask2 = new Subtask(epic1);
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(subtask2.getUuid()));
+    }
+
+    @Test
+    void test5_getSubtaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        SingleTask singleTask1 = new SingleTask();
+
+        manager.addSingleTask(singleTask1);
+        manager.addEpic(epic1);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(singleTask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
+    }
+
+    @Test
+    void test6_getSubtaskByUuidShouldReturnSubtask() {
+        Epic epic1 = new Epic();
+        Subtask subtask2 = new Subtask(epic1);
+        manager.addEpicWithSubtask(epic1, subtask2);
+        Assertions.assertEquals(subtask2, manager.getSubtaskByUuid(subtask2.getUuid()));
+    }
+
+    @Test
+    void test7_getEpicByUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(epic1.getUuid()));
+    }
+
+    @Test
+    void test8_getEpicByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        SingleTask singleTask1 = new SingleTask();
+
+        manager.addSingleTask(singleTask1);
+        manager.addEpicWithSubtask(epic1, subtask1);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(singleTask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
+    }
+
+    @Test
+    void test9_getEpicByUuidShouldReturnEpic() {
+        Epic epic1 = new Epic();
+        Subtask subtask2 = new Subtask(epic1);
+        manager.addEpicWithSubtask(epic1, subtask2);
+        Assertions.assertEquals(epic1, manager.getEpicByUuid(epic1.getUuid()));
+    }
+
+    @Test
+    void test10_getSingleTaskByUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
+        SingleTask singleTask1 = new SingleTask();
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(singleTask1.getUuid()));
+    }
+
+    @Test
+    void test11_getSingleTaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(subtask1.getUuid()));
+    }
+
+    @Test
+    void test12_getSingleTaskByUuidShouldReturnSingleTask() {
+        SingleTask singleTask1 = new SingleTask();
+        manager.addSingleTask(singleTask1);
+        Assertions.assertEquals(singleTask1, manager.getSingleTaskByUuid(singleTask1.getUuid()));
+    }
+
+    @Test
+    void test13_getListSubtasksIfDoNotAddSubtasksThroughManagerShouldReturn0() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        Assertions.assertEquals(0, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test13_getListSubtasksIfAddEpicWith3SubtasksShouldReturn3() {
+        Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
         Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        Assertions.assertEquals(3, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test14_getListEpicsIfDoNotAddEpicsThroughManagerShouldReturn0() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
 
         Assertions.assertEquals(0, manager.getListEpics().size());
-
-        manager.addEpic(epic3);
-        manager.addEpic(epic4);
-
-        Assertions.assertEquals(2, manager.getListEpics().size());
-
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        Assertions.assertEquals(4, manager.getListEpics().size());
     }
 
     @Test
-    void getListSubtasksByEpic() {
-        TaskManager manager = new InMemoryTasksManager();
-
+    void test15_getListEpicsIfAdd2EpicsShouldReturn2() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        Assertions.assertEquals(3, manager.getListSubtasksByEpic(epic2).size());
-
-    }
-
-    @Test
-    void getEpicByUuid() {
-        Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-
-        Epic epic2 = new Epic();
-        Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
-
-        SingleTask singleTask = new SingleTask();
-
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        Assertions.assertEquals(epic1.getUuid(), manager.getEpicByUuid(epic1.getUuid()).getUuid());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(singleTask.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
-    }
-
-    @Test
-    void getSingleTaskByUuid() {
-        Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        SingleTask singleTask = new SingleTask();
-
-        manager.addSingleTask(singleTask);
-
-        Assertions.assertEquals(singleTask.getUuid(), manager.getSingleTaskByUuid(singleTask.getUuid()).getUuid());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(epic1.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(subtask1.getUuid()));
-    }
-
-    @Test /*there is not two same Epic by one uuid in epicMap*/
-    void addEpic() {
-        Epic epic1 = new Epic();
         manager.addEpic(epic1);
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpic(epic1));
-        Epic epic2 = new Epic();
         manager.addEpic(epic2);
         Assertions.assertEquals(2, manager.getListEpics().size());
     }
 
-    /* unable to add Epic even if try to add with subtask which isn't include in this Epic
-     * there is not two same Epic by one uuid in storage */
     @Test
-    void addEpicWithSubtask() {
+    void test16_getListSubtasksByEpicIfDoNotAddEpicsThroughManagerShouldThrowTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-
-        Subtask subtask1 = new Subtask(epic2);
+        Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask4 = new Subtask(epic1);
-        Subtask subtask5 = new Subtask(epic2);
-        Subtask subtask6 = new Subtask(epic2);
 
-        Epic epic3 = new Epic();
-        Subtask subtask7 = new Subtask(epic3);
-
-        manager.addEpicWithSubtask(epic2, subtask1, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask2, subtask3);
-        manager.addEpicWithSubtask(epic3, subtask7);
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic3, subtask7));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic1, subtask2));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic3, subtask4));
-
-        Assertions.assertEquals(1, epic3.getSubtaskList().size());
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getListSubtasksByEpic(epic1));
     }
 
     @Test
-    void addSingleTask() {
+    void test17_getListSubtasksByEpicIfAddEpicWith2SubtasksShouldReturn2() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+
+        Assertions.assertEquals(2, manager.getListSubtasksByEpic(epic1).size());
+    }
+
+    @Test
+    void test18_getListSubtasksByEpicIfAddEpicWithoutAnySubtasksShouldReturn0() {
+        Epic epic1 = new Epic();
+
+        manager.addEpicWithSubtask(epic1);
+
+        Assertions.assertEquals(0, manager.getListSubtasksByEpic(epic1).size());
+    }
+
+    @Test
+    void test19_getListSingleTasksIfDoNotAddSingleTaskThroughManagerShouldReturn0() {
+        SingleTask singleTask1 = new SingleTask();
+        Assertions.assertEquals(0, manager.getListSingleTasks().size());
+    }
+
+    @Test
+    void test20_getListSingleTasksIfAdd2SingleTasksShouldReturn2() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
         manager.addSingleTask(singleTask1);
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addSingleTask(singleTask1));
         manager.addSingleTask(singleTask2);
+        Assertions.assertEquals(2, manager.getListSingleTasks().size());
     }
 
     @Test
-    void addSubtaskInAddedEpic() {
+    void test21_addEpicShouldReturnFromManagerTheSameEpic() {
+        Epic epic1 = new Epic();
+
+        manager.addEpic(epic1);
+        Assertions.assertEquals(epic1, manager.getEpicByUuid(epic1.getUuid()));
+    }
+
+    @Test
+    void test22_addEpicAdd2EpicsShouldReturnFromManager2Epics() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+
+        Assertions.assertEquals(2, manager.getListEpics().size());
+    }
+
+    @Test /*must not put two Epics which have the same uuid*/
+    void test23_addEpicAddOneEpicTwiceShouldThrowsRuntimeException() {
+        Epic epic1 = new Epic();
+        manager.addEpic(epic1);
+        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpic(epic1));
+    }
+
+    @Test
+    void test24_addSingleTaskShouldReturnFromManagerTheSameSingleTask() {
+        SingleTask singleTask1 = new SingleTask();
+
+        manager.addSingleTask(singleTask1);
+        Assertions.assertEquals(singleTask1, manager.getSingleTaskByUuid(singleTask1.getUuid()));
+    }
+
+    @Test
+    void test25_addSingleTaskAdd2SingleTasksShouldReturnFromManager2SingleTask() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
+
+        manager.addSingleTask(singleTask1);
+        manager.addSingleTask(singleTask2);
+
+        Assertions.assertEquals(2, manager.getListSingleTasks().size());
+    }
+
+    @Test /*must not put two SingleTask which have the same uuid*/
+    void test26_addSingleTaskAddOneEpicTwiceShouldThrowsRuntimeException() {
+        SingleTask singleTask1 = new SingleTask();
+        manager.addSingleTask(singleTask1);
+        Assertions.assertThrows(RuntimeException.class, () -> manager.addSingleTask(singleTask1));
+    }
+
+    @Test
+    void test27_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturnFromManagerStorage1EpicAnd2Subtasks() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        Assertions.assertEquals(2, manager.getListSubtasks().size());
+        Assertions.assertEquals(1, manager.getListEpics().size());
+        Assertions.assertEquals(epic1, manager.getEpicByUuid(epic1.getUuid()));
+    }
+
+    @Test
+        /* unable to add Epic even if try to add with subtask which  missing in the manager's storage because
+         * must not put two Epic which have the same uuid */
+    void test28_addEpicWithSubtaskAddEpicWithTwoSubtasksAndThenTryToAddTheSameEpicWithAnotherSubtaskThrowsRuntimeException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+
+        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic1, subtask3));
+    }
+
+    @Test
+    void test29_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturn2SubtasksFromThisEpic() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+
+        Assertions.assertEquals(2, epic1.getSubtaskList().size());
+    }
+
+    @Test /*If add subtask1 in epic1 and then use method addEpicWithSubtask(epic2 , subtask1), in subtask1 will has
+     another epic, in this case epic2*/
+    void test30_addEpicWithSubtaskCheckThatSubtaskHasChangedEpic() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+        Subtask subtask1 = new Subtask(epic1); //set epic1
+        Subtask subtask2 = new Subtask(epic1); //set epic1
+
+        manager.addEpicWithSubtask(epic2, subtask1, subtask2); //reset to epic2
+
+        Assertions.assertEquals(epic2, subtask1.getEpic());
+        Assertions.assertEquals(epic2, subtask2.getEpic());
+    }
+
+    @Test
+    void test31_addSubtaskInAddedEpicAddSubtaskWithTheSameUuidInOneEpicThrowsRuntimeException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+
+        manager.addEpic(epic1);
+        manager.addSubtaskInAddedEpic(epic1, subtask1);
+        Assertions.assertThrows(RuntimeException.class, () -> manager.addSubtaskInAddedEpic(epic1, subtask1));
+    }
+
+    @Test
+    void test32_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromStorageTwoSubtasks() {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
         manager.addEpic(epic1);
         manager.addSubtaskInAddedEpic(epic1, subtask1);
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addSubtaskInAddedEpic(epic1, subtask1));
+        manager.addSubtaskInAddedEpic(epic1, subtask2);
+        Assertions.assertEquals(2, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test33_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromEpicTwoSubtasks() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpic(epic1);
+        manager.addSubtaskInAddedEpic(epic1, subtask1);
         manager.addSubtaskInAddedEpic(epic1, subtask2);
         Assertions.assertEquals(2, epic1.getSubtaskList().size());
     }
 
     @Test
-    void changeSingleTaskByUuid() {
-        Epic epic1 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
+    void test34_changeSingleTaskByUuidStorageIsEmptyThrowsTaskNotFoundException() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -222,13 +343,35 @@ class InMemoryTasksManagerTest {
         singleTask2.setDescription("About something");
         singleTask2.setStatus(StatusTask.DONE);
 
-        Assertions.assertThrows(RuntimeException.class, () ->
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
                 manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2));
+    }
+
+
+    @Test
+    void test35_changeSingleTaskByUuidTryToChangeSingleTaskBySingleTaskWithTheSameUuidThrowsRuntimeException() {
+        SingleTask singleTask1 = new SingleTask();
+
         manager.addSingleTask(singleTask1);
-        System.out.println(singleTask1.getName() + " " + singleTask1.getDescription() + " " + singleTask1.getStatus());
+
+        singleTask1.setName("I'm real task");
+        singleTask1.setDescription("About something");
+        singleTask1.setStatus(StatusTask.DONE);
 
         Assertions.assertThrows(RuntimeException.class, () ->
-                manager.changeSingleTaskByUuid(subtask1.getUuid(), singleTask2));
+                manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask1));
+    }
+
+    @Test
+    void test36_changeSingleTaskByUuidSetSingleTaskValuesFromAnotherSingleTaskShouldTheSameValuesInFirstTask() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
+
+        singleTask2.setName("I'm real task");
+        singleTask2.setDescription("About something");
+        singleTask2.setStatus(StatusTask.DONE);
+
+        manager.addSingleTask(singleTask1);
         manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2);
 
         Assertions.assertEquals(singleTask2.getName(), manager.getSingleTaskByUuid(singleTask1.getUuid()).getName());
@@ -236,58 +379,100 @@ class InMemoryTasksManagerTest {
                 manager.getSingleTaskByUuid(singleTask1.getUuid()).getDescription());
         Assertions.assertEquals(singleTask2.getStatus(), manager.getSingleTaskByUuid(singleTask1.getUuid()).getStatus());
         Assertions.assertEquals(singleTask2.getType(), manager.getSingleTaskByUuid(singleTask1.getUuid()).getType());
-        System.out.println(singleTask1.getName() + " " + singleTask1.getDescription() + " " + singleTask1.getStatus());
     }
 
     @Test
-    void changeEpicByUuid() {
+    void test37_changeEpicByUuidStorageIsEmptyThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Epic epic4 = new Epic();
-        Epic epic5 = new Epic();
-        Subtask subtask1 = new Subtask(epic1);
-        SingleTask singleTask1 = new SingleTask();
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.changeEpicByUuid(epic1.getUuid(), epic2));
-        manager.addEpic(epic4);
+        epic2.setName("I'm epic task");
+        epic2.setDescription("About something");
 
-        epic5.setName("Find yourself");
-        epic5.setDescription("Wake up at 8 am");
-        Assertions.assertThrows(RuntimeException.class, () ->  manager.changeEpicByUuid(subtask1.getUuid(), epic5));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.changeEpicByUuid(singleTask1.getUuid(), epic4));
-        manager.changeEpicByUuid(epic4.getUuid(), epic5);
-        System.out.println(epic4.getName() + " " + epic4.getDescription() + " " + epic4.getStatus());
-
-        Assertions.assertEquals(epic5.getName(), manager.getEpicByUuid(epic4.getUuid()).getName());
-        Assertions.assertEquals(epic5.getDescription(),
-                manager.getEpicByUuid(epic4.getUuid()).getDescription());
-        Assertions.assertEquals(epic5.getStatus(), manager.getEpicByUuid(epic4.getUuid()).getStatus());
-        Assertions.assertEquals(epic5.getType(), manager.getEpicByUuid(epic4.getUuid()).getType());
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+                manager.changeEpicByUuid(epic1.getUuid(), epic2));
     }
 
     @Test
-    void changeSubtaskByUuid() {
+    void test38_changeEpicByUuidTryToChangeEpicByEpicWithTheSameUuidThrowsRuntimeException() {
+        Epic epic1 = new Epic();
+
+        manager.addEpic(epic1);
+
+        epic1.setName("I'm real task");
+        epic1.setDescription("About something");
+
+        Assertions.assertThrows(RuntimeException.class, () ->
+                manager.changeEpicByUuid(epic1.getUuid(), epic1));
+    }
+
+    @Test
+    void test39_changeEpicByUuidSetEpicValuesFromAnotherEpicShouldTheSameValuesInFirstTask() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        manager.addEpic(epic1);
+
+        epic2.setName("Find yourself");
+        epic2.setDescription("Wake up at 8 am");
+
+        manager.changeEpicByUuid(epic1.getUuid(), epic2);
+
+        Assertions.assertEquals(epic2.getName(), manager.getEpicByUuid(epic1.getUuid()).getName());
+        Assertions.assertEquals(epic2.getDescription(),
+                manager.getEpicByUuid(epic1.getUuid()).getDescription());
+        Assertions.assertEquals(epic2.getStatus(), manager.getEpicByUuid(epic1.getUuid()).getStatus());
+        Assertions.assertEquals(epic2.getType(), manager.getEpicByUuid(epic1.getUuid()).getType());
+    }
+
+    @Test
+    void test40_changeSubtaskByUuidStorageIsEmptyThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.
-                changeSubtaskByUuid(subtask1.getUuid(), subtask2));
-        manager.addEpic(epic1);
-        Assertions.assertThrows(RuntimeException.class, () -> manager.
-                changeSubtaskByUuid(subtask1.getUuid(), subtask2));
-        manager.addSubtaskInAddedEpic(epic1, subtask1);
-        subtask2.setStatus(StatusTask.IN_PROGRESS);
-        subtask2.setName("My name is Subtask");
-        subtask2.setDescription("I have to do something important");
-        manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
-        System.out.println(subtask2.getName() + " " + subtask2.getDescription() + " " + subtask2.getStatus());
+        subtask2.setName("I'm epic task");
+        subtask2.setDescription("About something");
+
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+                manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2));
+    }
+
+    @Test
+    void test41_changeSubtaskByUuidTryToChangeSubtaskBySubtaskWithTheSameUuidThrowsRuntimeException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1);
+
+        subtask1.setName("I'm real task");
+        subtask1.setDescription("About something");
+
         Assertions.assertThrows(RuntimeException.class, () ->
                 manager.changeSubtaskByUuid(subtask1.getUuid(), subtask1));
     }
 
     @Test
-    void clearSingleTasks() {
+    void test42_changeSubtaskByUuidSetSubtaskValuesFromAnotherSubtaskShouldTheSameValuesInFirstTask() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpic(epic1);
+        manager.addSubtaskInAddedEpic(epic1, subtask1);
+        subtask2.setStatus(StatusTask.IN_PROGRESS);
+        subtask2.setName("My name is Subtask");
+        subtask2.setDescription("I have to do something important");
+        manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
+
+        Assertions.assertEquals(subtask2.getName(), manager.getSubtaskByUuid(subtask1.getUuid()).getName());
+        Assertions.assertEquals(subtask2.getDescription(),
+                manager.getSubtaskByUuid(subtask1.getUuid()).getDescription());
+        Assertions.assertEquals(subtask2.getStatus(), manager.getSubtaskByUuid(subtask1.getUuid()).getStatus());
+    }
+
+    @Test
+    void test43_clearSingleTasksAddTwoSingleTasksShouldReturnFromManagerAfterUseMethod0SingleTasks() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -299,54 +484,72 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearEpics() {
+    void test44_clearSingleTasksWithEmptyStorageNotThrowsAnyException() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
 
-        Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-        Epic epic3 = new Epic();
-        Epic epic4 = new Epic();
-        Subtask subtask1 = new Subtask(epic2);
-        Subtask subtask2 = new Subtask(epic2);
-        Subtask subtask3 = new Subtask(epic2);
-
-        manager.addEpic(epic1);
-        manager.addEpicWithSubtask(epic2, subtask2, subtask3, subtask1);
-        manager.addEpic(epic3);
-        manager.addEpic(epic4);
-
-        manager.getEpicByUuid(epic2.getUuid());
-        manager.getEpicByUuid(epic1.getUuid());
-        manager.getEpicByUuid(epic3.getUuid());
-        manager.getSubtaskByUuid(subtask3.getUuid());
-
-        Assertions.assertEquals(4, manager.getListEpics().size());
-        Assertions.assertEquals(4, manager.getHistory().size());
-        manager.clearEpics();
-        Assertions.assertEquals(0, manager.getListEpics().size());
-        Assertions.assertEquals(0, manager.getHistory().size());
-
+        Assertions.assertDoesNotThrow(() ->  manager.clearSingleTasks());
     }
 
     @Test
-    void clearSubtasksInAllEpic() {
+    void test45_clearEpicsAddTwoEpicsShouldReturnFromManagerAfterUseMethod0Epics() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+        Assertions.assertEquals(2, manager.getListEpics().size());
+        manager.clearEpics();
+        Assertions.assertEquals(0, manager.getListEpics().size());
+    }
+
+    @Test
+    void test46_clearEpicsWithEmptyStorageNotThrowsAnyException() {
+        Epic epic1 = new Epic();
+
+        Assertions.assertDoesNotThrow(() ->  manager.clearEpics());
+    }
+
+    @Test
+    void test47_clearSubtasksInAllEpicWithEmptyStorageNotThrowsAnyException() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic2);
+
+        Assertions.assertDoesNotThrow(() ->  manager.clearSubtasksInAllEpic());
+    }
+
+    @Test
+    void test48_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturnFromManager0Subtask() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic2);
         Subtask subtask4 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
 
-        Assertions.assertEquals(0, epic1.getSubtaskList().size());
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        Assertions.assertEquals(3, epic1.getSubtaskList().size());
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
 
-        Assertions.assertEquals(0, epic2.getSubtaskList().size());
-        manager.addEpic(epic2);
-        manager.addSubtaskInAddedEpic(epic2, subtask4);
-        manager.addSubtaskInAddedEpic(epic2, subtask5);
-        Assertions.assertEquals(2, epic2.getSubtaskList().size());
+        manager.clearSubtasksInAllEpic();
+        Assertions.assertEquals(0, manager.getListSubtasks().size());
+
+    }
+
+    @Test
+    void test49_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturn0SubtaskFromTheseEpics() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic2);
+        Subtask subtask4 = new Subtask(epic2);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
 
         manager.clearSubtasksInAllEpic();
         Assertions.assertEquals(0, epic1.getSubtaskList().size());
@@ -354,73 +557,145 @@ class InMemoryTasksManagerTest {
     }
 
     @Test
-    void clearSubtasksInEpic() {
+    void test50_clearSubtasksInEpicIfEpicDoesNotAddToStorageThrowsTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic2);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.clearSubtasksInEpic(epic1));
+    }
+
+    @Test
+    void test51_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromEpic0Subtask() {
+        Epic epic1 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.clearSubtasksInEpic(epic1);
+        Assertions.assertEquals(0, epic1.getSubtaskList().size());
+    }
+
+    @Test
+    void test52_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromStorage0SubtaskOwnThisEpic() {
+        Epic epic1 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.clearSubtasksInEpic(epic1);
+
+        Assertions.assertEquals(0, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test53_clearSubtasksInEpicIfAddTo2Epics2SubtasksEachAfterUseMethodForOneEpicShouldReturnFromStorage2SubtaskOwnAnotherEpic() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic2);
+        Subtask subtask4 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
         manager.clearSubtasksInEpic(epic1);
-        Assertions.assertEquals(0, epic1.getSubtaskList().size());
-        Assertions.assertEquals(0, epic2.getSubtaskList().size());
+
+        Assertions.assertEquals(2, manager.getListSubtasks().size());
     }
 
     @Test
-    void removeSingleTaskByUuid() {
-        Epic epic = new Epic();
+    void test54_removeSingleTaskByUuidIfStorageNotContainsTaskThrowTaskNotFoundException() {
+        SingleTask singleTask1 = new SingleTask();
+
+        Assertions.assertThrows(TaskNotFoundException.class,
+                () -> manager.removeSingleTaskByUuid(singleTask1.getUuid()));
+    }
+
+    @Test
+    void test55_removeSingleTaskByUuidAdd2SingleTasksShouldReturn1SingleTaskFromStorageAfterUseMethod() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeSingleTaskByUuid(singleTask1.getUuid()));
+
         manager.addSingleTask(singleTask1);
         manager.addSingleTask(singleTask2);
 
         manager.removeSingleTaskByUuid(singleTask1.getUuid());
         Assertions.assertEquals(1, manager.getListSingleTasks().size());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeSingleTaskByUuid(epic.getUuid()));
-        System.out.println(manager.inMemoryHistoryManager.getHistory().size());
     }
 
     @Test
-    void removeSubtaskByUuid() {
+    void test56_removeSubtaskByUuidIfStorageNotContainsTaskThrowTaskNotFoundException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.removeSubtaskByUuid(subtask1.getUuid()));
+    }
+
+    @Test
+    void test57_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromThisEpic() {
+        Epic epic1 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+
+        manager.removeSubtaskByUuid(subtask1.getUuid());
+        Assertions.assertEquals(1, epic1.getSubtaskList().size());
+    }
+
+    @Test
+    void test58_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromStorage() {
+        Epic epic1 = new Epic();
+
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.removeSubtaskByUuid(subtask2.getUuid());
+        Assertions.assertEquals(1, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test59_removeEpicByUuidIfStorageNotContainsTaskThrowTaskNotFoundException() {
+        Epic epic1 = new Epic();
+
+        Assertions.assertThrows(TaskNotFoundException.class,
+                () -> manager.removeEpicByUuid(epic1.getUuid()));
+    }
+
+    @Test
+    void test60_removeEpicByUuidAdd2EpicShouldReturn1EpicFromStorageAfterUseMethod() {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+
+        manager.removeEpicByUuid(epic2.getUuid());
+        Assertions.assertEquals(1, manager.getListEpics().size());
+    }
+
+    @Test
+    void test61_removeEpicByUuidAdd2EpicWithTwoSubtaskEachShouldReturn2SubtaskFromStorageAfterUseMethod() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
-        Subtask subtask3 = new Subtask(epic1);
-        Subtask subtask5 = new Subtask(epic2);
+        Subtask subtask3 = new Subtask(epic2);
+        Subtask subtask4 = new Subtask(epic2);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeSubtaskByUuid(epic1.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeSubtaskByUuid(subtask1.getUuid()));
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        manager.addEpicWithSubtask(epic2, subtask5);
-        manager.removeSubtaskByUuid(subtask5.getUuid());
-        manager.getEpicByUuid(epic2.getUuid());
-
-        manager.removeSubtaskByUuid(subtask2.getUuid());
-        System.out.println(manager.getListSubtasksByEpic(epic1));
-    }
-
-    @Test
-    void removeEpicByUuid() {
-        Epic epic1 = new Epic();
-        Epic epic2 = new Epic();
-
-        Subtask subtask1 = new Subtask(epic2);
-        Subtask subtask2 = new Subtask(epic2);
-        Subtask subtask5 = new Subtask(epic2);
-
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeEpicByUuid(epic1.getUuid()));
-        manager.addEpic(epic1);
-        manager.addEpicWithSubtask(epic2, subtask1, subtask2, subtask5);
-        Assertions.assertEquals(2, manager.getListEpics().size());
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
 
         manager.removeEpicByUuid(epic2.getUuid());
-        Assertions.assertEquals(1, manager.getListEpics().size());
-        Assertions.assertThrows(NullPointerException.class, () -> manager.getListSubtasksByEpic(epic2));
+        Assertions.assertEquals(2, manager.getListSubtasks().size());
     }
 }
