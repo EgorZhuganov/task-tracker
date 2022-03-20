@@ -230,10 +230,8 @@ public class InMemoryTasksManager implements TaskManager {
     public void removeEpicByUuid(UUID uuid) {
         checkTaskNotContainsInStorage(uuid);
         Epic epic = (Epic) storage.get(uuid);
-        for (Subtask subtask : epic.getSubtaskList()) {
-            removeTaskFromHistory(subtask);
-            storage.remove(subtask.getUuid());
-        }
+        epic.getSubtaskList().stream().
+                peek(this::removeTaskFromHistory).forEach(subtask -> storage.remove(subtask.getUuid()));
         removeTaskFromHistory(epic);
         storage.remove(uuid);
     }
