@@ -199,13 +199,15 @@ public class InMemoryTasksManager implements TaskManager {
                 filter(at -> at instanceof Epic).
                 peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory)).
                 forEach(epic -> ((Epic) epic).getSubtaskList().clear());
+        storage.values().removeIf(task -> task instanceof Subtask);
     }
 
     @Override
     public void clearSubtasksInEpic(Epic epic) {
         checkTaskNotContainsInStorage(epic.getUuid());
         epic = (Epic)storage.get(epic.getUuid());
-        epic.getSubtaskList().forEach(this::removeTaskFromHistory);
+        epic.getSubtaskList().stream().
+                peek(this::removeTaskFromHistory).forEach(subtask -> storage.remove(subtask.getUuid()));
         epic.getSubtaskList().clear();
     }
 
