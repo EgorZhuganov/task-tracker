@@ -1,7 +1,8 @@
 package com.ezh.taskbook.task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class Epic extends AbstractTask {
 
@@ -47,5 +48,42 @@ public class Epic extends AbstractTask {
                 ", uuid=" + getUuid() +
                 ", subtaskList=" + subtaskList +
                 '}';
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return subtaskList.stream().
+                map(Subtask::getEndTime).
+                map(endTime -> Optional.ofNullable(endTime)).
+                filter(endTime -> endTime.isPresent()).
+                max(Comparator.comparing(Optional::get)).get().get();
+
+//        return subtaskList.stream().max(Comparator.comparing(Subtask::getEndTime)).get().getEndTime();
+    }
+
+    @Override /* Subtask may not have Duration, Epic will have duration if subtask will have duration */
+    public Duration getDuration() {
+        boolean matcher = subtaskList.stream().allMatch(subtask -> subtask.getDuration() == null);
+        if (matcher) {
+            throw new NoSuchElementException("Try to add one or more duration to subtask before count this epic");
+        }
+        long nanos = subtaskList.stream().
+                map(Subtask::getDuration).
+                map(duration -> Optional.ofNullable(duration)).
+                filter(duration -> duration.isPresent()).
+                mapToLong(optional -> optional.get().toNanos()).
+                sum();
+        return Duration.ofNanos(nanos);
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        return subtaskList.stream().
+                map(Subtask::getStartTime).
+                map(startTime -> Optional.ofNullable(startTime)).
+                filter(startTime -> startTime.isPresent()).
+                min(Comparator.comparing(Optional::get)).get().get();
+
+//        return subtaskList.stream().min(Comparator.comparing(Subtask::getStartTime)).get().getStartTime();
     }
 }
