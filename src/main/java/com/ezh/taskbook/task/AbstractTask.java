@@ -32,5 +32,5 @@ public abstract class AbstractTask {
 
     public abstract LocalDateTime getStartTime();
 
-
+    public abstract LocalDateTime getEndTime();
 }
