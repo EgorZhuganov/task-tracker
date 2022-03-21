@@ -1,5 +1,7 @@
 package com.ezh.taskbook.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public abstract class AbstractTask {
@@ -9,7 +11,7 @@ public abstract class AbstractTask {
     private final UUID uuid;
 
     public AbstractTask(String id){ this.uuid = UUID.fromString(id); }
-    
+
     public AbstractTask()  { this.uuid = UUID.randomUUID(); }
 
     public String getName() { return name; }
@@ -25,4 +27,10 @@ public abstract class AbstractTask {
     public abstract StatusTask getStatus();
 
     public abstract TypeTask getType();
+
+    public abstract Duration getDuration();
+
+    public abstract LocalDateTime getStartTime();
+
+
 }

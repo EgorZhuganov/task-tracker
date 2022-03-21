@@ -1,9 +1,14 @@
 package com.ezh.taskbook.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends AbstractTask {
 
     private StatusTask status;
     private Epic epic;
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Subtask (Epic epic) {
         super();
@@ -11,10 +16,23 @@ public class Subtask extends AbstractTask {
         this.epic = epic;
     }
 
-    public Subtask (String id) { super(id); }
+    public Subtask (String id) {
+        super(id);
+        setStatus(StatusTask.NEW);
+    }
 
     @Override
     public TypeTask getType() { return TypeTask.SUBTASK; }
+
+    @Override
+    public Duration getDuration() { return duration; }
+
+    public void setDuration(Duration duration) { this.duration = duration; }
+
+    @Override
+    public LocalDateTime getStartTime() { return startTime; }
+
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
 
     @Override
     public StatusTask getStatus() { return status; }
@@ -30,8 +48,10 @@ public class Subtask extends AbstractTask {
         return "Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
+                ", status=" + status +
                 ", uuid=" + getUuid() +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 }

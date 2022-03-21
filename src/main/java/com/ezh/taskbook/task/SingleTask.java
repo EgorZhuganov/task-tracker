@@ -18,6 +18,16 @@ public class SingleTask extends AbstractTask {
     public TypeTask getType() { return TypeTask.SINGLE_TASK; }
 
     @Override
+    public Duration getDuration() { return duration; }
+
+    public void setDuration(Duration duration) { this.duration = duration; }
+
+    @Override
+    public LocalDateTime getStartTime() { return startTime; }
+
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+
+    @Override
     public StatusTask getStatus() {
         return status;
     }
@@ -31,8 +41,10 @@ public class SingleTask extends AbstractTask {
         return "SingleTask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
+                ", status=" + status +
                 ", uuid=" + getUuid() +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 }
