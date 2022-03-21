@@ -4,6 +4,10 @@ import com.ezh.taskbook.manager.InMemoryTasksManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
 class EpicTest {
 
     InMemoryTasksManager manager = new InMemoryTasksManager();
@@ -59,7 +63,7 @@ class EpicTest {
         manager.addEpicWithSubtask(epic1, subtask1);
         subtask2.setStatus(StatusTask.IN_PROGRESS);
         manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
-        Assertions.assertEquals(StatusTask.DONE, epic1.getStatus());
+        Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
     }
 
     @Test
@@ -71,4 +75,113 @@ class EpicTest {
         Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
     }
 
+    @Test /*epic calculate end time if at least one subtask does not have a duration or start time field*/
+    public void test9_getEndTimeIfAdd2SubtaskWithDurationAndStartTimeAndOneWithoutTheseFieldsShouldReturnEndTime() {
+        subtask1.setDuration(Duration.ofDays(30));
+        subtask1.setStartTime(LocalDateTime.now());
+        subtask2.setDuration(Duration.ofDays(10));
+        subtask2.setStartTime(LocalDateTime.now());
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        Assertions.assertEquals(subtask1.getEndTime(), epic1.getEndTime());
+    }
+
+    @Test /* return the biggest time of execute (duration+start time) */
+    public void test10_getEndTimeIfAdd3SubtaskWithDurationAndStartTimeShouldReturnEndTime() {
+        subtask1.setDuration(Duration.ofDays(300));
+        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
+        subtask2.setDuration(Duration.ofDays(10));
+        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setDuration(Duration.ofDays(20));
+        subtask3.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertEquals(LocalDateTime.of(2022,12,10,23,0).
+                plus(Duration.ofDays(300)), epic1.getEndTime());
+    }
+
+    @Test
+    public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTime() {
+        subtask1.setDuration(Duration.ofDays(300));
+        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
+        subtask2.setDuration(Duration.ofDays(10));
+        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setDuration(Duration.ofDays(20)); //without start time
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
+        Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
+    }
+
+    @Test /*if no one Subtask has not got Start time*/
+    public void test12_getEndTimeIfNoOneOfSubtaskHasNotGotFieldStartTimeThrowsNoSuchElementException () {
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertThrows(NoSuchElementException.class, () -> epic1.getEndTime());
+    }
+
+    @Test
+    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnSumDuration() {
+        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0)); //without start duration
+        subtask2.setDuration(Duration.ofDays(10));
+        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setDuration(Duration.ofDays(20));
+        subtask3.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertEquals(Duration.ofDays(30), epic1.getDuration());
+        Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
+    }
+
+    @Test
+    public void test14_getStartTimeIfAdd3SubtaskWithStartTimeFindTaskWithTheSmallestStartTime() {
+        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
+        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setStartTime(LocalDateTime.of(2022,2,10,23,0));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertEquals(LocalDateTime.of(2022,1,10,23,0), epic1.getStartTime());
+    }
+
+    @Test
+    public void test15_getStartTimeIfAddSomeSubtasksAndOneWithoutStartTimeShouldReturnTheSmallestStartTimeNotException() {
+        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setStartTime(LocalDateTime.of(2022,2,10,23,0));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3); //subtask2 hasn't got start time
+
+        Assertions.assertEquals(LocalDateTime.of(2022,1,10,23,0), epic1.getStartTime());
+    }
+
+    @Test
+    public void test16_getDurationIfNoOneOfSubtasksHasNotGotDurationThrowsNoSuchElementException () {
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertThrows(NoSuchElementException.class, () -> epic1.getDuration());
+    }
+
+    @Test
+    public void test17_getDurationIfAdd3SubtaskWithDurationCountAllDurationOfSubtasks() {
+        subtask1.setDuration(Duration.ofHours(10));
+        subtask2.setDuration(Duration.ofHours(8));
+        subtask3.setDuration(Duration.ofHours(12));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+
+        Assertions.assertEquals(Duration.ofHours(30), epic1.getDuration());
+    }
+
+    @Test
+    public void test18_getDurationIfAddSomeSubtasksAndOneWithoutDurationShouldReturnSumDuration() {
+        subtask1.setDuration(Duration.ofHours(10));
+        subtask2.setDuration(Duration.ofHours(8));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3); //subtask2 hasn't got duration
+
+        Assertions.assertEquals(Duration.ofHours(18), epic1.getDuration());
+    }
 }
