@@ -54,4 +54,13 @@ public class Subtask extends AbstractTask {
                 ", startTime=" + startTime +
                 '}';
     }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if (duration == null || startTime == null) {
+            return null; //или бросить exception?
+//            throw new RuntimeException("Duration or Start Time in subtask not present");
+        }
+        return startTime.plus(duration);
+    }
 }

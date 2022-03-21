@@ -1,8 +1,13 @@
 package com.ezh.taskbook.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SingleTask extends AbstractTask {
 
     private StatusTask status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public SingleTask() {
         super();
@@ -46,5 +51,13 @@ public class SingleTask extends AbstractTask {
                 ", duration=" + duration +
                 ", startTime=" + startTime +
                 '}';
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if (duration == null || startTime == null) {
+            throw new RuntimeException("Duration or Start Time in single task not present");
+        }
+        return startTime.plus(duration);
     }
 }
