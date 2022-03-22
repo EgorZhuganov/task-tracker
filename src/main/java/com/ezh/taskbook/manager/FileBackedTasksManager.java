@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class FileBackedTasksManager extends InMemoryTasksManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTasksManager {
 
     private File file;
     private static Map<TypeTask, TaskSerializerToString<AbstractTask>> taskSerializerMap;
@@ -29,7 +29,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager implements Task
 
     private void save() {
         try (FileWriter fw = new FileWriter(file)) {
-            fw.append("id,type,name,status,description,epic\n");
+            fw.append("id,type,name,status,description,start_time,duration,epic\n");
             storage.values().forEach(t -> {
                 try {
                     fw.write(taskSerializerMap.get(t.getType()).taskAsString(t));
@@ -38,46 +38,17 @@ public class FileBackedTasksManager extends InMemoryTasksManager implements Task
                     e.printStackTrace();
                 }
             });
-            fw.append("\n").append((HistoryManager.asString(inMemoryHistoryManager)));
+            fw.append("\n").append(HistoryManager.asString(inMemoryHistoryManager));
         } catch (IOException e) {
             throw new ManagerSaveException("Непредвиденная ошибка при сохранении записи в файл");
         }
     }
 
-    //TODO перенести проверку в тесты
-    public static void main(String[] args) {
-        Epic epic = new Epic();
-        Subtask subtask = new Subtask(epic);
-        SingleTask singleTask = new SingleTask();
-        epic.setName("Epic name");
-        epic.setDescription("description of Epic");
-        subtask.setName("Subtask name");
-        subtask.setDescription("description of Subtask");
-        subtask.setStatus(StatusTask.IN_PROGRESS);
-        singleTask.setName("Single task name");
-        singleTask.setDescription("description of Single task");
-        singleTask.setStatus(StatusTask.DONE);
-
-        File file = new File("test.txt");
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-        fileBackedTasksManager.addEpicWithSubtask(epic, subtask);
-        fileBackedTasksManager.addSingleTask(singleTask);
-        fileBackedTasksManager.getEpicBySubtaskUuid(subtask.getUuid());
-
-        FileBackedTasksManager fileBackedTasksManager2 = loadFromFile(file);
-
-        System.out.println(fileBackedTasksManager.storage);
-        System.out.println(fileBackedTasksManager2.storage);
-
-        System.out.println(fileBackedTasksManager.inMemoryHistoryManager.getHistory());
-        System.out.println(fileBackedTasksManager2.inMemoryHistoryManager.getHistory());
-    }
-
-    private static FileBackedTasksManager loadFromFile(File file) {
+    public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         List<Subtask> tempStorage = new ArrayList<>();
         try {
-            String[] lines = Files.readString(Path.of(String.valueOf(file))).split("\n");
+            String[] lines = Files.readString(Path.of(String.valueOf(file))).split("\\R",-1);
             for (int i = 1; i < lines.length - 2; i++) {
                 String[] fields = lines[i].split(";");
                 TypeTask type = TypeTask.valueOf(fields[1]);
@@ -103,9 +74,11 @@ public class FileBackedTasksManager extends InMemoryTasksManager implements Task
                 }
             }
 
-            List<UUID> uuid = HistoryManager.fromString(lines[lines.length - 1]);
-            for (UUID id : uuid) {
-                fileBackedTasksManager.inMemoryHistoryManager.add(fileBackedTasksManager.storage.get(id));
+            if (!lines[lines.length-1].isEmpty()) {
+                List<UUID> uuid = HistoryManager.fromString(lines[lines.length - 1]);
+                for (UUID id : uuid) {
+                    fileBackedTasksManager.inMemoryHistoryManager.add(fileBackedTasksManager.storage.get(id));
+                }
             }
         } catch (IOException e) {
             throw new ManagerRestoreException("Непредвиденная ошибка при восстановлении записей в хранилище");
