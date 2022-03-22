@@ -9,9 +9,11 @@ public class TaskSerializerEpicToString extends TaskSerializerToString<AbstractT
     @Override
     public Epic taskFromString(String value) {
         Epic epic = (Epic) super.taskFromString(value);
-        String[] fields = value.split(CSV_SEPARATOR);
-        epic.setName(fields[2]);
-        epic.setDescription(fields[4]);
+        String[] fields = value.split(CSV_SEPARATOR,-1);
+        if (!fields[2].isEmpty())
+            epic.setName(fields[2]);
+        if (!fields[4].isEmpty())
+            epic.setDescription(fields[4]);
         return epic;
     }
 
