@@ -1,5 +1,6 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
 import com.ezh.taskbook.task.*;
 
 import java.util.*;
@@ -146,6 +147,8 @@ public class InMemoryTasksManager implements TaskManager {
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
         oldTask.setStatus(newTask.getStatus());
+        oldTask.setDuration(newTask.getDuration());
+        oldTask.setStartTime(newTask.getStartTime());
     }
 
     /*Before change Epic you have to put in storage old Epic*/
@@ -173,6 +176,8 @@ public class InMemoryTasksManager implements TaskManager {
             oldSubtask.setName(newSubtask.getName());
             oldSubtask.setDescription(newSubtask.getDescription());
             oldSubtask.setStatus(newSubtask.getStatus());
+            oldSubtask.setDuration(newSubtask.getDuration());
+            oldSubtask.setStartTime(newSubtask.getStartTime());
         }
     }
 
