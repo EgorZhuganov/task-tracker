@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 class EpicTest {
 
@@ -102,7 +101,7 @@ class EpicTest {
     }
 
     @Test
-    public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTime() {
+    public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTimeAnotherSubtask() {
         subtask1.setDuration(Duration.ofDays(300));
         subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
         subtask2.setDuration(Duration.ofDays(10));
@@ -115,15 +114,15 @@ class EpicTest {
         Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
     }
 
-    @Test /*if no one Subtask has not got Start time*/
-    public void test12_getEndTimeIfNoOneOfSubtaskHasNotGotFieldStartTimeThrowsNoSuchElementException () {
+    @Test /*if no one Subtask return getEndTime as null*/
+    public void test12_getEndTimeIfNoOneOfSubtaskHasNotGotFieldStartTimeShouldReturnNull () {
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> epic1.getEndTime());
+        Assertions.assertNull(epic1.getEndTime());
     }
 
     @Test
-    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnSumDuration() {
+    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnDurationBetweenStartAndEndTimeOfSubtasks() {
         subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0)); //without start duration
         subtask2.setDuration(Duration.ofDays(10));
         subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
@@ -132,7 +131,7 @@ class EpicTest {
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertEquals(Duration.ofDays(30), epic1.getDuration());
+        Assertions.assertEquals(Duration.between(subtask3.getEndTime(), subtask2.getStartTime()), epic1.getDuration());
         Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
     }
 
@@ -144,7 +143,7 @@ class EpicTest {
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertEquals(LocalDateTime.of(2022,1,10,23,0), epic1.getStartTime());
+        Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
     }
 
     @Test
@@ -154,34 +153,24 @@ class EpicTest {
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3); //subtask2 hasn't got start time
 
-        Assertions.assertEquals(LocalDateTime.of(2022,1,10,23,0), epic1.getStartTime());
+        Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
     }
 
     @Test
-    public void test16_getDurationIfNoOneOfSubtasksHasNotGotDurationThrowsNoSuchElementException () {
+    public void test16_getDurationIfNoOneOfSubtasksHasNotGotDurationShouldReturnNull() {
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> epic1.getDuration());
+        Assertions.assertNull(epic1.getDuration());
     }
 
-    @Test
-    public void test17_getDurationIfAdd3SubtaskWithDurationCountAllDurationOfSubtasks() {
+    @Test /*duration count if subtask has start time and end time*/
+    public void test17_getDurationIfAdd3SubtaskWithDurationDoNotCountDurationShouldReturnNull() {
         subtask1.setDuration(Duration.ofHours(10));
         subtask2.setDuration(Duration.ofHours(8));
         subtask3.setDuration(Duration.ofHours(12));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertEquals(Duration.ofHours(30), epic1.getDuration());
-    }
-
-    @Test
-    public void test18_getDurationIfAddSomeSubtasksAndOneWithoutDurationShouldReturnSumDuration() {
-        subtask1.setDuration(Duration.ofHours(10));
-        subtask2.setDuration(Duration.ofHours(8));
-
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3); //subtask2 hasn't got duration
-
-        Assertions.assertEquals(Duration.ofHours(18), epic1.getDuration());
+        Assertions.assertNull(epic1.getDuration());
     }
 }
