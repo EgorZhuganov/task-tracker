@@ -56,7 +56,7 @@ public class SingleTask extends AbstractTask {
     @Override
     public LocalDateTime getEndTime() {
         if (duration == null || startTime == null) {
-            throw new RuntimeException("Duration or Start Time in single task not present");
+            return null;
         }
         return startTime.plus(duration);
     }
