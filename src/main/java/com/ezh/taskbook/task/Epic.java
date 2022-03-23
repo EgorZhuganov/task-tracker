@@ -52,38 +52,31 @@ public class Epic extends AbstractTask {
 
     @Override
     public LocalDateTime getEndTime() {
-        return subtaskList.stream().
-                map(Subtask::getEndTime).
-                map(endTime -> Optional.ofNullable(endTime)).
-                filter(endTime -> endTime.isPresent()).
-                max(Comparator.comparing(Optional::get)).get().get();
-
-//        return subtaskList.stream().max(Comparator.comparing(Subtask::getEndTime)).get().getEndTime();
+        Subtask s = subtaskList.stream()
+                .filter(t -> t.getEndTime() != null)
+                .max(Comparator.comparing(Subtask::getEndTime)).orElse(null);
+        if (s != null) {
+            return s.getEndTime();
+        }
+        return null;
     }
 
-    @Override /* Subtask may not have Duration, Epic will have duration if subtask will have duration */
+    @Override
     public Duration getDuration() {
-        boolean matcher = subtaskList.stream().allMatch(subtask -> subtask.getDuration() == null);
-        if (matcher) {
-            throw new NoSuchElementException("Try to add one or more duration to subtask before count this epic");
+        if (getStartTime() == null || getEndTime() == null){
+            return null;
         }
-        long nanos = subtaskList.stream().
-                map(Subtask::getDuration).
-                map(duration -> Optional.ofNullable(duration)).
-                filter(duration -> duration.isPresent()).
-                mapToLong(optional -> optional.get().toNanos()).
-                sum();
-        return Duration.ofNanos(nanos);
+        return Duration.between(getEndTime(), getStartTime());
     }
 
     @Override
     public LocalDateTime getStartTime() {
-        return subtaskList.stream().
-                map(Subtask::getStartTime).
-                map(startTime -> Optional.ofNullable(startTime)).
-                filter(startTime -> startTime.isPresent()).
-                min(Comparator.comparing(Optional::get)).get().get();
-
-//        return subtaskList.stream().min(Comparator.comparing(Subtask::getStartTime)).get().getStartTime();
+        Subtask s = subtaskList.stream()
+                .filter(t -> t.getStartTime() != null)
+                .min(Comparator.comparing(Subtask::getStartTime)).orElse(null);
+        if (s != null) {
+            return s.getStartTime();
+        }
+        return null;
     }
 }
