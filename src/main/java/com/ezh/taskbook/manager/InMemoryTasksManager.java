@@ -28,8 +28,8 @@ public class InMemoryTasksManager implements TaskManager {
         }
     }
 
-    private void checkTaskNotContainsInStorage(UUID  uuid) {
-        if (storage.get(uuid) == null){
+    private void checkTaskNotContainsInStorage(UUID uuid) {
+        if (storage.get(uuid) == null) {
             throw new TaskNotFoundException("Task not found");
         }
     }
@@ -70,7 +70,7 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public List<Subtask> getListSubtasksByEpic(Epic epic) {
         checkTaskNotContainsInStorage(epic.getUuid());
-        return new ArrayList<>(((Epic)storage.get(epic.getUuid())).getSubtaskList());
+        return new ArrayList<>(((Epic) storage.get(epic.getUuid())).getSubtaskList());
     }
 
     @Override
@@ -113,6 +113,7 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void addEpic(Epic epic) {
         checkUuid(epic);
+        uuidsWithNullStartTime.add(epic.getUuid());
         storage.put(epic.getUuid(), epic);
     }
 
@@ -129,9 +130,14 @@ public class InMemoryTasksManager implements TaskManager {
         checkUuid(epic);
         Arrays.stream(subtasks).forEach(this::checkUuid);
         epic.getSubtaskList().addAll(Arrays.asList(subtasks));
+
+        uuidsWithNullStartTime.add(epic.getUuid());
         storage.put(epic.getUuid(), epic);
+
         Arrays.stream(subtasks).forEach(subtask -> subtask.setEpic(epic));
+
         Arrays.stream(subtasks).forEach(subtask -> storage.put(subtask.getUuid(), subtask));
+        Arrays.stream(subtasks).forEach(s -> addTaskToDateTimeStorage(s));
     }
 
     @Override
@@ -140,13 +146,16 @@ public class InMemoryTasksManager implements TaskManager {
         if (subtask.getEpic() == null || !epic.getUuid().equals(subtask.getEpic().getUuid())) {
             subtask.setEpic(epic);
         }
-        ((Epic)storage.get(epic.getUuid())).getSubtaskList().add(subtask);
+        ((Epic) storage.get(epic.getUuid())).getSubtaskList().add(subtask);
+
+        addTaskToDateTimeStorage(subtask);
         storage.put(subtask.getUuid(), subtask);
     }
 
     @Override
     public void addSingleTask(SingleTask task) {
         checkUuid(task);
+        addTaskToDateTimeStorage(task);
         storage.put(task.getUuid(), task);
     }
 
@@ -166,11 +175,15 @@ public class InMemoryTasksManager implements TaskManager {
             throw new RuntimeException("Trying changing two task with the same uuid");
         }
         SingleTask oldTask = (SingleTask) storage.get(uuidOldSingleTask);
+        removeTaskFromDateTimeStorage(oldTask);
+
         oldTask.setName(newTask.getName());
         oldTask.setDescription(newTask.getDescription());
         oldTask.setStatus(newTask.getStatus());
         oldTask.setDuration(newTask.getDuration());
         oldTask.setStartTime(newTask.getStartTime());
+
+        addTaskToDateTimeStorage(oldTask);
     }
 
     /*Before change Epic you have to put in storage old Epic*/
@@ -189,52 +202,61 @@ public class InMemoryTasksManager implements TaskManager {
     @Override
     public void changeSubtaskByUuid(UUID uuidOldSubtask, Subtask newSubtask) {
         checkTaskNotContainsInStorage(uuidOldSubtask);
-        Subtask oldSubtask = (Subtask) storage.get(uuidOldSubtask);
         if (uuidOldSubtask.equals(newSubtask.getUuid())) {
             throw new RuntimeException("Trying changing two task with the same uuid");
-        } else if (oldSubtask.getEpic().getUuid() != newSubtask.getEpic().getUuid()) {
+        } else if (((Subtask)storage.get(uuidOldSubtask)).getEpic().getUuid() != newSubtask.getEpic().getUuid()) {
             throw new RuntimeException("Old subtask and new cannot exist in different epic");
-        } else {
-            oldSubtask.setName(newSubtask.getName());
-            oldSubtask.setDescription(newSubtask.getDescription());
-            oldSubtask.setStatus(newSubtask.getStatus());
-            oldSubtask.setDuration(newSubtask.getDuration());
-            oldSubtask.setStartTime(newSubtask.getStartTime());
         }
+        Subtask oldSubtask = (Subtask) storage.get(uuidOldSubtask);
+        removeTaskFromDateTimeStorage(oldSubtask);
+
+        oldSubtask.setName(newSubtask.getName());
+        oldSubtask.setDescription(newSubtask.getDescription());
+        oldSubtask.setStatus(newSubtask.getStatus());
+        oldSubtask.setDuration(newSubtask.getDuration());
+        oldSubtask.setStartTime(newSubtask.getStartTime());
+
+        addTaskToDateTimeStorage(oldSubtask);
     }
 
     @Override
     public void clearSingleTasks() {
-        storage.values().stream().
-                filter(task -> task instanceof SingleTask).forEach(this::removeTaskFromHistory);
-        storage.values().removeIf(task -> task instanceof SingleTask);
+        storage.values().stream()
+                .filter(t -> t instanceof SingleTask)
+                .peek(t -> removeTaskFromHistory(t))
+                .forEach(t -> removeTaskFromDateTimeStorage(t));
+        storage.values().removeIf(t -> t instanceof SingleTask);
     }
 
     @Override
     public void clearEpics() {
-        storage.values().stream().
-                filter(task -> task instanceof Epic).
-                peek(this::removeTaskFromHistory).
-                peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory)).
-                forEach(epic -> ((Epic) epic).getSubtaskList().clear());
+        storage.values().stream()
+                .filter(task -> task instanceof Epic)
+                .peek(this::removeTaskFromHistory)
+                .peek(this::removeTaskFromDateTimeStorage)
+                .peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory))
+                .forEach(epic -> ((Epic) epic).getSubtaskList().clear());
         storage.values().removeIf(task -> task instanceof Epic);
     }
 
     @Override
     public void clearSubtasksInAllEpic() {
-        storage.values().stream().
-                filter(at -> at instanceof Epic).
-                peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory)).
-                forEach(epic -> ((Epic) epic).getSubtaskList().clear());
+        storage.values().stream()
+                .filter(t -> t instanceof Epic)
+                .peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory))
+                .peek(t -> removeTaskFromDateTimeStorage(t))
+                .forEach(epic -> ((Epic) epic).getSubtaskList().clear());
         storage.values().removeIf(task -> task instanceof Subtask);
     }
 
     @Override
     public void clearSubtasksInEpic(Epic epic) {
         checkTaskNotContainsInStorage(epic.getUuid());
-        epic = (Epic)storage.get(epic.getUuid());
-        epic.getSubtaskList().stream().
-                peek(this::removeTaskFromHistory).forEach(subtask -> storage.remove(subtask.getUuid()));
+        epic = (Epic) storage.get(epic.getUuid());
+        epic.getSubtaskList().stream()
+                .peek(this::removeTaskFromHistory)
+                .peek(t -> removeTaskFromDateTimeStorage(t))
+                .forEach(t -> storage.remove(t.getUuid()));
         epic.getSubtaskList().clear();
     }
 
@@ -242,6 +264,7 @@ public class InMemoryTasksManager implements TaskManager {
     public void removeSingleTaskByUuid(UUID uuid) {
         checkTaskNotContainsInStorage(uuid);
         removeTaskFromHistory(storage.get(uuid));
+        removeTaskFromDateTimeStorage(storage.get(uuid));
         storage.remove(uuid);
     }
 
@@ -251,6 +274,7 @@ public class InMemoryTasksManager implements TaskManager {
         Subtask subtask = (Subtask) storage.get(uuid);
         Epic epic = (Epic) storage.get(subtask.getEpic().getUuid());
         removeTaskFromHistory(subtask);
+        removeTaskFromDateTimeStorage(storage.get(uuid));
         epic.getSubtaskList().remove(subtask);
         storage.remove(subtask.getUuid());
     }
@@ -259,9 +283,12 @@ public class InMemoryTasksManager implements TaskManager {
     public void removeEpicByUuid(UUID uuid) {
         checkTaskNotContainsInStorage(uuid);
         Epic epic = (Epic) storage.get(uuid);
-        epic.getSubtaskList().stream().
-                peek(this::removeTaskFromHistory).forEach(subtask -> storage.remove(subtask.getUuid()));
+        epic.getSubtaskList().stream()
+                .peek(this::removeTaskFromHistory)
+                .peek(t -> removeTaskFromDateTimeStorage(t))
+                .forEach(subtask -> storage.remove(subtask.getUuid()));
         removeTaskFromHistory(epic);
+        removeTaskFromDateTimeStorage(epic);
         storage.remove(uuid);
     }
 
