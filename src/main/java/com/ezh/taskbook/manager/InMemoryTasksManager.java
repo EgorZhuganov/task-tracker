@@ -1,18 +1,24 @@
 package com.ezh.taskbook.manager;
 
 import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTasksManager implements TaskManager {
 
     protected Map<UUID, AbstractTask> storage;
+    protected Map<LocalDateTime, UUID> tasksIdSortByDataTime;
+    protected Set<UUID> uuidsWithNullStartTime;
     protected HistoryManager inMemoryHistoryManager;
 
     public InMemoryTasksManager() {
         System.out.println("Начинаем строить грандиозный план!");
         this.storage = new HashMap<>();
+        tasksIdSortByDataTime = new TreeMap<>();
+        uuidsWithNullStartTime = new HashSet<>();
         this.inMemoryHistoryManager = new InMemoryHistoryManager();
     }
 
@@ -110,6 +116,14 @@ public class InMemoryTasksManager implements TaskManager {
         storage.put(epic.getUuid(), epic);
     }
 
+    private void addTaskToDateTimeStorage(AbstractTask task) {
+        if (task.getStartTime() == null) {
+            uuidsWithNullStartTime.add(task.getUuid());
+        } else if (isTimeValid(task)) {
+            tasksIdSortByDataTime.put(task.getStartTime(), task.getUuid());
+        }
+    }
+
     @Override
     public void addEpicWithSubtask(Epic epic, Subtask... subtasks) {
         checkUuid(epic);
@@ -134,6 +148,14 @@ public class InMemoryTasksManager implements TaskManager {
     public void addSingleTask(SingleTask task) {
         checkUuid(task);
         storage.put(task.getUuid(), task);
+    }
+
+    private void removeTaskFromDateTimeStorage(AbstractTask t) {
+        if (t.getStartTime() == null) {
+            uuidsWithNullStartTime.remove(t.getUuid());
+        } else {
+            tasksIdSortByDataTime.remove(t.getStartTime());
+        }
     }
 
     /*Before change SingleTask you have to put in storage old SingleTask*/
@@ -241,6 +263,47 @@ public class InMemoryTasksManager implements TaskManager {
                 peek(this::removeTaskFromHistory).forEach(subtask -> storage.remove(subtask.getUuid()));
         removeTaskFromHistory(epic);
         storage.remove(uuid);
+    }
+
+    @Override
+    public List<AbstractTask> getPrioritizedTasks() {
+        List<AbstractTask> prioritizedTasks = new ArrayList<>();
+        tasksIdSortByDataTime.values().stream().map(id -> storage.get(id)).forEach(prioritizedTasks::add);
+        uuidsWithNullStartTime.stream().map(id -> storage.get(id)).forEach(prioritizedTasks::add);
+        return prioritizedTasks;
+    }
+
+    //validator only for subtask and single task, don't use it for epic
+    private boolean isTimeValid(AbstractTask task) {
+        if (task.getEndTime() == null) //without duration or start time? go to exit
+            return false;
+
+        var startTimeCurrentTask = task.getStartTime();
+        var endTimeCurrentTask = task.getEndTime();
+
+        List<LocalDateTime> ldtList = new ArrayList<>(tasksIdSortByDataTime.keySet());
+
+        for (int i = 0; i < ldtList.size(); i++) {
+            AbstractTask t1 = storage.get(tasksIdSortByDataTime.get(ldtList.get(i)));
+            boolean matcher = endTimeCurrentTask.isEqual(t1.getStartTime()) ||
+                    startTimeCurrentTask.isEqual(t1.getStartTime()) ||
+                    endTimeCurrentTask.isEqual(t1.getEndTime()) ||
+                    startTimeCurrentTask.isEqual(t1.getEndTime()) ||
+                    startTimeCurrentTask.isAfter(t1.getStartTime()) && startTimeCurrentTask.isBefore(t1.getEndTime());
+            if (matcher)
+                throw new TasksIntersectionException("Task " + task.getName() + " intersect with " + t1.getName());
+            for (int j = i + 1; j < ldtList.size(); j++) {
+                AbstractTask t2 = storage.get(tasksIdSortByDataTime.get(ldtList.get(j)));
+                boolean checkInterval = startTimeCurrentTask.isAfter(t1.getEndTime()) &&
+                        endTimeCurrentTask.isBefore(t2.getStartTime()) ||
+                        endTimeCurrentTask.isBefore(ldtList.get(0)) ||
+                        startTimeCurrentTask.isAfter(ldtList.get(ldtList.size() - 1));
+                if (!checkInterval)
+                    throw new TasksIntersectionException("Task \"" + task.getName() + "\" intersect between: "
+                            + t1.getName() + " and " + t2.getName());
+            }
+        }
+        return true;
     }
 
     private void removeTaskFromHistory(AbstractTask task) {
