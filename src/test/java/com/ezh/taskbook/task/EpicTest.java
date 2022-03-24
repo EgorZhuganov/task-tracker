@@ -77,9 +77,9 @@ class EpicTest {
     @Test /*epic calculate end time if at least one subtask does not have a duration or start time field*/
     public void test9_getEndTimeIfAdd2SubtaskWithDurationAndStartTimeAndOneWithoutTheseFieldsShouldReturnEndTime() {
         subtask1.setDuration(Duration.ofDays(30));
-        subtask1.setStartTime(LocalDateTime.now());
+        subtask1.setStartTime(LocalDateTime.of(2022,12,20,15,0));
         subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.now());
+        subtask2.setStartTime(LocalDateTime.of(2022,10,20,15,0));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         Assertions.assertEquals(subtask1.getEndTime(), epic1.getEndTime());
@@ -90,9 +90,9 @@ class EpicTest {
         subtask1.setDuration(Duration.ofDays(300));
         subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
         subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask2.setStartTime(LocalDateTime.of(2019,1,10,23,0));
         subtask3.setDuration(Duration.ofDays(20));
-        subtask3.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setStartTime(LocalDateTime.of(2020,1,10,23,0));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
@@ -122,16 +122,16 @@ class EpicTest {
     }
 
     @Test
-    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnDurationBetweenStartAndEndTimeOfSubtasks() {
-        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0)); //without start duration
+    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnEndTimeTheLastToCompleteSubtask() {
+        subtask1.setStartTime(LocalDateTime.of(2021,12,10,23,0)); //without start duration
         subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask2.setStartTime(LocalDateTime.of(2020,1,10,23,0)); //this is last
         subtask3.setDuration(Duration.ofDays(20));
-        subtask3.setStartTime(LocalDateTime.of(2022,1,10,23,0));
+        subtask3.setStartTime(LocalDateTime.of(2019,1,10,23,0));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertEquals(Duration.between(subtask3.getEndTime(), subtask2.getStartTime()), epic1.getDuration());
+        Assertions.assertEquals(subtask2.getEndTime(), epic1.getEndTime());
         Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
     }
 
