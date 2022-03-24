@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-class FileBackedTasksManagerTest_v2 extends TaskManagerTest<FileBackedTasksManager> {
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     @BeforeEach
     void setup() {
