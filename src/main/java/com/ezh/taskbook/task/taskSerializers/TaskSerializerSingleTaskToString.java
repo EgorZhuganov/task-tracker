@@ -23,10 +23,8 @@ public class TaskSerializerSingleTaskToString extends TaskSerializerToString<Abs
         singleTask.setName(fields[2]);
         singleTask.setStatus(StatusTask.valueOf(fields[3]));
         singleTask.setDescription(fields[4]);
-        if (!fields[5].isEmpty())
-            singleTask.setStartTime(LocalDateTime.parse(fields[5]));
-        if (!fields[5].isEmpty())
-            singleTask.setDuration(Duration.parse(fields[6]));
+        if (!fields[5].isEmpty() && !fields[6].isEmpty())
+            singleTask.setStartTimeAndDuration(LocalDateTime.parse(fields[5]), Duration.parse(fields[6]));
         return singleTask;
     }
 

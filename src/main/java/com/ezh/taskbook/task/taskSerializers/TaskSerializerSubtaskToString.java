@@ -24,10 +24,8 @@ public class TaskSerializerSubtaskToString extends TaskSerializerToString<Abstra
         subtask.setName(fields[2]);
         subtask.setStatus(StatusTask.valueOf(fields[3]));
         subtask.setDescription(fields[4]);
-        if (!fields[5].isEmpty())
-            subtask.setStartTime(LocalDateTime.parse(fields[5]));
-        if (!fields[6].isEmpty())
-            subtask.setDuration(Duration.parse(fields[6]));
+        if (!fields[5].isEmpty() && !fields[6].isEmpty())
+            subtask.setStartTimeAndDuration(LocalDateTime.parse(fields[5]), Duration.parse(fields[6]));
         subtask.setEpic(new Epic(fields[7]));
 
         return subtask;
