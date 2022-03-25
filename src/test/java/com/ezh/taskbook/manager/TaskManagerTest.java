@@ -1,6 +1,7 @@
 package com.ezh.taskbook.manager;
 
 import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.Epic;
 import com.ezh.taskbook.task.SingleTask;
 import com.ezh.taskbook.task.StatusTask;
@@ -720,5 +721,137 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.removeEpicByUuid(epic2.getUuid());
         Assertions.assertEquals(2, manager.getListSubtasks().size());
+    }
+
+    @Test
+    void test62_getPrioritizedTasksShouldReturn4IfAdd4Tasks() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        SingleTask singleTask1 = new SingleTask();
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertEquals(4, manager.getPrioritizedTasks().size());
+    }
+
+    @Test
+    void test63_getPrioritizedTasksShouldReturnFirstTaskWhichHasLeastStartTime() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        SingleTask singleTask1 = new SingleTask();
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertEquals(subtask2, manager.getPrioritizedTasks().get(0));
+    }
+
+    @Test
+    void test62_getPrioritizedTasksShouldReturnLastTaskWithNullStartTime() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+        SingleTask singleTask1 = new SingleTask();
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertEquals(epic1, manager.getPrioritizedTasks().get(3));
+    }
+
+    @Test
+    void test62_isTimeValidIfTwoTasksHaveEqualsStartTimeThrowsIntersectException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20), Duration.ofDays(30));
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+    }
+
+    @Test
+    void test63_isTimeValidIfTwoTasksHaveEqualsEndTimeThrowsIntersectException() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
+
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,11,12,20),Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20), Duration.ofDays(30));
+
+        System.out.println(singleTask1.getEndTime());
+        System.out.println(singleTask2.getEndTime());
+
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addSingleTask(singleTask2));
+    }
+
+    @Test
+    void test64_isTimeValidIfOneTaskStartInEndTimeSecondTaskThrowsIntersectException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20),Duration.ofDays(10));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20), Duration.ofDays(30));
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+    }
+
+    @Test
+    void test64_isTimeValidIfFirstTaskEndInStartTimeSecondTaskThrowsIntersectException() {
+        Epic epic1 = new Epic();
+        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1);
+
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20),Duration.ofDays(30));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20), Duration.ofDays(10));
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+    }
+
+    @Test
+    void test66_isTimeValidIfStartTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
+
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,9,12,20),Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20), Duration.ofDays(30));
+
+        System.out.println(singleTask1.getEndTime());
+        System.out.println(singleTask2.getEndTime());
+
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addSingleTask(singleTask2));
+    }
+
+    @Test
+    void test67_isTimeValidIfEndTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() {
+        SingleTask singleTask1 = new SingleTask();
+        SingleTask singleTask2 = new SingleTask();
+
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20),Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,25,12,20), Duration.ofDays(10));
+
+        manager.addSingleTask(singleTask1);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addSingleTask(singleTask2));
     }
 }
