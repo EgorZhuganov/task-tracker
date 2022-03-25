@@ -300,9 +300,6 @@ public class InMemoryTasksManager implements TaskManager {
 
     //validator only for subtask and single task, don't use it for epic
     private boolean isTimeValid(AbstractTask task) {
-        if (task.getEndTime() == null) //without duration or start time? go to exit
-            return false;
-
         var startTimeCurrentTask = task.getStartTime();
         var endTimeCurrentTask = task.getEndTime();
 
@@ -310,23 +307,14 @@ public class InMemoryTasksManager implements TaskManager {
 
         for (int i = 0; i < ldtList.size(); i++) {
             AbstractTask t1 = storage.get(tasksIdSortByDataTime.get(ldtList.get(i)));
-            boolean matcher = endTimeCurrentTask.isEqual(t1.getStartTime()) ||
-                    startTimeCurrentTask.isEqual(t1.getStartTime()) ||
-                    endTimeCurrentTask.isEqual(t1.getEndTime()) ||
+            boolean matcher = startTimeCurrentTask.isEqual(t1.getStartTime()) ||
                     startTimeCurrentTask.isEqual(t1.getEndTime()) ||
-                    startTimeCurrentTask.isAfter(t1.getStartTime()) && startTimeCurrentTask.isBefore(t1.getEndTime());
+                    endTimeCurrentTask.isEqual(t1.getStartTime()) ||
+                    endTimeCurrentTask.isEqual(t1.getEndTime()) ||
+                    startTimeCurrentTask.isAfter(t1.getStartTime()) && startTimeCurrentTask.isBefore(t1.getEndTime()) ||
+                    t1.getStartTime().isAfter(startTimeCurrentTask) && t1.getStartTime().isBefore(endTimeCurrentTask);
             if (matcher)
                 throw new TasksIntersectionException("Task " + task.getName() + " intersect with " + t1.getName());
-            for (int j = i + 1; j < ldtList.size(); j++) {
-                AbstractTask t2 = storage.get(tasksIdSortByDataTime.get(ldtList.get(j)));
-                boolean checkInterval = startTimeCurrentTask.isAfter(t1.getEndTime()) &&
-                        endTimeCurrentTask.isBefore(t2.getStartTime()) ||
-                        endTimeCurrentTask.isBefore(ldtList.get(0)) ||
-                        startTimeCurrentTask.isAfter(ldtList.get(ldtList.size() - 1));
-                if (!checkInterval)
-                    throw new TasksIntersectionException("Task \"" + task.getName() + "\" intersect between: "
-                            + t1.getName() + " and " + t2.getName());
-            }
         }
         return true;
     }
