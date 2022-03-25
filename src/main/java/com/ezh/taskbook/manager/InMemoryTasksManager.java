@@ -7,7 +7,7 @@ import com.ezh.taskbook.task.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTasksManager extends TaskNotFoundException implements TaskManager  {
+public class InMemoryTasksManager implements TaskManager  {
 
     protected Map<UUID, AbstractTask> storage;
     protected Map<LocalDateTime, UUID> tasksIdSortByDataTime;
