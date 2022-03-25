@@ -25,7 +25,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test2_getEpicBySubtaskUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+    void test2_getEpicBySubtaskUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         SingleTask singleTask1 = new SingleTask();
 
@@ -37,7 +37,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test3_getEpicBySubtaskUuidShouldReturnEpic() {
+    void test3_getEpicBySubtaskUuidShouldReturnEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask2 = new Subtask(epic1);
 
@@ -55,7 +55,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test5_getSubtaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+    void test5_getSubtaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         SingleTask singleTask1 = new SingleTask();
 
@@ -67,7 +67,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test6_getSubtaskByUuidShouldReturnSubtask() {
+    void test6_getSubtaskByUuidShouldReturnSubtask() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask2 = new Subtask(epic1);
 
@@ -83,7 +83,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test8_getEpicByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+    void test8_getEpicByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -96,7 +96,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test9_getEpicByUuidShouldReturnEpic() {
+    void test9_getEpicByUuidShouldReturnEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask2 = new Subtask(epic1);
         manager.addEpicWithSubtask(epic1, subtask2);
@@ -110,7 +110,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test11_getSingleTaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() {
+    void test11_getSingleTaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
 
@@ -121,7 +121,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test12_getSingleTaskByUuidShouldReturnSingleTask() {
+    void test12_getSingleTaskByUuidShouldReturnSingleTask() throws TaskNotFoundException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         manager.addSingleTask(singleTask1);
         manager.getSingleTaskByUuid(singleTask1.getUuid());
@@ -138,7 +138,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test13_getListSubtasksIfAddEpicWith3SubtasksShouldReturn3() {
+    void test13_getListSubtasksIfAddEpicWith3SubtasksShouldReturn3() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -176,7 +176,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test17_getListSubtasksByEpicIfAddEpicWith2SubtasksShouldReturn2() {
+    void test17_getListSubtasksByEpicIfAddEpicWith2SubtasksShouldReturn2() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -187,7 +187,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test18_getListSubtasksByEpicIfAddEpicWithoutAnySubtasksShouldReturn0() {
+    void test18_getListSubtasksByEpicIfAddEpicWithoutAnySubtasksShouldReturn0() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
 
         manager.addEpicWithSubtask(epic1);
@@ -202,7 +202,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test20_getListSingleTasksIfAdd2SingleTasksShouldReturn2() {
+    void test20_getListSingleTasksIfAdd2SingleTasksShouldReturn2() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -212,7 +212,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test21_addEpicShouldReturnFromManagerTheSameEpic() {
+    void test21_addEpicShouldReturnFromManagerTheSameEpic() throws TaskNotFoundException {
         Epic epic1 = new Epic();
 
         manager.addEpic(epic1);
@@ -238,7 +238,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test24_addSingleTaskShouldReturnFromManagerTheSameSingleTask() {
+    void test24_addSingleTaskShouldReturnFromManagerTheSameSingleTask() throws TaskNotFoundException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
 
         manager.addSingleTask(singleTask1);
@@ -246,7 +246,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test25_addSingleTaskAdd2SingleTasksShouldReturnFromManager2SingleTask() {
+    void test25_addSingleTaskAdd2SingleTasksShouldReturnFromManager2SingleTask() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -257,14 +257,14 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test /*must not put two SingleTask which have the same uuid*/
-    void test26_addSingleTaskAddOneEpicTwiceShouldThrowsRuntimeException() {
+    void test26_addSingleTaskAddOneEpicTwiceShouldThrowsRuntimeException() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         manager.addSingleTask(singleTask1);
         Assertions.assertThrows(RuntimeException.class, () -> manager.addSingleTask(singleTask1));
     }
 
     @Test
-    void test27_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturnFromManagerStorage1EpicAnd2Subtasks() {
+    void test27_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturnFromManagerStorage1EpicAnd2Subtasks() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -278,7 +278,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     @Test
         /* unable to add Epic even if try to add with subtask which  missing in the manager's storage because
          * must not put two Epic which have the same uuid */
-    void test28_addEpicWithSubtaskAddEpicWithTwoSubtasksAndThenTryToAddTheSameEpicWithAnotherSubtaskThrowsRuntimeException() {
+    void test28_addEpicWithSubtaskAddEpicWithTwoSubtasksAndThenTryToAddTheSameEpicWithAnotherSubtaskThrowsRuntimeException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -290,7 +290,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test29_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturn2SubtasksFromThisEpic() {
+    void test29_addEpicWithSubtaskAddOneEpicWithTwoSubtasksShouldReturn2SubtasksFromThisEpic() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -302,7 +302,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
     @Test /*If add subtask1 in epic1 and then use method addEpicWithSubtask(epic2 , subtask1), in subtask1 will has
      another epic, in this case epic2*/
-    void test30_addEpicWithSubtaskCheckThatSubtaskHasChangedEpic() {
+    void test30_addEpicWithSubtaskCheckThatSubtaskHasChangedEpic() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Subtask subtask1 = new Subtask(epic1); //set epic1
@@ -315,7 +315,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test31_addSubtaskInAddedEpicAddSubtaskWithTheSameUuidInOneEpicThrowsRuntimeException() {
+    void test31_addSubtaskInAddedEpicAddSubtaskWithTheSameUuidInOneEpicThrowsRuntimeException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
 
@@ -325,7 +325,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test32_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromStorageTwoSubtasks() {
+    void test32_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromStorageTwoSubtasks() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -337,7 +337,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test33_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromEpicTwoSubtasks() {
+    void test33_addSubtaskInAddedEpicAddTwoSubtasksInOneEpicShouldReturnFromEpicTwoSubtasks() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -364,7 +364,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
 
     @Test
-    void test35_changeSingleTaskByUuidTryToChangeSingleTaskBySingleTaskWithTheSameUuidThrowsRuntimeException() {
+    void test35_changeSingleTaskByUuidTryToChangeSingleTaskBySingleTaskWithTheSameUuidThrowsRuntimeException() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
 
         manager.addSingleTask(singleTask1);
@@ -379,7 +379,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test36_changeSingleTaskByUuidSetSingleTaskValuesFromAnotherSingleTaskShouldTheSameValuesInFirstTask() {
+    void test36_changeSingleTaskByUuidSetSingleTaskValuesFromAnotherSingleTaskShouldTheSameValuesInFirstTask() throws TaskNotFoundException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -426,7 +426,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test39_changeEpicByUuidSetEpicValuesFromAnotherEpicShouldTheSameValuesInFirstTask() {
+    void test39_changeEpicByUuidSetEpicValuesFromAnotherEpicShouldTheSameValuesInFirstTask() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -459,7 +459,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test41_changeSubtaskByUuidTryToChangeSubtaskBySubtaskWithTheSameUuidThrowsRuntimeException() {
+    void test41_changeSubtaskByUuidTryToChangeSubtaskBySubtaskWithTheSameUuidThrowsRuntimeException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
 
@@ -474,7 +474,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test42_changeSubtaskByUuidSetSubtaskValuesFromAnotherSubtaskShouldTheSameValuesInFirstTask() {
+    void test42_changeSubtaskByUuidSetSubtaskValuesFromAnotherSubtaskShouldTheSameValuesInFirstTask() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -496,7 +496,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test43_clearSingleTasksAddTwoSingleTasksShouldReturnFromManagerAfterUseMethod0SingleTasks() {
+    void test43_clearSingleTasksAddTwoSingleTasksShouldReturnFromManagerAfterUseMethod0SingleTasks() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -545,7 +545,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test48_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturnFromManager0Subtask() {
+    void test48_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturnFromManager0Subtask() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -563,7 +563,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test49_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturn0SubtaskFromTheseEpics() {
+    void test49_clearSubtasksInAllEpicAdd2EpicAnd4SubtaskShouldReturn0SubtaskFromTheseEpics() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -592,7 +592,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test51_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromEpic0Subtask() {
+    void test51_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromEpic0Subtask() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
@@ -604,7 +604,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test52_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromStorage0SubtaskOwnThisEpic() {
+    void test52_clearSubtasksInEpicIfAddToEpic2SubtasksShouldReturnFromStorage0SubtaskOwnThisEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
@@ -617,7 +617,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test53_clearSubtasksInEpicIfAddTo2Epics2SubtasksEachAfterUseMethodForOneEpicShouldReturnFromStorage2SubtaskOwnAnotherEpic() {
+    void test53_clearSubtasksInEpicIfAddTo2Epics2SubtasksEachAfterUseMethodForOneEpicShouldReturnFromStorage2SubtaskOwnAnotherEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -642,7 +642,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test55_removeSingleTaskByUuidAdd2SingleTasksShouldReturn1SingleTaskFromStorageAfterUseMethod() {
+    void test55_removeSingleTaskByUuidAdd2SingleTasksShouldReturn1SingleTaskFromStorageAfterUseMethod() throws TaskNotFoundException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -662,7 +662,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test57_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromThisEpic() {
+    void test57_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromThisEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
@@ -675,7 +675,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test58_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromStorage() {
+    void test58_removeSubtaskByUuidIfAddTwoSubtasksToEpicThenRemove1ShouldReturn1SubtaskFromStorage() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
 
         Subtask subtask1 = new Subtask(epic1);
@@ -695,7 +695,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test60_removeEpicByUuidAdd2EpicShouldReturn1EpicFromStorageAfterUseMethod() {
+    void test60_removeEpicByUuidAdd2EpicShouldReturn1EpicFromStorageAfterUseMethod() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -707,7 +707,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test61_removeEpicByUuidAdd2EpicWithTwoSubtaskEachShouldReturn2SubtaskFromStorageAfterUseMethod() {
+    void test61_removeEpicByUuidAdd2EpicWithTwoSubtaskEachShouldReturn2SubtaskFromStorageAfterUseMethod() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -724,7 +724,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test62_getPrioritizedTasksShouldReturn4IfAdd4Tasks() {
+    void test62_getPrioritizedTasksShouldReturn4IfAdd4Tasks() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -741,7 +741,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test63_getPrioritizedTasksShouldReturnFirstTaskWhichHasLeastStartTime() {
+    void test63_getPrioritizedTasksShouldReturnFirstTaskWhichHasLeastStartTime() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -758,7 +758,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test62_getPrioritizedTasksShouldReturnLastTaskWithNullStartTime() {
+    void test62_getPrioritizedTasksShouldReturnLastTaskWithNullStartTime() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -787,7 +787,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test63_isTimeValidIfTwoTasksHaveEqualsEndTimeThrowsIntersectException() {
+    void test63_isTimeValidIfTwoTasksHaveEqualsEndTimeThrowsIntersectException() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -827,7 +827,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test66_isTimeValidIfStartTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() {
+    void test66_isTimeValidIfStartTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -843,7 +843,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     }
 
     @Test
-    void test67_isTimeValidIfEndTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() {
+    void test67_isTimeValidIfEndTimeOfTaskBetweenStartAndEndTimeAnotherTaskThrowsIntersectException() throws TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 

@@ -1,5 +1,7 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.Epic;
 import com.ezh.taskbook.task.SingleTask;
 import com.ezh.taskbook.task.Subtask;
@@ -9,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class InMemoryTasksManagerIntegrationTest {
 
     @Test
-    void getEpicBySubtaskUuid() {
+    void getEpicBySubtaskUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -22,21 +24,21 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.addEpicWithSubtask(epic2);
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         //subtask4 not added in storage with help of manager
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicBySubtaskUuid(subtask4.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicBySubtaskUuid(subtask4.getUuid()));
         Assertions.assertEquals(0, manager.getHistory().size());
 
         manager.getEpicBySubtaskUuid(subtask2.getUuid());
         Assertions.assertEquals(1, manager.getHistory().size());
         manager.removeEpicByUuid(epic2.getUuid());
         Assertions.assertEquals(1, manager.getHistory().size());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(epic2.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(epic2.getUuid()));
         manager.removeEpicByUuid(epic1.getUuid());
         Assertions.assertEquals(0, manager.getHistory().size());
 
     }
 
     @Test
-    void getSubtaskByUuid() {
+    void getSubtaskByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -54,9 +56,9 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.getSubtaskByUuid(subtask1.getUuid());
 
         //subtask4 not added in storage with help of manager
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(subtask4.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(singleTask.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(subtask4.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(singleTask.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(epic1.getUuid()));
         Assertions.assertEquals(2, manager.getListEpics().size());
         Assertions.assertEquals(1, manager.getHistory().size());
         Assertions.assertEquals(subtask1.getUuid(), manager.getHistory().get(0).getUuid());
@@ -65,7 +67,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void getEpicByUuid() {
+    void getEpicByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -84,12 +86,12 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(singleTask.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(singleTask.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
 
         manager.getEpicByUuid(epic1.getUuid());
         Assertions.assertEquals(1, manager.getHistory().size());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getEpicByUuid(epic4.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(epic4.getUuid()));
 
         manager.addEpic(epic3);
         manager.getEpicByUuid(epic3.getUuid());
@@ -102,25 +104,25 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void getSingleTaskByUuid() {
+    void getSingleTaskByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(singleTask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(singleTask1.getUuid()));
         manager.addSingleTask(singleTask1);
 
         Assertions.assertEquals(singleTask1.getUuid(), manager.getSingleTaskByUuid(singleTask1.getUuid()).getUuid());
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(epic1.getUuid()));
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(subtask1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(subtask1.getUuid()));
         Assertions.assertEquals(1, manager.getHistory().size());
 
     }
 
     @Test
-    void clearSingleTasks() {
+    void clearSingleTasks() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         SingleTask singleTask1 = new SingleTask();
@@ -132,7 +134,7 @@ public class InMemoryTasksManagerIntegrationTest {
         manager.addSingleTask(singleTask2);
         manager.addSingleTask(singleTask4);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.getSingleTaskByUuid(singleTask3.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(singleTask3.getUuid()));
         Assertions.assertEquals(3, manager.getListSingleTasks().size());
         Assertions.assertEquals(0, manager.getHistory().size());
 
@@ -145,7 +147,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void clearEpics() {
+    void clearEpics() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -175,7 +177,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void clearSubtasksInAllEpic() {
+    void clearSubtasksInAllEpic() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -210,7 +212,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void clearSubtasksInEpic() {
+    void clearSubtasksInEpic() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -238,7 +240,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void removeSingleTaskByUuid() {
+    void removeSingleTaskByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         SingleTask singleTask1 = new SingleTask();
@@ -261,7 +263,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void removeSubtaskByUuid() {
+    void removeSubtaskByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -324,7 +326,7 @@ public class InMemoryTasksManagerIntegrationTest {
     }
 
     @Test
-    void removeEpicByUuid() {
+    void removeEpicByUuid() throws TaskNotFoundException, TasksIntersectionException {
         TaskManager manager = new InMemoryTasksManager();
 
         Epic epic1 = new Epic();
@@ -334,7 +336,7 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask2 = new Subtask(epic2);
         Subtask subtask5 = new Subtask(epic2);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.removeEpicByUuid(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.removeEpicByUuid(epic1.getUuid()));
         manager.addEpic(epic1);
         manager.addEpicWithSubtask(epic2, subtask1, subtask2, subtask5);
 

@@ -1,5 +1,7 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.Epic;
 import com.ezh.taskbook.task.SingleTask;
 import com.ezh.taskbook.task.Subtask;
@@ -29,7 +31,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test1_getHistoryIfHistoryIsEmpty() {
+    void test1_getHistoryIfHistoryIsEmpty() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -42,7 +44,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test2_getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() {
+    void test2_getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -65,7 +67,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test4_getEpicWithoutAnySubtasks() {
+    void test4_getEpicWithoutAnySubtasks() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         manager.addEpic(epic1);
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File("test.txt"));
@@ -74,7 +76,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test /*should that subtask will add in tempStorage in method loadFromFile and then will get from it and add to
     own subtask*/
-    void test4_loadManySubtasksAndOneEpicFromFile() {
+    void test4_loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);

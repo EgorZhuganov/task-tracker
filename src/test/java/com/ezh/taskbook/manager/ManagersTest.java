@@ -1,5 +1,6 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
 import com.ezh.taskbook.task.Epic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class ManagersTest {
 
     @Test
-    void getDefault() {
+    void getDefault() throws TaskNotFoundException {
         TaskManager manager = new Managers().getDefault();
         Epic epic = new Epic();
         manager.addEpic(epic);
