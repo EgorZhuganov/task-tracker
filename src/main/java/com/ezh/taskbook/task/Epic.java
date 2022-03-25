@@ -66,7 +66,7 @@ public class Epic extends AbstractTask {
         if (getStartTime() == null || getEndTime() == null){
             return null;
         }
-        return Duration.between(getEndTime(), getStartTime());
+        return Duration.between(getEndTime(), getStartTime()).abs();
     }
 
     @Override
