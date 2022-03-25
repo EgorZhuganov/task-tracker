@@ -7,7 +7,7 @@ import com.ezh.taskbook.task.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTasksManager implements TaskManager {
+public class InMemoryTasksManager extends TaskNotFoundException implements TaskManager  {
 
     protected Map<UUID, AbstractTask> storage;
     protected Map<LocalDateTime, UUID> tasksIdSortByDataTime;
@@ -28,7 +28,7 @@ public class InMemoryTasksManager implements TaskManager {
         }
     }
 
-    private void checkTaskNotContainsInStorage(UUID uuid) {
+    private void checkTaskNotContainsInStorage(UUID uuid) throws TaskNotFoundException {
         if (storage.get(uuid) == null) {
             throw new TaskNotFoundException("Task not found");
         }
@@ -68,13 +68,13 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> getListSubtasksByEpic(Epic epic) {
+    public List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(epic.getUuid());
         return new ArrayList<>(((Epic) storage.get(epic.getUuid())).getSubtaskList());
     }
 
     @Override
-    public Epic getEpicByUuid(UUID uuid) {
+    public Epic getEpicByUuid(UUID uuid) throws TaskNotFoundException {
         if (storage.get(uuid) instanceof Epic) {
             inMemoryHistoryManager.add(storage.get(uuid));
             return (Epic) storage.get(uuid);
@@ -83,7 +83,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtaskByUuid(UUID uuid) {
+    public Subtask getSubtaskByUuid(UUID uuid) throws TaskNotFoundException {
         if (storage.get(uuid) instanceof Subtask) {
             inMemoryHistoryManager.add(storage.get(uuid));
             return (Subtask) storage.get(uuid);
@@ -92,7 +92,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public SingleTask getSingleTaskByUuid(UUID uuid) {
+    public SingleTask getSingleTaskByUuid(UUID uuid) throws TaskNotFoundException {
         if (storage.get(uuid) instanceof SingleTask) {
             inMemoryHistoryManager.add(storage.get(uuid));
             return (SingleTask) storage.get(uuid);
@@ -101,7 +101,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) {
+    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) throws TaskNotFoundException {
         if (storage.get(subtaskUuid) instanceof Subtask) {
             Subtask subtask = (Subtask) storage.get(subtaskUuid);
             inMemoryHistoryManager.add(subtask.getEpic());
@@ -117,7 +117,7 @@ public class InMemoryTasksManager implements TaskManager {
         storage.put(epic.getUuid(), epic);
     }
 
-    private void addTaskToDateTimeStorage(AbstractTask task) {
+    private void addTaskToDateTimeStorage(AbstractTask task) throws TasksIntersectionException {
         if (task.getStartTime() == null) {
             uuidsWithNullStartTime.add(task.getUuid());
         } else if (isTimeValid(task)) {
@@ -126,7 +126,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void addEpicWithSubtask(Epic epic, Subtask... subtasks) {
+    public void addEpicWithSubtask(Epic epic, Subtask... subtasks) throws TasksIntersectionException {
         checkUuid(epic);
         Arrays.stream(subtasks).forEach(this::checkUuid);
         epic.getSubtaskList().addAll(Arrays.asList(subtasks));
@@ -137,11 +137,11 @@ public class InMemoryTasksManager implements TaskManager {
         Arrays.stream(subtasks).forEach(subtask -> subtask.setEpic(epic));
 
         Arrays.stream(subtasks).forEach(subtask -> storage.put(subtask.getUuid(), subtask));
-        Arrays.stream(subtasks).forEach(s -> addTaskToDateTimeStorage(s));
+        for (Subtask s:subtasks) { addTaskToDateTimeStorage(s); }
     }
 
     @Override
-    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) {
+    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException {
         checkUuid(subtask);
         if (subtask.getEpic() == null || !epic.getUuid().equals(subtask.getEpic().getUuid())) {
             subtask.setEpic(epic);
@@ -153,7 +153,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void addSingleTask(SingleTask task) {
+    public void addSingleTask(SingleTask task) throws TasksIntersectionException {
         checkUuid(task);
         addTaskToDateTimeStorage(task);
         storage.put(task.getUuid(), task);
@@ -169,7 +169,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     /*Before change SingleTask you have to put in storage old SingleTask*/
     @Override
-    public void changeSingleTaskByUuid(UUID uuidOldSingleTask, SingleTask newTask) {
+    public void changeSingleTaskByUuid(UUID uuidOldSingleTask, SingleTask newTask) throws TaskNotFoundException, TasksIntersectionException {
         checkTaskNotContainsInStorage(uuidOldSingleTask);
         if (uuidOldSingleTask.equals(newTask.getUuid())) {
             throw new RuntimeException("Trying changing two task with the same uuid");
@@ -187,7 +187,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     /*Before change Epic you have to put in storage old Epic*/
     @Override
-    public void changeEpicByUuid(UUID uuidOldEpic, Epic newEpic) {
+    public void changeEpicByUuid(UUID uuidOldEpic, Epic newEpic) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(uuidOldEpic);
         if (uuidOldEpic.equals(newEpic.getUuid())) {
             throw new RuntimeException("Trying changing two task with the same uuid");
@@ -199,7 +199,7 @@ public class InMemoryTasksManager implements TaskManager {
 
     /*Before change subtask you have to put in storage Epic with old Subtask*/
     @Override
-    public void changeSubtaskByUuid(UUID uuidOldSubtask, Subtask newSubtask) {
+    public void changeSubtaskByUuid(UUID uuidOldSubtask, Subtask newSubtask) throws TaskNotFoundException, TasksIntersectionException {
         checkTaskNotContainsInStorage(uuidOldSubtask);
         if (uuidOldSubtask.equals(newSubtask.getUuid())) {
             throw new RuntimeException("Trying changing two task with the same uuid");
@@ -248,7 +248,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void clearSubtasksInEpic(Epic epic) {
+    public void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(epic.getUuid());
         epic = (Epic) storage.get(epic.getUuid());
         epic.getSubtaskList().stream()
@@ -259,7 +259,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void removeSingleTaskByUuid(UUID uuid) {
+    public void removeSingleTaskByUuid(UUID uuid) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(uuid);
         removeTaskFromHistory(storage.get(uuid));
         removeTaskFromDateTimeStorage(storage.get(uuid));
@@ -267,7 +267,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void removeSubtaskByUuid(UUID uuid) {
+    public void removeSubtaskByUuid(UUID uuid) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(uuid);
         Subtask subtask = (Subtask) storage.get(uuid);
         Epic epic = (Epic) storage.get(subtask.getEpic().getUuid());
@@ -278,7 +278,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     @Override
-    public void removeEpicByUuid(UUID uuid) {
+    public void removeEpicByUuid(UUID uuid) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(uuid);
         Epic epic = (Epic) storage.get(uuid);
         epic.getSubtaskList().stream()
@@ -299,7 +299,7 @@ public class InMemoryTasksManager implements TaskManager {
     }
 
     //validator only for subtask and single task, don't use it for epic
-    private boolean isTimeValid(AbstractTask task) {
+    private boolean isTimeValid(AbstractTask task) throws TasksIntersectionException {
         var startTimeCurrentTask = task.getStartTime();
         var endTimeCurrentTask = task.getEndTime();
 

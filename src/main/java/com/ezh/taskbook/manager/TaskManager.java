@@ -1,5 +1,7 @@
 package com.ezh.taskbook.manager;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.AbstractTask;
 import com.ezh.taskbook.task.Epic;
 import com.ezh.taskbook.task.SingleTask;
@@ -15,32 +17,32 @@ public interface TaskManager {
 
     List<SingleTask> getListSingleTasks();
 
-    List<Subtask> getListSubtasksByEpic(Epic epic);
+    List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException;
 
-    Epic getEpicByUuid(UUID uuid);
+    Epic getEpicByUuid(UUID uuid) throws TaskNotFoundException;
 
-    Subtask getSubtaskByUuid(UUID uuid);
+    Subtask getSubtaskByUuid(UUID uuid) throws TaskNotFoundException;
 
-    SingleTask getSingleTaskByUuid(UUID uuid);
+    SingleTask getSingleTaskByUuid(UUID uuid) throws TaskNotFoundException;
 
-    Epic getEpicBySubtaskUuid(UUID subtaskUuid);
+    Epic getEpicBySubtaskUuid(UUID subtaskUuid) throws TaskNotFoundException;
 
     void addEpic(Epic epic);
 
-    void addEpicWithSubtask(Epic epic, Subtask... subtask);
+    void addEpicWithSubtask(Epic epic, Subtask... subtask) throws TasksIntersectionException;
 
-    void addSingleTask(SingleTask task);
+    void addSingleTask(SingleTask task) throws TasksIntersectionException;
 
-    void addSubtaskInAddedEpic(Epic epic, Subtask subtask);
+    void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException;
 
     /*Before change SingleTask you have to put in taskList one or more SingleTask*/
-    void changeSingleTaskByUuid(UUID uuid, SingleTask newTask);
+    void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) throws TaskNotFoundException, TasksIntersectionException;
 
     /*Before change subtask you have to put in Map Epic with old Subtask*/
-    void changeEpicByUuid(UUID uuid, Epic newEpic);
+    void changeEpicByUuid(UUID uuid, Epic newEpic) throws TaskNotFoundException;
 
     /*Before change subtask you have to put in Map Epic with Subtask*/
-    void changeSubtaskByUuid(UUID uuid, Subtask newSubtask);
+    void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) throws TaskNotFoundException, TasksIntersectionException;
 
     void clearSingleTasks();
 
@@ -48,13 +50,13 @@ public interface TaskManager {
 
     void clearSubtasksInAllEpic();
 
-    void clearSubtasksInEpic(Epic epic);
+    void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException;
 
-    void removeSingleTaskByUuid(UUID uuid);
+    void removeSingleTaskByUuid(UUID uuid) throws TaskNotFoundException;
 
-    void removeSubtaskByUuid(UUID uuid);
+    void removeSubtaskByUuid(UUID uuid) throws TaskNotFoundException;
 
-    void removeEpicByUuid(UUID uuid);
+    void removeEpicByUuid(UUID uuid) throws TaskNotFoundException;
 
     List<AbstractTask> getHistory();
 

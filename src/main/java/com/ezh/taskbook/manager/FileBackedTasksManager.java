@@ -2,6 +2,8 @@ package com.ezh.taskbook.manager;
 
 import com.ezh.taskbook.exception.ManagerRestoreException;
 import com.ezh.taskbook.exception.ManagerSaveException;
+import com.ezh.taskbook.exception.TaskNotFoundException;
+import com.ezh.taskbook.exception.TasksIntersectionException;
 import com.ezh.taskbook.task.*;
 import com.ezh.taskbook.task.taskSerializers.TaskSerializerSingleTaskToString;
 import com.ezh.taskbook.task.taskSerializers.TaskSerializerSubtaskToString;
@@ -103,33 +105,33 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public List<Subtask> getListSubtasksByEpic(Epic epic) {
+    public List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException {
         return super.getListSubtasksByEpic(epic);
     }
 
     @Override
-    public Epic getEpicByUuid(UUID uuid) {
+    public Epic getEpicByUuid(UUID uuid) throws TaskNotFoundException {
         Epic epic = super.getEpicByUuid(uuid);
         save();
         return epic;
     }
 
     @Override
-    public Subtask getSubtaskByUuid(UUID uuid) {
+    public Subtask getSubtaskByUuid(UUID uuid) throws TaskNotFoundException {
         Subtask subtask = super.getSubtaskByUuid(uuid);
         save();
         return subtask;
     }
 
     @Override
-    public SingleTask getSingleTaskByUuid(UUID uuid) {
+    public SingleTask getSingleTaskByUuid(UUID uuid) throws TaskNotFoundException {
         SingleTask singleTask = super.getSingleTaskByUuid(uuid);
         save();
         return singleTask;
     }
 
     @Override
-    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) {
+    public Epic getEpicBySubtaskUuid(UUID subtaskUuid) throws TaskNotFoundException {
         Epic epic = super.getEpicBySubtaskUuid(subtaskUuid);
         save();
         return epic;
@@ -142,37 +144,37 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public void addEpicWithSubtask(Epic epic, Subtask... subtask) {
+    public void addEpicWithSubtask(Epic epic, Subtask... subtask) throws TasksIntersectionException {
         super.addEpicWithSubtask(epic, subtask);
         save();
     }
 
     @Override
-    public void addSingleTask(SingleTask task) {
+    public void addSingleTask(SingleTask task) throws TasksIntersectionException {
         super.addSingleTask(task);
         save();
     }
 
     @Override
-    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) {
+    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException {
         super.addSubtaskInAddedEpic(epic, subtask);
         save();
     }
 
     @Override
-    public void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) {
+    public void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) throws TaskNotFoundException, TasksIntersectionException {
         super.changeSingleTaskByUuid(uuid, newTask);
         save();
     }
 
     @Override
-    public void changeEpicByUuid(UUID uuid, Epic newEpic) {
+    public void changeEpicByUuid(UUID uuid, Epic newEpic) throws TaskNotFoundException {
         super.changeEpicByUuid(uuid, newEpic);
         save();
     }
 
     @Override
-    public void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) {
+    public void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) throws TaskNotFoundException, TasksIntersectionException {
         super.changeSubtaskByUuid(uuid, newSubtask);
         save();
     }
@@ -196,25 +198,25 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public void clearSubtasksInEpic(Epic epic) {
+    public void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException {
         super.clearSubtasksInEpic(epic);
         save();
     }
 
     @Override
-    public void removeSingleTaskByUuid(UUID uuid) {
+    public void removeSingleTaskByUuid(UUID uuid) throws TaskNotFoundException {
         super.removeSingleTaskByUuid(uuid);
         save();
     }
 
     @Override
-    public void removeSubtaskByUuid(UUID uuid) {
+    public void removeSubtaskByUuid(UUID uuid) throws TaskNotFoundException {
         super.removeSubtaskByUuid(uuid);
         save();
     }
 
     @Override
-    public void removeEpicByUuid(UUID uuid) {
+    public void removeEpicByUuid(UUID uuid) throws TaskNotFoundException {
         super.removeEpicByUuid(uuid);
         save();
     }
