@@ -25,12 +25,13 @@ public class SingleTask extends AbstractTask {
     @Override
     public Duration getDuration() { return duration; }
 
-    public void setDuration(Duration duration) { this.duration = duration; }
-
     @Override
     public LocalDateTime getStartTime() { return startTime; }
 
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public void setStartTimeAndDuration(LocalDateTime startTime, Duration duration) {
+        this.startTime = startTime;
+        this.duration = duration;
+    }
 
     @Override
     public StatusTask getStatus() {
