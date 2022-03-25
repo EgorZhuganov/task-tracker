@@ -17,8 +17,7 @@ class TaskSerializerSingleTaskToStringTest {
         SingleTask singleTask = new SingleTask();
         singleTask.setName("I'm Single task");
         singleTask.setDescription("descriptions of singleTask");
-        singleTask.setStartTime(LocalDateTime.now());
-        singleTask.setDuration(Duration.ofDays(10));
+        singleTask.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(10));
 
         String value = serializer.taskAsString(singleTask);
         String[] fields = value.split(";");
@@ -42,8 +41,7 @@ class TaskSerializerSingleTaskToStringTest {
         singleTask.setName("I'm Single task");
         singleTask.setDescription("descriptions of singleTask");
         singleTask.setStatus(StatusTask.IN_PROGRESS);
-        singleTask.setStartTime(LocalDateTime.now());
-        singleTask.setDuration(Duration.ofDays(10));
+        singleTask.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(10));
 
         String value = serializer.taskAsString(singleTask);
         SingleTask singleTaskSerialize = (SingleTask) serializer.taskFromString(value);

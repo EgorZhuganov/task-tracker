@@ -22,8 +22,7 @@ class TaskSerializerSubtaskToStringTest {
         epic.setDescription("descriptions of Epic");
         subtask.setName("I'm Subtask");
         subtask.setDescription("descriptions of Subtask");
-        subtask.setStartTime(LocalDateTime.now());
-        subtask.setDuration(Duration.ofDays(10));
+        subtask.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(10));
 
         String value = serializer.taskAsString(subtask);
         String[] fields = value.split(";");
@@ -50,8 +49,7 @@ class TaskSerializerSubtaskToStringTest {
         epic.setDescription("descriptions of Epic");
         subtask.setName("I'm Subtask");
         subtask.setDescription("descriptions of Subtask");
-        subtask.setStartTime(LocalDateTime.now());
-        subtask.setDuration(Duration.ofDays(10));
+        subtask.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(10));
 
         String value = serializer.taskAsString(subtask);
         Subtask subtaskSerialize = (Subtask) serializer.taskFromString(value);
