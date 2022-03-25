@@ -1,6 +1,6 @@
 package com.ezh.taskbook.exception;
 
-public class TasksIntersectionException extends RuntimeException {
+public class TasksIntersectionException extends Exception {
 
     public TasksIntersectionException() {
         super();

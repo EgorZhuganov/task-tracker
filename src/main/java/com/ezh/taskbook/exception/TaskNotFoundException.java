@@ -1,6 +1,6 @@
 package com.ezh.taskbook.exception;
 
-public class TaskNotFoundException extends RuntimeException {
+public class TaskNotFoundException extends Exception {
 
     public TaskNotFoundException() {
     }
