@@ -76,10 +76,8 @@ class EpicTest {
 
     @Test /*epic calculate end time if at least one subtask does not have a duration or start time field*/
     public void test9_getEndTimeIfAdd2SubtaskWithDurationAndStartTimeAndOneWithoutTheseFieldsShouldReturnEndTime() {
-        subtask1.setDuration(Duration.ofDays(30));
-        subtask1.setStartTime(LocalDateTime.of(2022,12,20,15,0));
-        subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2022,10,20,15,0));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,15,0), Duration.ofDays(30));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,10,20,15,0), Duration.ofDays(10));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
         Assertions.assertEquals(subtask1.getEndTime(), epic1.getEndTime());
@@ -87,12 +85,9 @@ class EpicTest {
 
     @Test /* return the biggest time of execute (duration+start time) */
     public void test10_getEndTimeIfAdd3SubtaskWithDurationAndStartTimeShouldReturnEndTime() {
-        subtask1.setDuration(Duration.ofDays(300));
-        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
-        subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2019,1,10,23,0));
-        subtask3.setDuration(Duration.ofDays(20));
-        subtask3.setStartTime(LocalDateTime.of(2020,1,10,23,0));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,10,23,0),Duration.ofDays(300));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0),Duration.ofDays(10));
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(20));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
@@ -102,13 +97,10 @@ class EpicTest {
 
     @Test
     public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTimeAnotherSubtask() {
-        subtask1.setDuration(Duration.ofDays(300));
-        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
-        subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
-        subtask3.setDuration(Duration.ofDays(20)); //without start time
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,10,23,0), Duration.ofDays(300));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,10,23,0), Duration.ofDays(10));
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);  //without start time subtask3
 
         Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
         Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
@@ -122,38 +114,24 @@ class EpicTest {
     }
 
     @Test
-    public void test13_getEndTimeIfOneOfSubtaskHasNotGotDurationShouldReturnEndTimeTheLastToCompleteSubtask() {
-        subtask1.setStartTime(LocalDateTime.of(2021,12,10,23,0)); //without start duration
-        subtask2.setDuration(Duration.ofDays(10));
-        subtask2.setStartTime(LocalDateTime.of(2020,1,10,23,0)); //this is last
-        subtask3.setDuration(Duration.ofDays(20));
-        subtask3.setStartTime(LocalDateTime.of(2019,1,10,23,0));
-
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-
-        Assertions.assertEquals(subtask2.getEndTime(), epic1.getEndTime());
-        Assertions.assertDoesNotThrow(() -> epic1.getEndTime());
-    }
-
-    @Test
     public void test14_getStartTimeIfAdd3SubtaskWithStartTimeFindTaskWithTheSmallestStartTime() {
-        subtask1.setStartTime(LocalDateTime.of(2022,12,10,23,0));
-        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
-        subtask3.setStartTime(LocalDateTime.of(2022,2,10,23,0));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2021,12,10,23,0), Duration.ofDays(5)); //without start duration
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
+        Assertions.assertEquals(subtask3.getStartTime(), epic1.getStartTime());
     }
 
     @Test
     public void test15_getStartTimeIfAddSomeSubtasksAndOneWithoutStartTimeShouldReturnTheSmallestStartTimeNotException() {
-        subtask2.setStartTime(LocalDateTime.of(2022,1,10,23,0));
-        subtask3.setStartTime(LocalDateTime.of(2022,2,10,23,0));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3); //subtask2 hasn't got start time
 
-        Assertions.assertEquals(subtask2.getStartTime(), epic1.getStartTime());
+        Assertions.assertEquals(subtask3.getStartTime(), epic1.getStartTime());
     }
 
     @Test
@@ -164,13 +142,13 @@ class EpicTest {
     }
 
     @Test /*duration count if subtask has start time and end time*/
-    public void test17_getDurationIfAdd3SubtaskWithDurationDoNotCountDurationShouldReturnNull() {
-        subtask1.setDuration(Duration.ofHours(10));
-        subtask2.setDuration(Duration.ofHours(8));
-        subtask3.setDuration(Duration.ofHours(12));
+    public void test17_getDurationIfAdd2SubtasksWithStartTimeAndDurationShouldReturnDurationBetweenTwoSubtasks() {
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
+
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
 
-        Assertions.assertNull(epic1.getDuration());
+        Assertions.assertEquals(Duration.between(subtask3.getStartTime(), subtask2.getEndTime()), epic1.getDuration());
     }
 }

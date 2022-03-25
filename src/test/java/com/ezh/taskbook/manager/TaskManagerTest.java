@@ -355,8 +355,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         singleTask2.setName("I'm real task");
         singleTask2.setDescription("About something");
         singleTask2.setStatus(StatusTask.DONE);
-        singleTask2.setDuration(Duration.ofDays(5));
-        singleTask2.setStartTime(LocalDateTime.now());
+        singleTask2.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(5));
 
         Assertions.assertThrows(TaskNotFoundException.class, () ->
                 manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2));
@@ -372,8 +371,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         singleTask1.setName("I'm real task");
         singleTask1.setDescription("About something");
         singleTask1.setStatus(StatusTask.DONE);
-        singleTask1.setDuration(Duration.ofDays(5));
-        singleTask1.setStartTime(LocalDateTime.now());
+        singleTask1.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(5));
 
         Assertions.assertThrows(RuntimeException.class, () ->
                 manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask1));
@@ -387,8 +385,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         singleTask2.setName("I'm real task");
         singleTask2.setDescription("About something");
         singleTask2.setStatus(StatusTask.DONE);
-        singleTask2.setDuration(Duration.ofDays(5));
-        singleTask2.setStartTime(LocalDateTime.of(2022,12,12,23,59));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 12, 23, 59), Duration.ofDays(5));
 
         manager.addSingleTask(singleTask1);
         manager.changeSingleTaskByUuid(singleTask1.getUuid(), singleTask2);
@@ -454,8 +451,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         subtask2.setName("I'm epic task");
         subtask2.setDescription("About something");
-        subtask2.setDuration(Duration.ofDays(5));
-        subtask2.setStartTime(LocalDateTime.now());
+        subtask2.setStartTimeAndDuration(LocalDateTime.now(), Duration.ofDays(5));
 
         Assertions.assertThrows(TaskNotFoundException.class, () ->
                 manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2));
@@ -470,8 +466,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         subtask1.setName("I'm real task");
         subtask1.setDescription("About something");
-        subtask1.setDuration(Duration.ofDays(5));
-        subtask1.setStartTime(LocalDateTime.of(2022,12,12,23,59));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 12, 23, 59), Duration.ofDays(5));
 
         Assertions.assertThrows(RuntimeException.class, () ->
                 manager.changeSubtaskByUuid(subtask1.getUuid(), subtask1));
@@ -488,8 +483,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask2.setStatus(StatusTask.IN_PROGRESS);
         subtask2.setName("My name is Subtask");
         subtask2.setDescription("I have to do something important");
-        subtask1.setDuration(Duration.ofDays(5));
-        subtask1.setStartTime(LocalDateTime.of(2022,12,12,23,59));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 12, 23, 59), Duration.ofDays(5));
         manager.changeSubtaskByUuid(subtask1.getUuid(), subtask2);
 
         Assertions.assertEquals(subtask2.getName(), manager.getSubtaskByUuid(subtask1.getUuid()).getName());
@@ -517,7 +511,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
-        Assertions.assertDoesNotThrow(() ->  manager.clearSingleTasks());
+        Assertions.assertDoesNotThrow(() -> manager.clearSingleTasks());
     }
 
     @Test
@@ -536,7 +530,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     void test46_clearEpicsWithEmptyStorageNotThrowsAnyException() {
         Epic epic1 = new Epic();
 
-        Assertions.assertDoesNotThrow(() ->  manager.clearEpics());
+        Assertions.assertDoesNotThrow(() -> manager.clearEpics());
     }
 
     @Test
@@ -546,7 +540,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic2);
 
-        Assertions.assertDoesNotThrow(() ->  manager.clearSubtasksInAllEpic());
+        Assertions.assertDoesNotThrow(() -> manager.clearSubtasksInAllEpic());
     }
 
     @Test
