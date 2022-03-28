@@ -230,19 +230,25 @@ public class InMemoryTasksManager implements TaskManager  {
     public void clearEpics() {
         storage.values().stream()
                 .filter(task -> task instanceof Epic)
-                .peek(this::removeTaskFromHistory)
-                .peek(this::removeTaskFromDateTimeStorage)
-                .peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory))
+                .peek(epic -> removeTaskFromHistory(epic))
+                .peek(epic -> removeTaskFromDateTimeStorage(epic))
+                .peek(epic -> ((Epic) epic).getSubtaskList()
+                        .stream()
+                        .peek(this::removeTaskFromHistory)
+                        .forEach(this::removeTaskFromDateTimeStorage))
                 .forEach(epic -> ((Epic) epic).getSubtaskList().clear());
         storage.values().removeIf(task -> task instanceof Epic);
+        storage.values().removeIf(task -> task instanceof Subtask);
     }
 
     @Override
     public void clearSubtasksInAllEpic() {
         storage.values().stream()
                 .filter(t -> t instanceof Epic)
-                .peek(epic -> ((Epic) epic).getSubtaskList().forEach(this::removeTaskFromHistory))
-                .peek(t -> removeTaskFromDateTimeStorage(t))
+                .peek(epic -> ((Epic) epic).getSubtaskList()
+                        .stream()
+                        .peek(this::removeTaskFromHistory)
+                        .forEach(this::removeTaskFromDateTimeStorage))
                 .forEach(epic -> ((Epic) epic).getSubtaskList().clear());
         storage.values().removeIf(task -> task instanceof Subtask);
     }
@@ -272,9 +278,9 @@ public class InMemoryTasksManager implements TaskManager  {
         Subtask subtask = (Subtask) storage.get(uuid);
         Epic epic = (Epic) storage.get(subtask.getEpic().getUuid());
         removeTaskFromHistory(subtask);
-        removeTaskFromDateTimeStorage(storage.get(uuid));
+        removeTaskFromDateTimeStorage(subtask);
         epic.getSubtaskList().remove(subtask);
-        storage.remove(subtask.getUuid());
+        storage.remove(uuid);
     }
 
     @Override
