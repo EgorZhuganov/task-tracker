@@ -13,7 +13,7 @@ public class TaskSerializerSubtaskToString extends TaskSerializerToString<Abstra
         var sb = new StringBuilder(super.taskAsString(task));
         sb = task.getStartTime() != null ? sb.append(task.getStartTime()).append(CSV_SEPARATOR) : sb.append(CSV_SEPARATOR);
         sb = task.getDuration() != null ? sb.append(task.getDuration()).append(CSV_SEPARATOR) : sb.append(CSV_SEPARATOR);
-        sb.append(((Subtask)task).getEpic().getUuid());
+        sb.append(((Subtask)task).getEpicId());
         return sb.toString();
     }
 
@@ -26,7 +26,7 @@ public class TaskSerializerSubtaskToString extends TaskSerializerToString<Abstra
         subtask.setDescription(fields[4]);
         if (!fields[5].isEmpty() && !fields[6].isEmpty())
             subtask.setStartTimeAndDuration(LocalDateTime.parse(fields[5]), Duration.parse(fields[6]));
-        subtask.setEpic(new Epic(fields[7]));
+        subtask.setEpicId(new Epic(fields[7]));
 
         return subtask;
     }
