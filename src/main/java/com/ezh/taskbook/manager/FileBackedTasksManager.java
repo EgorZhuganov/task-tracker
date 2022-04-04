@@ -105,8 +105,8 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException {
-        return super.getListSubtasksByEpic(epic);
+    public List<Subtask> getListSubtasksByEpicId(UUID epicId) throws TaskNotFoundException {
+        return super.getListSubtasksByEpicId(epicId);
     }
 
     @Override
