@@ -35,7 +35,7 @@ class TaskSerializerSubtaskToStringTest {
         Assertions.assertEquals(subtask.getDescription(), fields[4]);
         Assertions.assertEquals(subtask.getStartTime().toString(), fields[5]);
         Assertions.assertEquals(subtask.getDuration().toString(), fields[6]);
-        Assertions.assertEquals(subtask.getEpic().getUuid().toString(), fields[7]);
+        Assertions.assertEquals(subtask.getEpicId().toString(), fields[7]);
     }
 
     @Test
@@ -61,7 +61,7 @@ class TaskSerializerSubtaskToStringTest {
         Assertions.assertEquals(subtask.getDescription(), subtaskSerialize.getDescription());
         Assertions.assertEquals(subtask.getStartTime(), subtask.getStartTime());
         Assertions.assertEquals(subtask.getDuration(), subtask.getDuration());
-        Assertions.assertEquals(subtask.getEpic().getUuid(), subtaskSerialize.getEpic().getUuid());
+        Assertions.assertEquals(subtask.getEpicId(), subtaskSerialize.getEpicId());
     }
 
 }
