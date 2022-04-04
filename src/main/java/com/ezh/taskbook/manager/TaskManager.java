@@ -17,7 +17,7 @@ public interface TaskManager {
 
     List<SingleTask> getListSingleTasks();
 
-    List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException;
+    List<Subtask> getListSubtasksByEpicId(UUID epicId) throws TaskNotFoundException;
 
     Epic getEpicByUuid(UUID uuid) throws TaskNotFoundException;
 

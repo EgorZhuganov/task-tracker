@@ -172,7 +172,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getListSubtasksByEpic(epic1));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getListSubtasksByEpicId(epic1.getUuid()));
     }
 
     @Test
@@ -183,7 +183,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2);
 
-        Assertions.assertEquals(2, manager.getListSubtasksByEpic(epic1).size());
+        Assertions.assertEquals(2, manager.getListSubtasksByEpicId(epic1.getUuid()).size());
     }
 
     @Test
@@ -192,7 +192,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.addEpicWithSubtask(epic1);
 
-        Assertions.assertEquals(0, manager.getListSubtasksByEpic(epic1).size());
+        Assertions.assertEquals(0, manager.getListSubtasksByEpicId(epic1.getUuid()).size());
     }
 
     @Test
@@ -310,8 +310,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.addEpicWithSubtask(epic2, subtask1, subtask2); //reset to epic2
 
-        Assertions.assertEquals(epic2, subtask1.getEpic());
-        Assertions.assertEquals(epic2, subtask2.getEpic());
+        Assertions.assertEquals(epic2.getUuid(), subtask1.getEpicId());
+        Assertions.assertEquals(epic2.getUuid(), subtask2.getEpicId());
     }
 
     @Test
@@ -833,9 +833,6 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,9,12,20),Duration.ofDays(20));
         singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20), Duration.ofDays(30));
-
-        System.out.println(singleTask1.getEndTime());
-        System.out.println(singleTask2.getEndTime());
 
         manager.addSingleTask(singleTask1);
 

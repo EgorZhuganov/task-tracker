@@ -68,9 +68,9 @@ public class InMemoryTasksManager implements TaskManager  {
     }
 
     @Override
-    public List<Subtask> getListSubtasksByEpic(Epic epic) throws TaskNotFoundException {
-        checkTaskNotContainsInStorage(epic.getUuid());
-        return new ArrayList<>(((Epic) storage.get(epic.getUuid())).getSubtaskList());
+    public List<Subtask> getListSubtasksByEpicId(UUID epicId) throws TaskNotFoundException {
+        checkTaskNotContainsInStorage(epicId);
+        return new ArrayList<>(((Epic) storage.get(epicId)).getSubtaskList());
     }
 
     @Override
