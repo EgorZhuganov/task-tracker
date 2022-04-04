@@ -29,7 +29,7 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
         taskSerializerMap.put(TypeTask.SUBTASK, new TaskSerializerSubtaskToString());
     }
 
-    private void save() {
+    protected void save() {
         try (FileWriter fw = new FileWriter(file)) {
             fw.append("id,type,name,status,description,start_time,duration,epic\n");
             storage.values().forEach(t -> {
@@ -57,11 +57,11 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
                 AbstractTask task = taskSerializerMap.get(type).taskFromString(lines[i]);
                 fileBackedTasksManager.storage.put(task.getUuid(), task);
                 if (type == TypeTask.SUBTASK) {
-                    Epic epic = ((Subtask)task).getEpic();
-                    boolean check = fileBackedTasksManager.storage.containsKey(epic.getUuid());
+                    boolean check = fileBackedTasksManager.storage.containsKey(((Subtask) task).getEpicId());
                     if (check) {
+                        Epic epic = (Epic) fileBackedTasksManager.storage.get(((Subtask) task).getEpicId());
                         epic = (Epic) fileBackedTasksManager.storage.get(epic.getUuid());
-                        ((Subtask) task).setEpic(epic);
+                        ((Subtask) task).setEpicId(epic);
                         epic.getSubtaskList().add((Subtask) task);
                     } else {
                         tempStorage.add((Subtask) task);
@@ -70,9 +70,9 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
             }
             if (!tempStorage.isEmpty()) {
                 for (Subtask subtask : tempStorage) {
-                    Epic epic = (Epic) fileBackedTasksManager.storage.get(subtask.getEpic().getUuid());
+                    Epic epic = (Epic) fileBackedTasksManager.storage.get(subtask.getEpicId());
                     epic.getSubtaskList().add(subtask);
-                    subtask.setEpic(epic);
+                    subtask.setEpicId(epic);
                 }
             }
 
