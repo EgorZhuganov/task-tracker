@@ -2,18 +2,19 @@ package com.ezh.taskbook.task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Subtask extends AbstractTask {
 
     private StatusTask status;
-    private Epic epic;
+    private UUID epicId;
     private Duration duration;
     private LocalDateTime startTime;
 
     public Subtask (Epic epic) {
         super();
         setStatus(StatusTask.NEW);
-        this.epic = epic;
+        this.epicId = epic.getUuid();
     }
 
     public Subtask (String id) {
@@ -40,9 +41,9 @@ public class Subtask extends AbstractTask {
 
     public void setStatus(StatusTask status) { this.status = status; }
 
-    public Epic getEpic() { return epic; }
+    public UUID getEpicId() { return epicId; }
 
-    public void setEpic(Epic epic) { this.epic = epic; }
+    public void setEpicId(Epic epic) { this.epicId = epic.getUuid(); }
 
     @Override
     public String toString() {
