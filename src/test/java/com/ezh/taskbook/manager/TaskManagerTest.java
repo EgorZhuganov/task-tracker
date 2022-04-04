@@ -172,7 +172,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getListSubtasksByEpicId(epic1.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getListSubtasksByEpicUuid(epic1.getUuid()));
     }
 
     @Test
@@ -183,7 +183,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.addEpicWithSubtask(epic1, subtask1, subtask2);
 
-        Assertions.assertEquals(2, manager.getListSubtasksByEpicId(epic1.getUuid()).size());
+        Assertions.assertEquals(2, manager.getListSubtasksByEpicUuid(epic1.getUuid()).size());
     }
 
     @Test
@@ -192,7 +192,7 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
 
         manager.addEpicWithSubtask(epic1);
 
-        Assertions.assertEquals(0, manager.getListSubtasksByEpicId(epic1.getUuid()).size());
+        Assertions.assertEquals(0, manager.getListSubtasksByEpicUuid(epic1.getUuid()).size());
     }
 
     @Test

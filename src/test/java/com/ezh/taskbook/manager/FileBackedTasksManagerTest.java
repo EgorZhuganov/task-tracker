@@ -31,7 +31,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test1_getHistoryIfHistoryIsEmpty() throws TasksIntersectionException {
+    void test1_getHistoryIfHistoryIsEmptyShouldReturnSize0() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
