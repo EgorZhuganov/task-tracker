@@ -104,8 +104,8 @@ public class InMemoryTasksManager implements TaskManager  {
     public Epic getEpicBySubtaskUuid(UUID subtaskUuid) throws TaskNotFoundException {
         if (storage.get(subtaskUuid) instanceof Subtask) {
             Subtask subtask = (Subtask) storage.get(subtaskUuid);
-            inMemoryHistoryManager.add(subtask.getEpic());
-            return subtask.getEpic();
+            inMemoryHistoryManager.add(storage.get(subtask.getEpicId()));
+            return (Epic) storage.get(subtask.getEpicId());
         }
         throw new TaskNotFoundException("Can not find task with this UUID");
     }
@@ -134,7 +134,7 @@ public class InMemoryTasksManager implements TaskManager  {
         uuidsWithNullStartTime.add(epic.getUuid());
         storage.put(epic.getUuid(), epic);
 
-        Arrays.stream(subtasks).forEach(subtask -> subtask.setEpic(epic));
+        Arrays.stream(subtasks).forEach(subtask -> subtask.setEpicId(epic));
 
         Arrays.stream(subtasks).forEach(subtask -> storage.put(subtask.getUuid(), subtask));
         for (Subtask s:subtasks) { addTaskToDateTimeStorage(s); }
@@ -143,8 +143,8 @@ public class InMemoryTasksManager implements TaskManager  {
     @Override
     public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException {
         checkUuid(subtask);
-        if (subtask.getEpic() == null || !epic.getUuid().equals(subtask.getEpic().getUuid())) {
-            subtask.setEpic(epic);
+        if (subtask.getEpicId() == null || !epic.getUuid().equals(subtask.getEpicId())) {
+            subtask.setEpicId(epic);
         }
         ((Epic) storage.get(epic.getUuid())).getSubtaskList().add(subtask);
 
@@ -203,7 +203,7 @@ public class InMemoryTasksManager implements TaskManager  {
         checkTaskNotContainsInStorage(uuidOldSubtask);
         if (uuidOldSubtask.equals(newSubtask.getUuid())) {
             throw new RuntimeException("Trying changing two task with the same uuid");
-        } else if (((Subtask)storage.get(uuidOldSubtask)).getEpic().getUuid() != newSubtask.getEpic().getUuid()) {
+        } else if (((Subtask)storage.get(uuidOldSubtask)).getEpicId() != newSubtask.getEpicId()) {
             throw new RuntimeException("Old subtask and new cannot exist in different epic");
         }
         Subtask oldSubtask = (Subtask) storage.get(uuidOldSubtask);
@@ -276,7 +276,7 @@ public class InMemoryTasksManager implements TaskManager  {
     public void removeSubtaskByUuid(UUID uuid) throws TaskNotFoundException {
         checkTaskNotContainsInStorage(uuid);
         Subtask subtask = (Subtask) storage.get(uuid);
-        Epic epic = (Epic) storage.get(subtask.getEpic().getUuid());
+        Epic epic = (Epic) storage.get(subtask.getEpicId());
         removeTaskFromHistory(subtask);
         removeTaskFromDateTimeStorage(subtask);
         epic.getSubtaskList().remove(subtask);
