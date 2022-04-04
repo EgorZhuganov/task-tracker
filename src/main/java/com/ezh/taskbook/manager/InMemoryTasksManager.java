@@ -254,9 +254,9 @@ public class InMemoryTasksManager implements TaskManager  {
     }
 
     @Override
-    public void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException {
-        checkTaskNotContainsInStorage(epic.getUuid());
-        epic = (Epic) storage.get(epic.getUuid());
+    public void clearSubtasksInEpicByEpicUuid(UUID epicId) throws TaskNotFoundException {
+        checkTaskNotContainsInStorage(epicId);
+        Epic epic = (Epic) storage.get(epicId);
         epic.getSubtaskList().stream()
                 .peek(this::removeTaskFromHistory)
                 .peek(t -> removeTaskFromDateTimeStorage(t))

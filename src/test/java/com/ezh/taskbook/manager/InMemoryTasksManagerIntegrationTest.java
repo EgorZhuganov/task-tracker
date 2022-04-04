@@ -231,8 +231,8 @@ public class InMemoryTasksManagerIntegrationTest {
 
         Assertions.assertEquals(2, manager.getHistory().size());
 
-        manager.clearSubtasksInEpic(epic1);
-        manager.clearSubtasksInEpic(epic2);
+        manager.clearSubtasksInEpicByEpicUuid(epic1.getUuid());
+        manager.clearSubtasksInEpicByEpicUuid(epic2.getUuid());
 
         Assertions.assertEquals(0, epic1.getSubtaskList().size());
         Assertions.assertEquals(1, manager.getHistory().size());
@@ -289,7 +289,7 @@ public class InMemoryTasksManagerIntegrationTest {
 
         manager.removeSubtaskByUuid(subtask1.getUuid());
         Assertions.assertEquals(1, manager.getHistory().size());
-        Assertions.assertEquals(1, manager.getListSubtasksByEpicId(epic1.getUuid()).size());
+        Assertions.assertEquals(1, manager.getListSubtasksByEpicUuid(epic1.getUuid()).size());
 
         Epic epic3 = new Epic();
         Epic epic4 = new Epic();

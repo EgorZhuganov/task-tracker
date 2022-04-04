@@ -50,7 +50,7 @@ public interface TaskManager {
 
     void clearSubtasksInAllEpic();
 
-    void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException;
+    void clearSubtasksInEpicByEpicUuid(UUID epicId) throws TaskNotFoundException;
 
     void removeSingleTaskByUuid(UUID uuid) throws TaskNotFoundException;
 

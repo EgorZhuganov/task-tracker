@@ -198,8 +198,8 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public void clearSubtasksInEpic(Epic epic) throws TaskNotFoundException {
-        super.clearSubtasksInEpic(epic);
+    public void clearSubtasksInEpicByEpicUuid(UUID epicId) throws TaskNotFoundException {
+        super.clearSubtasksInEpicByEpicUuid(epicId);
         save();
     }
 
