@@ -195,8 +195,8 @@ public class InMemoryTasksManagerIntegrationTest {
         Assertions.assertEquals(3, epic1.getSubtaskList().size());
 
         manager.addEpic(epic2);
-        manager.addSubtaskInAddedEpic(epic2, subtask4);
-        manager.addSubtaskInAddedEpic(epic2, subtask5);
+        manager.addSubtaskInAddedEpic(subtask4);
+        manager.addSubtaskInAddedEpic(subtask5);
         Assertions.assertEquals(2, epic2.getSubtaskList().size());
 
         manager.addEpic(epic3);
