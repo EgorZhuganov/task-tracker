@@ -17,12 +17,15 @@ public class HistoryHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-        if (method.equals("GET")) {
-            manager.getHistory();
-            System.out.println("History was got");
-            exchange.sendResponseHeaders(200, 0);
-        } else {
-            System.out.println("This context work only with method GET");
+        switch (method) {
+            case "GET":
+                manager.getHistory();
+                System.out.println("History was got");
+                exchange.sendResponseHeaders(200, 0);
+                break;
+            default:
+                System.out.println("This context work only with method GET");
+                exchange.sendResponseHeaders(400,-1);
         }
     }
 }

@@ -14,7 +14,7 @@ public class SingleTaskHandler implements HttpHandler {
 
     private final TaskManager manager;
 
-    public SingleTaskHandler (TaskManager manager) {
+    public SingleTaskHandler(TaskManager manager) {
         this.manager = manager;
     }
 
@@ -40,34 +40,25 @@ public class SingleTaskHandler implements HttpHandler {
                     SingleTask singleTask = TaskSerializerToJson
                             .prepareGson()
                             .fromJson(inputStreamReader, SingleTask.class);
-                    try {
-                        manager.addSingleTask(singleTask);
-                        System.out.println("Single task was added");
-                        exchange.sendResponseHeaders(201, 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        exchange.sendResponseHeaders(400, -1);
-                    }
+                    manager.addSingleTask(singleTask);
+                    System.out.println("Single task was added");
+                    exchange.sendResponseHeaders(201, -1);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    exchange.sendResponseHeaders(400, -1);
                 }
                 break;
             case "PUT":
                 try (InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody())) {
-                    try {
-                        UUID uuid = UUID.fromString(exchange.getRequestURI()
-                                .getPath()
-                                .substring("/tasks/single-task/".length()));
-                        SingleTask singleTask = TaskSerializerToJson
-                                .prepareGson()
-                                .fromJson(inputStreamReader, SingleTask.class);
-                        manager.changeSingleTaskByUuid(uuid, singleTask);
-                        System.out.println("Single task was changed");
-                        exchange.sendResponseHeaders(201, 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        exchange.sendResponseHeaders(400, -1);
-                    }
+                    UUID uuid = UUID.fromString(exchange.getRequestURI()
+                            .getPath()
+                            .substring("/tasks/single-task/".length()));
+                    SingleTask singleTask = TaskSerializerToJson
+                            .prepareGson()
+                            .fromJson(inputStreamReader, SingleTask.class);
+                    manager.changeSingleTaskByUuid(uuid, singleTask);
+                    System.out.println("Single task was changed");
+                    exchange.sendResponseHeaders(204, -1);
                 } catch (Exception e) {
                     e.printStackTrace();
                     exchange.sendResponseHeaders(400, -1);
@@ -87,7 +78,7 @@ public class SingleTaskHandler implements HttpHandler {
                 }
                 break;
             default:
-                System.out.println("This context work only with method GET, POST, PUT, DELETE");
+                System.out.println("This context work only with methods: GET, POST, PUT, DELETE");
                 exchange.sendResponseHeaders(400, -1);
         }
     }

@@ -29,8 +29,8 @@ public class ListSingleTaskHandler implements HttpHandler {
                 exchange.sendResponseHeaders(204, -1);
                 break;
             default:
-                System.out.println("This context work only with method GET");
-                break;
+                System.out.println("This context work only with methods: GET, DELETE");
+                exchange.sendResponseHeaders(400,-1);
         }
     }
 }
