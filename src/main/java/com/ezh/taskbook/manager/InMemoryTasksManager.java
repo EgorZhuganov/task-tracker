@@ -7,6 +7,8 @@ import com.ezh.taskbook.task.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.lang.String.format;
+
 public class InMemoryTasksManager implements TaskManager  {
 
     protected Map<UUID, AbstractTask> storage;
@@ -141,13 +143,13 @@ public class InMemoryTasksManager implements TaskManager  {
     }
 
     @Override
-    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException {
+    public void addSubtaskInAddedEpic(Subtask subtask) throws TasksIntersectionException, TaskNotFoundException {
         checkUuid(subtask);
-        if (subtask.getEpicId() == null || !epic.getUuid().equals(subtask.getEpicId())) {
-            subtask.setEpicId(epic);
+        Epic epic = (Epic) storage.get(subtask.getEpicId());
+        if (epic == null) {
+            throw new TaskNotFoundException(format("Can not find epic with id: %s , to connect subtask", subtask.getEpicId()));
         }
-        ((Epic) storage.get(epic.getUuid())).getSubtaskList().add(subtask);
-
+        epic.getSubtaskList().add(subtask);
         addTaskToDateTimeStorage(subtask);
         storage.put(subtask.getUuid(), subtask);
     }

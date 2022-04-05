@@ -68,11 +68,11 @@ class EpicTest {
     }
 
     @Test
-    public void test8_checkStatusEpicIfItHasSubtaskWithStatusDoneAndWillAddSubtaskWithStatusNewShouldStatusInProgress() throws TasksIntersectionException {
+    public void test8_checkStatusEpicIfItHasSubtaskWithStatusDoneAndWillAddSubtaskWithStatusNewShouldStatusInProgress() throws TasksIntersectionException, TaskNotFoundException {
         subtask1.setStatus(StatusTask.DONE);
         manager.addEpicWithSubtask(epic1, subtask1);
         subtask3.setStatus(StatusTask.NEW);
-        manager.addSubtaskInAddedEpic(epic1, subtask3);
+        manager.addSubtaskInAddedEpic(subtask3);
         Assertions.assertEquals(StatusTask.IN_PROGRESS, epic1.getStatus());
     }
 

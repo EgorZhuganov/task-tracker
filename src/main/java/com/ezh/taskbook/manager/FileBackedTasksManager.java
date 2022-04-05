@@ -156,8 +156,8 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     }
 
     @Override
-    public void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException {
-        super.addSubtaskInAddedEpic(epic, subtask);
+    public void addSubtaskInAddedEpic(Subtask subtask) throws TasksIntersectionException, TaskNotFoundException {
+        super.addSubtaskInAddedEpic(subtask);
         save();
     }
 

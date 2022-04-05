@@ -29,11 +29,14 @@ public interface TaskManager {
 
     void addEpic(Epic epic);
 
+    /*When use this method in API, you have to send JSON array, the first object - epic, and then objects subtasks
+    * for example: [{epic with its fields},{subtask with its fields},{subtask with its fields},{etc.},{etc.}]*/
     void addEpicWithSubtask(Epic epic, Subtask... subtask) throws TasksIntersectionException;
 
     void addSingleTask(SingleTask task) throws TasksIntersectionException;
 
-    void addSubtaskInAddedEpic(Epic epic, Subtask subtask) throws TasksIntersectionException;
+    /*Before use this is method you have to put Subtask's epic in storage*/
+    void addSubtaskInAddedEpic(Subtask subtask) throws TasksIntersectionException, TaskNotFoundException;
 
     /*Before change SingleTask you have to put in taskList one or more SingleTask*/
     void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) throws TaskNotFoundException, TasksIntersectionException;
