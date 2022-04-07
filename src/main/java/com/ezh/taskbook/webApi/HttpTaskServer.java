@@ -1,6 +1,5 @@
 package com.ezh.taskbook.webApi;
 
-import com.ezh.taskbook.manager.FileBackedTasksManager;
 import com.ezh.taskbook.manager.TaskManager;
 import com.ezh.taskbook.webApi.hendler.*;
 import com.sun.net.httpserver.HttpServer;
@@ -10,29 +9,26 @@ import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
 
-    static final int PORT = 8080;
-    HttpServer server;
-    TaskManager manager;
+    private final int port;
+    private HttpServer server;
+    private final TaskManager manager;
 
-    public HttpTaskServer(TaskManager taskManager) {
+    public HttpTaskServer(TaskManager taskManager, int port) {
         this.manager = taskManager;
+        this.port = port;
         try {
-            server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+            server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
         } catch (IOException e) {
-            System.out.println("Error when creating a server with a port number" + PORT);
+            System.out.println("Error when creating a server with a port number" + port);
             e.printStackTrace();
         }
         createAllContext();
     }
 
-    public static void main(String[] args) {
-        HttpTaskServer server = new HttpTaskServer(FileBackedTasksManager.loadFromFile(new File("test.txt")));
-        server.start();
-    }
-
     public void start() {
+        System.out.println("Server starts (HttpTaskServer) on the port " + port);
+        System.out.println("Open in the browser http://localhost:" + port + "/");
         server.start();
-        System.out.println("Server starts");
     }
 
     private void createAllContext() {
