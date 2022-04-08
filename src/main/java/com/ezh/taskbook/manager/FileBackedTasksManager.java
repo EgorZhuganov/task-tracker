@@ -20,8 +20,11 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
     private File file;
     private static Map<TypeTask, TaskSerializerToString<AbstractTask>> taskSerializerMap;
 
-    public FileBackedTasksManager(File file) {
+    FileBackedTasksManager() {
         super();
+    }
+
+    public FileBackedTasksManager(File file) {
         this.file = file;
         taskSerializerMap = new HashMap<>();
         taskSerializerMap.put(TypeTask.EPIC, new TaskSerializerEpicToString());
@@ -221,8 +224,4 @@ public class FileBackedTasksManager extends InMemoryTasksManager {
         save();
     }
 
-    @Override
-    public List<AbstractTask> getHistory() {
-        return super.getHistory();
-    }
 }
