@@ -19,9 +19,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     @Test
     void test1_getEpicBySubtaskUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask1 = new Subtask(epic1);
 
-        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicBySubtaskUuid(subtask2.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicBySubtaskUuid(subtask1.getUuid()));
     }
 
     @Test
@@ -39,19 +39,20 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     @Test
     void test3_getEpicBySubtaskUuidShouldReturnEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
-        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask1 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
 
-        manager.addEpicWithSubtask(epic1, subtask2);
+        manager.addEpicWithSubtask(epic1);
 
-        Assertions.assertEquals(epic1, manager.getEpicBySubtaskUuid(subtask2.getUuid()));
+        Assertions.assertEquals(epic1, manager.getEpicBySubtaskUuid(subtask1.getUuid()));
     }
 
     @Test
     void test4_getSubtaskByUuidWithoutAddingTaskToManagerShouldThrowsTaskNotFoundException() {
         Epic epic1 = new Epic();
-        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask1 = new Subtask(epic1);
 
-        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(subtask2.getUuid()));
+        Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSubtaskByUuid(subtask1.getUuid()));
     }
 
     @Test
@@ -69,11 +70,12 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     @Test
     void test6_getSubtaskByUuidShouldReturnSubtask() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
-        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask1 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
 
-        manager.addEpicWithSubtask(epic1, subtask2);
+        manager.addEpicWithSubtask(epic1);
 
-        Assertions.assertEquals(subtask2, manager.getSubtaskByUuid(subtask2.getUuid()));
+        Assertions.assertEquals(subtask1, manager.getSubtaskByUuid(subtask1.getUuid()));
     }
 
     @Test
@@ -87,9 +89,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
+        epic1.getSubtaskList().add(subtask1);
 
         manager.addSingleTask(singleTask1);
-        manager.addEpicWithSubtask(epic1, subtask1);
+        manager.addEpicWithSubtask(epic1);
 
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(singleTask1.getUuid()));
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
@@ -98,8 +101,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     @Test
     void test9_getEpicByUuidShouldReturnEpic() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
-        Subtask subtask2 = new Subtask(epic1);
-        manager.addEpicWithSubtask(epic1, subtask2);
+        Subtask subtask1 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
+
+        manager.addEpicWithSubtask(epic1);
         Assertions.assertEquals(epic1, manager.getEpicByUuid(epic1.getUuid()));
     }
 
@@ -113,8 +118,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     void test11_getSingleTaskByUuidIfDoNotPutSubtaskInParameterOfMethodShouldThrowsTaskNotFoundException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
 
-        manager.addEpicWithSubtask(epic1, subtask1);
+        manager.addEpicWithSubtask(epic1);
 
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(epic1.getUuid()));
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getSingleTaskByUuid(subtask1.getUuid()));
@@ -144,7 +150,11 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask2 = new Subtask(epic1);
         Subtask subtask3 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+
+        manager.addEpicWithSubtask(epic1);
         Assertions.assertEquals(3, manager.getListSubtasks().size());
     }
 
@@ -180,8 +190,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic1);
 
         Assertions.assertEquals(2, manager.getListSubtasksByEpicUuid(epic1.getUuid()).size());
     }
@@ -268,8 +280,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        manager.addEpicWithSubtask(epic1);
         Assertions.assertEquals(2, manager.getListSubtasks().size());
         Assertions.assertEquals(1, manager.getListEpics().size());
         Assertions.assertEquals(epic1, manager.getEpicByUuid(epic1.getUuid()));
@@ -284,9 +298,13 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask2 = new Subtask(epic1);
         Subtask subtask3 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
 
-        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic1, subtask3));
+        manager.addEpicWithSubtask(epic1);
+        epic1.getSubtaskList().add(subtask3);
+
+        Assertions.assertThrows(RuntimeException.class, () -> manager.addEpicWithSubtask(epic1));
     }
 
     @Test
@@ -295,7 +313,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
 
         Assertions.assertEquals(2, epic1.getSubtaskList().size());
     }
@@ -308,7 +329,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1); //set epic1
         Subtask subtask2 = new Subtask(epic1); //set epic1
 
-        manager.addEpicWithSubtask(epic2, subtask1, subtask2); //reset to epic2
+        epic2.getSubtaskList().add(subtask1);
+        epic2.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic2); //reset to epic2
 
         Assertions.assertEquals(epic2.getUuid(), subtask1.getEpicId());
         Assertions.assertEquals(epic2.getUuid(), subtask2.getEpicId());
@@ -462,8 +486,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
     void test41_changeSubtaskByUuidTryToChangeSubtaskBySubtaskWithTheSameUuidThrowsRuntimeException() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
+        epic1.getSubtaskList().add(subtask1);
 
-        manager.addEpicWithSubtask(epic1, subtask1);
+        manager.addEpicWithSubtask(epic1);
 
         subtask1.setName("I'm real task");
         subtask1.setDescription("About something");
@@ -554,8 +579,13 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask3 = new Subtask(epic2);
         Subtask subtask4 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
-        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
 
         manager.clearSubtasksInAllEpic();
         Assertions.assertEquals(0, manager.getListSubtasks().size());
@@ -572,8 +602,13 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask3 = new Subtask(epic2);
         Subtask subtask4 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
-        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
 
         manager.clearSubtasksInAllEpic();
         Assertions.assertEquals(0, epic1.getSubtaskList().size());
@@ -598,7 +633,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.clearSubtasksInEpicByEpicUuid(epic1.getUuid());
         Assertions.assertEquals(0, epic1.getSubtaskList().size());
     }
@@ -610,7 +648,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.clearSubtasksInEpicByEpicUuid(epic1.getUuid());
 
         Assertions.assertEquals(0, manager.getListSubtasks().size());
@@ -626,8 +667,14 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask3 = new Subtask(epic2);
         Subtask subtask4 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
-        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
+
         manager.clearSubtasksInEpicByEpicUuid(epic1.getUuid());
 
         Assertions.assertEquals(2, manager.getListSubtasks().size());
@@ -668,7 +715,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
 
         manager.removeSubtaskByUuid(subtask1.getUuid());
         Assertions.assertEquals(1, epic1.getSubtaskList().size());
@@ -681,7 +731,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.removeSubtaskByUuid(subtask2.getUuid());
         Assertions.assertEquals(1, manager.getListSubtasks().size());
     }
@@ -716,8 +769,13 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask3 = new Subtask(epic2);
         Subtask subtask4 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
-        manager.addEpicWithSubtask(epic2, subtask3, subtask4);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
 
         manager.removeEpicByUuid(epic2.getUuid());
         Assertions.assertEquals(2, manager.getListSubtasks().size());
@@ -734,7 +792,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
         singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.addSingleTask(singleTask1);
 
         Assertions.assertEquals(4, manager.getPrioritizedTasks().size());
@@ -751,7 +812,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
         singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.addSingleTask(singleTask1);
 
         Assertions.assertEquals(subtask2, manager.getPrioritizedTasks().get(0));
@@ -768,7 +832,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
         singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        manager.addEpicWithSubtask(epic1);
         manager.addSingleTask(singleTask1);
 
         Assertions.assertEquals(epic1, manager.getPrioritizedTasks().get(3));
@@ -783,7 +850,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20), Duration.ofDays(30));
 
-        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1));
     }
 
     @Test
@@ -811,7 +881,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20),Duration.ofDays(10));
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20), Duration.ofDays(30));
 
-        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1));
     }
 
     @Test
@@ -823,7 +896,10 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20),Duration.ofDays(30));
         subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20), Duration.ofDays(10));
 
-        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1, subtask1, subtask2));
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+
+        Assertions.assertThrows(TasksIntersectionException.class, () -> manager.addEpicWithSubtask(epic1));
     }
 
     @Test

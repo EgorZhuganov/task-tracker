@@ -29,9 +29,8 @@ public interface TaskManager {
 
     void addEpic(Epic epic);
 
-    /*When use this method in API, you have to send JSON array, the first object - epic, and then objects subtasks
-    * for example: [{epic with its fields},{subtask with its fields},{subtask with its fields},{etc.},{etc.}]*/
-    void addEpicWithSubtask(Epic epic, Subtask... subtask) throws TasksIntersectionException;
+    /*When use this method in API, you have to prepare JSON it have to have subtasks in Epic's */
+    void addEpicWithSubtask(Epic epic) throws TasksIntersectionException;
 
     void addSingleTask(SingleTask task) throws TasksIntersectionException;
 

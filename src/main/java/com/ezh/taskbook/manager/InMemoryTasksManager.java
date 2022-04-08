@@ -128,18 +128,19 @@ public class InMemoryTasksManager implements TaskManager  {
     }
 
     @Override
-    public void addEpicWithSubtask(Epic epic, Subtask... subtasks) throws TasksIntersectionException {
+    public void addEpicWithSubtask(Epic epic) throws TasksIntersectionException {
         checkUuid(epic);
-        Arrays.stream(subtasks).forEach(this::checkUuid);
-        epic.getSubtaskList().addAll(Arrays.asList(subtasks));
+        epic.getSubtaskList().forEach(this::checkUuid);
 
         uuidsWithNullStartTime.add(epic.getUuid());
         storage.put(epic.getUuid(), epic);
 
-        Arrays.stream(subtasks).forEach(subtask -> subtask.setEpicId(epic));
+        epic.getSubtaskList().stream()
+                .filter(s -> !s.getEpicId().equals(epic.getUuid()))
+                .forEach(s -> s.setEpicId(epic));
 
-        Arrays.stream(subtasks).forEach(subtask -> storage.put(subtask.getUuid(), subtask));
-        for (Subtask s:subtasks) { addTaskToDateTimeStorage(s); }
+        epic.getSubtaskList().forEach(subtask -> storage.put(subtask.getUuid(), subtask));
+        for (Subtask s : epic.getSubtaskList()) { addTaskToDateTimeStorage(s); }
     }
 
     @Override

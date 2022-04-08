@@ -21,8 +21,12 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask3 = new Subtask(epic1);
         Subtask subtask4 = new Subtask(epic2);
 
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+
         manager.addEpicWithSubtask(epic2);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        manager.addEpicWithSubtask(epic1);
         //subtask4 not added in storage with help of manager
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicBySubtaskUuid(subtask4.getUuid()));
         Assertions.assertEquals(0, manager.getHistory().size());
@@ -49,8 +53,13 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask4 = new Subtask(epic2);
         SingleTask singleTask = new SingleTask();
 
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+
         manager.addEpicWithSubtask(epic2);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        manager.addEpicWithSubtask(epic1);
+
         manager.getSubtaskByUuid(subtask1.getUuid());
         manager.getSubtaskByUuid(subtask1.getUuid());
         manager.getSubtaskByUuid(subtask1.getUuid());
@@ -83,8 +92,15 @@ public class InMemoryTasksManagerIntegrationTest {
 
         SingleTask singleTask = new SingleTask();
 
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5, subtask6);
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+        epic2.getSubtaskList().add(subtask5);
+        epic2.getSubtaskList().add(subtask6);
+
+        manager.addEpicWithSubtask(epic2);
+        manager.addEpicWithSubtask(epic1);
 
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(singleTask.getUuid()));
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.getEpicByUuid(subtask1.getUuid()));
@@ -158,8 +174,12 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask2 = new Subtask(epic2);
         Subtask subtask3 = new Subtask(epic2);
 
+        epic2.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask1);
+
         manager.addEpic(epic1);
-        manager.addEpicWithSubtask(epic2, subtask2, subtask3, subtask1);
+        manager.addEpicWithSubtask(epic2);
         manager.addEpic(epic3);
         manager.addEpic(epic4);
 
@@ -190,8 +210,11 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask4 = new Subtask(epic2);
         Subtask subtask5 = new Subtask(epic2);
 
-        Assertions.assertEquals(0, epic1.getSubtaskList().size());
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+
+        manager.addEpicWithSubtask(epic1);
         Assertions.assertEquals(3, epic1.getSubtaskList().size());
 
         manager.addEpic(epic2);
@@ -223,8 +246,14 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask4 = new Subtask(epic2);
         Subtask subtask5 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        manager.addEpicWithSubtask(epic2, subtask4, subtask5);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask4);
+        epic2.getSubtaskList().add(subtask5);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
 
         manager.getSubtaskByUuid(subtask2.getUuid());
         manager.getEpicByUuid(epic2.getUuid());
@@ -274,8 +303,13 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask3 = new Subtask(epic1);
         Subtask subtask5 = new Subtask(epic2);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3);
-        manager.addEpicWithSubtask(epic2, subtask5);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+        epic2.getSubtaskList().add(subtask5);
+
+        manager.addEpicWithSubtask(epic1);
+        manager.addEpicWithSubtask(epic2);
 
         manager.getSubtaskByUuid(subtask1.getUuid());
         manager.getSubtaskByUuid(subtask3.getUuid());
@@ -305,8 +339,19 @@ public class InMemoryTasksManagerIntegrationTest {
         Subtask subtask14 = new Subtask(epic4);
         Subtask subtask15 = new Subtask(epic4);
 
-        manager.addEpicWithSubtask(epic3, subtask6, subtask7, subtask8, subtask9, subtask10);
-        manager.addEpicWithSubtask(epic4, subtask11, subtask12, subtask13, subtask14, subtask15);
+        epic3.getSubtaskList().add(subtask6);
+        epic3.getSubtaskList().add(subtask7);
+        epic3.getSubtaskList().add(subtask8);
+        epic3.getSubtaskList().add(subtask9);
+        epic3.getSubtaskList().add(subtask10);
+        epic4.getSubtaskList().add(subtask11);
+        epic4.getSubtaskList().add(subtask12);
+        epic4.getSubtaskList().add(subtask13);
+        epic4.getSubtaskList().add(subtask14);
+        epic4.getSubtaskList().add(subtask15);
+
+        manager.addEpicWithSubtask(epic3);
+        manager.addEpicWithSubtask(epic4);
 
         manager.getSubtaskByUuid(subtask6.getUuid());
         manager.getSubtaskByUuid(subtask7.getUuid());
@@ -338,7 +383,12 @@ public class InMemoryTasksManagerIntegrationTest {
 
         Assertions.assertThrows(TaskNotFoundException.class, () -> manager.removeEpicByUuid(epic1.getUuid()));
         manager.addEpic(epic1);
-        manager.addEpicWithSubtask(epic2, subtask1, subtask2, subtask5);
+
+        epic2.getSubtaskList().add(subtask1);
+        epic2.getSubtaskList().add(subtask2);
+        epic2.getSubtaskList().add(subtask5);
+
+        manager.addEpicWithSubtask(epic2);
 
         manager.getEpicByUuid(epic1.getUuid());
         manager.getEpicByUuid(epic2.getUuid());

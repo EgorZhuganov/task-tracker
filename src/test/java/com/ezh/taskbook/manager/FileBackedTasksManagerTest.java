@@ -36,8 +36,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
+        epic1.getSubtaskList().add(subtask1);
+
         manager.addSingleTask(singleTask1);
-        manager.addEpicWithSubtask(epic1, subtask1);
+        manager.addEpicWithSubtask(epic1);
 
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File("test.txt"));
         Assertions.assertEquals(0, manager.getHistory().size());
@@ -49,8 +51,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
+        epic1.getSubtaskList().add(subtask1);
+
         manager.addSingleTask(singleTask1);
-        manager.addEpicWithSubtask(epic1, subtask1);
+        manager.addEpicWithSubtask(epic1);
         manager.getSingleTaskByUuid(singleTask1.getUuid());
         manager.getSubtaskByUuid(subtask1.getUuid());
         manager.getEpicByUuid(epic1.getUuid());
@@ -83,7 +87,12 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         Subtask subtask3 = new Subtask(epic1);
         Subtask subtask4 = new Subtask(epic1);
 
-        manager.addEpicWithSubtask(epic1, subtask1, subtask2, subtask3, subtask4);
+        epic1.getSubtaskList().add(subtask1);
+        epic1.getSubtaskList().add(subtask2);
+        epic1.getSubtaskList().add(subtask3);
+        epic1.getSubtaskList().add(subtask4);
+
+        manager.addEpicWithSubtask(epic1);
 
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File("test.txt"));
 
