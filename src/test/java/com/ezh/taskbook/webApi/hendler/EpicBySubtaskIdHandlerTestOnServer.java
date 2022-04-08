@@ -58,7 +58,7 @@ class EpicBySubtaskIdHandlerTestOnServer {
     }
 
     @Test //GET
-    public void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode400 () throws IOException, InterruptedException, TasksIntersectionException {
+    public void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404 () throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1); //Attention, Subtask won't add to manager and Epic's subtask list
@@ -74,6 +74,6 @@ class EpicBySubtaskIdHandlerTestOnServer {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         Assertions.assertEquals("", response.body());
-        Assertions.assertEquals(400, response.statusCode());
+        Assertions.assertEquals(404, response.statusCode());
     }
 }
