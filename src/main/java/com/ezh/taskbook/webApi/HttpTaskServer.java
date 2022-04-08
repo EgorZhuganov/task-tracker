@@ -31,6 +31,11 @@ public class HttpTaskServer {
         server.start();
     }
 
+    public void stop() {
+        server.stop(1);
+        System.out.println("Server (HttpTaskServer) was stopped on the port "+ port);
+    }
+
     private void createAllContext() {
         server.createContext("/tasks/", new AllTasksHandler(manager));
         server.createContext("/tasks/history", new HistoryHandler(manager));

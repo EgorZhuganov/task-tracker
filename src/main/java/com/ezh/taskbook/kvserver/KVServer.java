@@ -110,6 +110,11 @@ public class KVServer {
         server.start();
     }
 
+    public void stop() {
+        server.stop(1);
+        System.out.println("Server (KVServer) was stopped on the port "+ PORT);
+    }
+
     private String generateApiKey() {
         return "" + System.currentTimeMillis();
     }
