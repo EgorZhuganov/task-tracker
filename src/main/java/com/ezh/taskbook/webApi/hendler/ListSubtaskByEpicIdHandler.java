@@ -1,15 +1,18 @@
 package com.ezh.taskbook.webApi.hendler;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
 import com.ezh.taskbook.manager.TaskManager;
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class ListSubtaskByEpicIdHandler implements HttpHandler {
 
-    TaskManager manager;
+    private final TaskManager manager;
 
     public ListSubtaskByEpicIdHandler(TaskManager manager) {
         this.manager = manager;
@@ -17,33 +20,40 @@ public class ListSubtaskByEpicIdHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        switch (method) {
-            case "GET":
-                try {
-                    UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("/tasks/subtask/epic/".length()));
-                    manager.getListSubtasksByEpicUuid(uuid);
-                    System.out.println("Subtasks were got");
-                    exchange.sendResponseHeaders(200,0);
+        try {
+            String method = exchange.getRequestMethod();
+            switch (method) {
+                case "GET":
+                    try {
+                        UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("/tasks/subtask/epic/".length()));
+                        manager.getListSubtasksByEpicUuid(uuid);
+                        String response = new Gson().toJson(manager.getListSubtasksByEpicUuid(uuid));
+                        exchange.sendResponseHeaders(200, response.length());
+                        exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
+                        System.out.println("Subtasks were got");
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(400, -1);
+                    }
                     break;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    exchange.sendResponseHeaders(400,-1);
-                }
-            case "DELETE":
-                try {
-                    UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("tasks/subtask/epic/".length()));
-                    manager.clearSubtasksInEpicByEpicUuid(uuid);
-                    System.out.printf("Subtasks in Epic %s were deleted", uuid);
-                    exchange.sendResponseHeaders(204,-1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    exchange.sendResponseHeaders(400,-1);
-                }
-                break;
-            default:
-                System.out.println("This context works only with methods: GET, DELETE");
-                exchange.sendResponseHeaders(400,-1);
+                case "DELETE":
+                    try {
+                        UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("/tasks/subtask/epic/".length()));
+                        manager.clearSubtasksInEpicByEpicUuid(uuid);
+                        System.out.printf("Subtasks in Epic with uuid: %s were deleted", uuid);
+                        exchange.sendResponseHeaders(204, -1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(400, -1);
+                    }
+                    break;
+                default:
+                    System.out.println("This context works only with methods: GET, DELETE");
+                    exchange.sendResponseHeaders(400, -1);
+            }
+        } finally {
+            exchange.close();
         }
     }
 }
