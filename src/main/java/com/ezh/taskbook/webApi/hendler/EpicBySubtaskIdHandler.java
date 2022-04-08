@@ -1,5 +1,6 @@
 package com.ezh.taskbook.webApi.hendler;
 
+import com.ezh.taskbook.exception.TaskNotFoundException;
 import com.ezh.taskbook.manager.TaskManager;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -31,9 +32,12 @@ public class EpicBySubtaskIdHandler implements HttpHandler {
                         exchange.sendResponseHeaders(200, response.length());
                         exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                         System.out.println("Epic was got");
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                         exchange.sendResponseHeaders(400, -1);
+                    } catch (TaskNotFoundException e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(404,-1);
                     }
                     break;
                 default:
@@ -41,6 +45,7 @@ public class EpicBySubtaskIdHandler implements HttpHandler {
                     exchange.sendResponseHeaders(400, -1);
             }
         } finally {
+            exchange.sendResponseHeaders(500,-1);
             exchange.close();
         }
     }
