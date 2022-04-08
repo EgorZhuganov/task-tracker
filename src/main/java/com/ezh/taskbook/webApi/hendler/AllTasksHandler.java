@@ -21,23 +21,17 @@ public class AllTasksHandler implements HttpHandler {
         try {
             String method = exchange.getRequestMethod();
             if (method.equals("GET")) {
-                if (manager.getPrioritizedTasks().size() == 0) {
-                    String response = "No data to transfer";
-                    exchange.sendResponseHeaders(201, response.length());
-                    exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
-                    System.out.println(response);
-                } else {
-                    manager.getPrioritizedTasks();
-                    String gson = new Gson().toJson(manager.getPrioritizedTasks());
-                    exchange.sendResponseHeaders(200, 0);
-                    exchange.getResponseBody().write(gson.getBytes(StandardCharsets.UTF_8));
-                    System.out.println("Prioritized tasks were got");
-                }
+                manager.getPrioritizedTasks();
+                String response = new Gson().toJson(manager.getPrioritizedTasks());
+                exchange.sendResponseHeaders(200, response.length());
+                exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
+                System.out.println("Prioritized tasks were got");
             } else {
                 System.out.println("This context work only with method GET");
                 exchange.sendResponseHeaders(400, -1);
             }
         } finally {
+            exchange.sendResponseHeaders(500,-1);
             exchange.close();
         }
     }

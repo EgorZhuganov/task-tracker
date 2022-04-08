@@ -39,18 +39,6 @@ class AllTasksHandlerTestOnServer {
     }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfNoPrioritizedTasksShouldReturnResponseNoDataToTransferAndCode201() throws IOException, InterruptedException {
-        request = HttpRequest.newBuilder()
-                .GET()
-                .uri(url)
-                .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        Assertions.assertEquals("No data to transfer", response.body());
-        Assertions.assertEquals(201, response.statusCode());
-    }
-
-    @Test //GET
     public void test2_checkContextWithGetRequestIfPrioritizedTasksExistShouldReturnResponseAsJsonAndCode200() throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -65,9 +53,9 @@ class AllTasksHandlerTestOnServer {
                 .uri(url)
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String json = new Gson().toJson(manager.getPrioritizedTasks());
+        String prioritizedTasksAsJson = new Gson().toJson(manager.getPrioritizedTasks());
 
-        Assertions.assertEquals(json, response.body());
+        Assertions.assertEquals(prioritizedTasksAsJson, response.body());
         Assertions.assertEquals(200, response.statusCode());
     }
 
