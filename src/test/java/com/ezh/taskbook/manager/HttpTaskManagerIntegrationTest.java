@@ -32,24 +32,20 @@ class HttpTaskManagerIntegrationTest {
     @AfterEach
     public void afterEach() {
         taskServer1.stop();
-        taskServer2.start();
+        taskServer2.stop();
         kvServer.stop();
     }
 
     @Test
     public void test1_() {
-
-
     }
 
     @Test
     public void test2_() {
-
     }
 
     @Test
     public void test3_() {
-
     }
 
 
