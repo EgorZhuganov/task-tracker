@@ -19,7 +19,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-class EpicBySubtaskIdHandlerTestOnServer {
+class EpicBySubtaskIdHandlerOnServerTest {
 
     private final TaskManager manager = new FileBackedTasksManager(new File("test.txt"));
     private final HttpTaskServer server = new HttpTaskServer(manager,8080);
@@ -55,6 +55,7 @@ class EpicBySubtaskIdHandlerTestOnServer {
 
         Assertions.assertEquals(epicJson, response.body());
         Assertions.assertEquals(200, response.statusCode());
+        Assertions.assertTrue(response.headers().allValues("content-type").contains("application/json"));
     }
 
     @Test //GET

@@ -16,7 +16,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-class EpicHandlerTestOnServer {
+class EpicHandlerOnServerTest {
 
     private final TaskManager manager = new FileBackedTasksManager(new File("test.txt"));
     private final HttpTaskServer server = new HttpTaskServer(manager, 8080);
@@ -35,7 +35,7 @@ class EpicHandlerTestOnServer {
     }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnEpicAsJsonAndStatusCode200() throws IOException, InterruptedException {
+    public void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnStatusCode200() throws IOException, InterruptedException {
         Epic epic1 = new Epic();
 
         manager.addEpic(epic1);
@@ -46,10 +46,9 @@ class EpicHandlerTestOnServer {
                 .uri(urlForRequest)
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String epicJson = new Gson().toJson(epic1);
 
-        Assertions.assertEquals(epicJson, response.body());
         Assertions.assertEquals(200, response.statusCode());
+        Assertions.assertTrue(response.headers().allValues("content-type").contains("application/json"));
     }
 
     @Test //GET
@@ -58,7 +57,7 @@ class EpicHandlerTestOnServer {
         Epic epic2 = new Epic(); //Attention! Epic won't add to storage
         manager.addEpic(epic1);
 
-        URI urlForRequest = URI.create(url.toString().concat(epic2.getUuid().toString())); //wrong uuid
+        URI urlForRequest = URI.create(url.toString().concat(epic2.getUuid().toString())); //uuid won't found in storage
         request = HttpRequest.newBuilder()
                 .GET()
                 .uri(urlForRequest)
@@ -86,7 +85,7 @@ class EpicHandlerTestOnServer {
     }
 
     @Test //POST
-    public void test4_checkContextWithPostRequestAndEpicWhichHas2SubtasksShouldAddEpicWithSubtasksToStorageAndReturnCode204()
+    public void test4_checkContextWithPostRequestAddEpicWhichHas2SubtasksShouldAddEpicWithSubtasksToStorageAndReturnCode201And2SubtaskAnd1EpicFromManager()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -104,28 +103,28 @@ class EpicHandlerTestOnServer {
         Assertions.assertEquals(epic1.getUuid(), manager.getEpicByUuid(epic1.getUuid()).getUuid());
         Assertions.assertEquals(2, manager.getListSubtasks().size());
         Assertions.assertEquals("", response.body());
-        Assertions.assertEquals(204, response.statusCode());
+        Assertions.assertEquals(201, response.statusCode());
 
     }
 
     @Test //POST
-    public void test6_checkContextWithPostRequestIfAddOnlyOneEpicShouldReturnCode200AndReturnEpicFromStorage()
+    public void test6_checkContextWithPostRequestIfAddOnlyOneEpicShouldReturnCode201AndReturnEpicFromStorage()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
 
         request = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(epic1)))
-                .header("Content-Type", "application/json")
+                .header("content-type", "application/json")
                 .uri(url)
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         Assertions.assertEquals(epic1.getUuid(), manager.getEpicByUuid(epic1.getUuid()).getUuid());
-        Assertions.assertEquals(204, response.statusCode());
+        Assertions.assertEquals(201, response.statusCode());
     }
 
     @Test //PUT
-    public void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeEpic1()
+    public void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeEpic1FromStorage()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -137,7 +136,7 @@ class EpicHandlerTestOnServer {
         URI urlForRequest = URI.create(url.toString().concat(epic1.getUuid().toString()));
         request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(epic2)))
-                .header("Content-Type", "application/json")
+                .header("content-type", "application/json")
                 .uri(urlForRequest)
                 .build();
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -147,23 +146,101 @@ class EpicHandlerTestOnServer {
         Assertions.assertEquals(204, response.statusCode());
     }
 
-    @Test //DELETE
-    public void test8_checkContextWithDeleteRequestShouldReturnStatus204AndRemoveAllEpics()
+    @Test //PUT
+    public void test8_checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
+        epic2.setName("Epic2 name");
+        epic2.setDescription("Epic2 description");
 
         manager.addEpic(epic1);
-        manager.addEpic(epic2);
 
+        URI urlForRequest = URI.create(url.toString().concat("123456")); //wrong format uuid
+        request = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(epic2)))
+                .header("content-type", "application/json")
+                .uri(urlForRequest)
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Assertions.assertEquals(400, response.statusCode());
+    }
+
+    @Test //PUT
+    public void test9_checkContextWithPutRequestIfEpicNotFoundShouldReturnStatus404 ()
+            throws IOException, InterruptedException {
+        Epic epic1 = new Epic(); //epic will not add to storage
+        Epic epic2 = new Epic(); //epic will not add to storage
+        epic2.setName("Epic2 name");
+        epic2.setDescription("Epic2 description");
+
+        URI urlForRequest = URI.create(url.toString().concat(epic1.getUuid().toString()));
+        request = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(epic2)))
+                .header("content-type", "application/json")
+                .uri(urlForRequest)
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Assertions.assertEquals(404, response.statusCode());
+    }
+
+    @Test //DELETE
+    public void test10_checkContextWithDeleteRequestIf1EpicThereIsInStorageShouldReturnStatus204AndRemoveEpicFromStorage()
+            throws IOException, InterruptedException {
+        Epic epic1 = new Epic();
+
+        manager.addEpic(epic1);
+        URI urlForRequest = URI.create(url.toString().concat(epic1.getUuid().toString()));
         request = HttpRequest.newBuilder()
                 .DELETE()
-                .uri(url)
+                .uri(urlForRequest)
                 .build();
+
+        Assertions.assertEquals(1, manager.getListEpics().size());
+
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         Assertions.assertEquals(0, manager.getListEpics().size());
         Assertions.assertEquals("", response.body());
         Assertions.assertEquals(204, response.statusCode());
+    }
+
+    @Test //DELETE
+    public void test11_checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400 ()
+            throws IOException, InterruptedException {
+        Epic epic1 = new Epic();
+
+        manager.addEpic(epic1);
+        URI urlForRequest = URI.create(url.toString().concat("123456")); //wrong format uuid
+        request = HttpRequest.newBuilder()
+                .DELETE()
+                .uri(urlForRequest)
+                .build();
+
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Assertions.assertEquals(1, manager.getListEpics().size());
+        Assertions.assertEquals(400, response.statusCode());
+    }
+
+    @Test //DELETE
+    public void test12_checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404 ()
+            throws IOException, InterruptedException {
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic(); //won't add to storage
+
+        manager.addEpic(epic1);
+        URI urlForRequest = URI.create(url.toString().concat(epic2.getUuid().toString())); //not existing in storage
+        request = HttpRequest.newBuilder()
+                .DELETE()
+                .uri(urlForRequest)
+                .build();
+
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Assertions.assertEquals(1, manager.getListEpics().size());
+        Assertions.assertEquals(404, response.statusCode());
     }
 }
