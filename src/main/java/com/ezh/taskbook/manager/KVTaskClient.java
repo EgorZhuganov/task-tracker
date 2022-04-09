@@ -13,18 +13,17 @@ public class KVTaskClient {
     private HttpClient client;
     private URI url;
 
-    public KVTaskClient(URI serverUrl) throws IOException {
+    public KVTaskClient(URI urlKvServer) throws IOException {
         client = HttpClient.newHttpClient();
-        url = serverUrl;
+        url = urlKvServer;
         register();
     }
 
     private void register() {
-        String pathToRegister = url.toString().concat("register");
-        URI path = URI.create(pathToRegister);
+        URI pathToRegister = URI.create(url.toString().concat("register"));
         request = HttpRequest.newBuilder()
                 .GET()
-                .uri(path)
+                .uri(pathToRegister)
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

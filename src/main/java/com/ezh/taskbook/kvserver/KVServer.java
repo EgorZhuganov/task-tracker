@@ -44,7 +44,7 @@ public class KVServer {
                 }
                 switch (exchange.getRequestMethod()) {
                     case "POST":
-                        String key = exchange.getRequestURI().getPath().substring("/save/".length());  //.../save/<key>?API_KEY=4454545
+                        String key = exchange.getRequestURI().getPath().substring("/save/".length());
                         if (key.isEmpty()) {
                             System.out.println("The key to save is empty. It is specified in the path: /save/{key}");
                             exchange.sendResponseHeaders(400, 0);
@@ -80,7 +80,7 @@ public class KVServer {
                         System.out.println("\n/load");
                         String key = exchange.getRequestURI().getPath().substring("/load/".length());
                         if (key.isEmpty()) {
-                            System.out.println("The key to save is empty. It is specified in the path: /load/{key}");
+                            System.out.println("The key to save is empty. It should be added to the path: /load/{key}");
                             exchange.sendResponseHeaders(400, 0);
                             return;
                         }
