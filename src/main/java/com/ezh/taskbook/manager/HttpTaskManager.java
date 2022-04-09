@@ -1,7 +1,7 @@
 package com.ezh.taskbook.manager;
 
 import com.ezh.taskbook.task.AbstractTask;
-import com.ezh.taskbook.task.taskSerializers.jsonAdapter.PropertyMarshallerOfAbstractTask;
+import com.ezh.taskbook.task.taskSerializers.jsonAdapter.PropertyMarshallerOfObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -48,7 +48,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         }
         HttpTaskManager manager = new HttpTaskManager(url, port.toString());
         List<AbstractTask> reloadStorage = new GsonBuilder()
-                .registerTypeAdapter(AbstractTask.class, new PropertyMarshallerOfAbstractTask())
+                .registerTypeAdapter(AbstractTask.class, new PropertyMarshallerOfObject())
                 .create()
                 .fromJson(client.load(storageKey), new TypeToken<List<AbstractTask>>(){}.getType());
         List<UUID> reloadHistory = new Gson()

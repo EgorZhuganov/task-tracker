@@ -4,7 +4,7 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class PropertyMarshallerOfAbstractTask implements JsonSerializer<Object>, JsonDeserializer<Object> {
+public class PropertyMarshallerOfObject implements JsonSerializer<Object>, JsonDeserializer<Object> {
 
     private static final String CLASS_TYPE = "CLASS_TYPE";
 
