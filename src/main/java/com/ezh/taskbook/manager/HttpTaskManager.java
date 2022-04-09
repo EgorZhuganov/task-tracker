@@ -18,47 +18,48 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private final String storageKey;
     private final String historyKey;
 
-    public HttpTaskManager (URI url, String keyStoragePrefix) {
+    public HttpTaskManager(URI urlKvServer, String keyStoragePrefix) {
         storageKey = keyStoragePrefix + "STORAGE_KEY";
         historyKey = keyStoragePrefix + "HISTORY_KEY";
         try {
-            client = new KVTaskClient(url);
+            client = new KVTaskClient(urlKvServer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void save () {
+    protected void save() {
+        client.put(storageKey, new GsonBuilder()
+                .registerTypeAdapter(AbstractTask.class, new PropertyMarshallerOfObject())
+                .create()
+                .toJson(storage.values(), new TypeToken<List<AbstractTask>>() {
+                }.getType()));
+
         client.put(historyKey, new Gson()
                 .toJson(inMemoryHistoryManager.getHistory()
                         .stream()
                         .map(AbstractTask::getUuid)
                         .collect(Collectors.toList()))
         );
-        client.put(storageKey, new GsonBuilder()
-                .registerTypeAdapter(AbstractTask.class, new TypeToken<List<AbstractTask>>(){}.getType())
-                .create()
-                .toJson(storage.values()));
     }
 
-    public HttpTaskManager loadFromServer(URI url, Integer port) {
-        if (port == null) {
-            throw new NullPointerException();
-        }
-        HttpTaskManager manager = new HttpTaskManager(url, port.toString());
+    public HttpTaskManager loadFromServer(URI urlKvServer, String keyStoragePrefix) {
+        HttpTaskManager manager = new HttpTaskManager(urlKvServer, keyStoragePrefix);
         List<AbstractTask> reloadStorage = new GsonBuilder()
                 .registerTypeAdapter(AbstractTask.class, new PropertyMarshallerOfObject())
                 .create()
-                .fromJson(client.load(storageKey), new TypeToken<List<AbstractTask>>(){}.getType());
+                .fromJson(client.load(storageKey), new TypeToken<List<AbstractTask>>() {
+                }.getType());
         List<UUID> reloadHistory = new Gson()
-                .fromJson(client.load(historyKey), new TypeToken<List<UUID>>(){}.getType());
-        for (AbstractTask t : reloadStorage) {
-            this.storage.put(t.getUuid(), t);
+                .fromJson(client.load(historyKey), new TypeToken<List<UUID>>() {
+                }.getType());
+        if (reloadStorage != null) {
+            reloadStorage.forEach(t -> manager.storage.put(t.getUuid(), t));
         }
-        reloadStorage.forEach(t -> this.storage.put(t.getUuid(), t));
-        reloadHistory.forEach(uuid -> this.inMemoryHistoryManager.add(storage.get(uuid)));
-
+        if (reloadHistory != null) {
+            reloadHistory.forEach(uuid -> manager.inMemoryHistoryManager.add(manager.storage.get(uuid)));
+        }
         return manager;
     }
 }
