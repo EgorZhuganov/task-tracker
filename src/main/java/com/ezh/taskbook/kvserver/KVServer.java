@@ -111,7 +111,7 @@ public class KVServer {
     }
 
     public void stop() {
-        server.stop(1);
+        server.stop(0);
         System.out.println("Server (KVServer) was stopped on the port "+ PORT);
     }
 

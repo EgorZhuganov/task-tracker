@@ -78,8 +78,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         System.out.println(manager.getEpicByUuid(epic1.getUuid()));
     }
 
-    @Test /*should that subtask will add in tempStorage in method loadFromFile and then will get from it and add to
-    own subtask*/
+    @Test /*subtask will add in tempStorage in method loadFromFile and then will get from it and add to own subtask*/
     void test4_loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
