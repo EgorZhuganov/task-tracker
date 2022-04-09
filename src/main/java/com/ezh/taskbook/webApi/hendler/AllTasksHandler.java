@@ -1,12 +1,16 @@
 package com.ezh.taskbook.webApi.hendler;
 
 import com.ezh.taskbook.manager.TaskManager;
-import com.google.gson.Gson;
+import com.ezh.taskbook.task.AbstractTask;
+import com.ezh.taskbook.task.taskSerializers.jsonAdapter.PropertyMarshallerOfObject;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class AllTasksHandler implements HttpHandler {
 
@@ -21,8 +25,11 @@ public class AllTasksHandler implements HttpHandler {
         try {
             String method = exchange.getRequestMethod();
             if (method.equals("GET")) {
-                manager.getPrioritizedTasks();
-                String response = new Gson().toJson(manager.getPrioritizedTasks());
+                String response = new GsonBuilder()
+                        .registerTypeAdapter(AbstractTask.class, new PropertyMarshallerOfObject())
+                        .create()
+                        .toJson(manager.getPrioritizedTasks(), new TypeToken<List<AbstractTask>>(){}.getType());
+                exchange.getResponseHeaders().add("content-type", "application/json");
                 exchange.sendResponseHeaders(200, response.length());
                 exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                 System.out.println("Prioritized tasks were got");
@@ -32,7 +39,6 @@ public class AllTasksHandler implements HttpHandler {
             }
         } finally {
             exchange.sendResponseHeaders(500,-1);
-            exchange.close();
         }
     }
 }

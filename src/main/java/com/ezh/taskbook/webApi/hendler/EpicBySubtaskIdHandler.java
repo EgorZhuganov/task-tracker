@@ -27,8 +27,8 @@ public class EpicBySubtaskIdHandler implements HttpHandler {
                 case "GET":
                     try {
                         UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("/tasks/epic/subtask/".length()));
-                        manager.getEpicBySubtaskUuid(uuid);
                         String response = new Gson().toJson(manager.getEpicBySubtaskUuid(uuid));
+                        exchange.getResponseHeaders().add("content-type", "application/json");
                         exchange.sendResponseHeaders(200, response.length());
                         exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                         System.out.println("Epic was got");
@@ -46,7 +46,6 @@ public class EpicBySubtaskIdHandler implements HttpHandler {
             }
         } finally {
             exchange.sendResponseHeaders(500,-1);
-            exchange.close();
         }
     }
 }

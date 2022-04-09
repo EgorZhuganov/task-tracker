@@ -22,8 +22,8 @@ public class ListEpicHandler implements HttpHandler {
             String method = exchange.getRequestMethod();
             switch (method) {
                 case "GET":
-                    manager.getListEpics();
                     String response = new Gson().toJson(manager.getListEpics());
+                    exchange.getResponseHeaders().add("content-type", "application/json");
                     exchange.sendResponseHeaders(200, response.length());
                     exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                     System.out.println("Epics were got");
@@ -38,7 +38,7 @@ public class ListEpicHandler implements HttpHandler {
                     exchange.sendResponseHeaders(400, -1);
             }
         } finally {
-            exchange.close();
+            exchange.sendResponseHeaders(500,-1);
         }
     }
 }

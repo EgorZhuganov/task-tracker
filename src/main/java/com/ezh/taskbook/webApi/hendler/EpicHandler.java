@@ -35,8 +35,8 @@ public class EpicHandler implements HttpHandler {
                         UUID uuid = UUID.fromString(exchange.getRequestURI()
                                 .getPath()
                                 .substring("/tasks/epic/".length()));
-                        manager.getEpicByUuid(uuid);
                         String response = new Gson().toJson(manager.getEpicByUuid(uuid));
+                        exchange.getResponseHeaders().add("content-type", "application/json");
                         exchange.sendResponseHeaders(200, response.length());
                         exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                         System.out.println("Epic was got");
@@ -59,7 +59,7 @@ public class EpicHandler implements HttpHandler {
                                 manager.addEpic(epic);
                                 System.out.println("Epic was added");
                             }
-                            exchange.sendResponseHeaders(204, -1);
+                            exchange.sendResponseHeaders(201, -1);
                         } catch (Exception e) {
                             e.printStackTrace();
                             exchange.sendResponseHeaders(400, -1);
@@ -78,18 +78,32 @@ public class EpicHandler implements HttpHandler {
                             manager.changeEpicByUuid(uuid, epic);
                             System.out.println("Epic was changed");
                             exchange.sendResponseHeaders(204, -1);
-                        } catch (Exception e) {
+                        } catch (IllegalArgumentException e) {
                             e.printStackTrace();
                             exchange.sendResponseHeaders(400, -1);
+                        } catch (TaskNotFoundException e) {
+                            e.printStackTrace();
+                            exchange.sendResponseHeaders(404,-1);
                         }
                     } else {
                         exchange.sendResponseHeaders(400, -1);
                     }
                     break;
                 case "DELETE":
-                    manager.clearEpics();
-                    System.out.println("Epics were deleted");
-                    exchange.sendResponseHeaders(204, -1);
+                    try {
+                        UUID uuid = UUID.fromString(exchange.getRequestURI()
+                                .getPath()
+                                .substring("/tasks/epic/".length()));
+                        manager.removeEpicByUuid(uuid);
+                        System.out.println("Epic was deleted");
+                        exchange.sendResponseHeaders(204, -1);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(400, -1);
+                    } catch (TaskNotFoundException e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(404,-1);
+                    }
                     break;
                 default:
                     System.out.println("This context works only with methods: GET, POST, PUT, DELETE");
@@ -97,7 +111,6 @@ public class EpicHandler implements HttpHandler {
             }
         } finally {
             exchange.sendResponseHeaders(500,-1);
-            exchange.close();
         }
     }
 }

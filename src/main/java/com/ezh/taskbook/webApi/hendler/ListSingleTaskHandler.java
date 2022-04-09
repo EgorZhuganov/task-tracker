@@ -22,8 +22,8 @@ public class ListSingleTaskHandler implements HttpHandler {
             String method = exchange.getRequestMethod();
             switch (method) {
                 case "GET":
-                    manager.getListSingleTasks();
                     String response = new Gson().toJson(manager.getListSingleTasks());
+                    exchange.getResponseHeaders().add("Content-Type", "application/json");
                     exchange.sendResponseHeaders(200, response.length());
                     exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                     System.out.println("Single tasks were got");
@@ -38,7 +38,7 @@ public class ListSingleTaskHandler implements HttpHandler {
                     exchange.sendResponseHeaders(400, -1);
             }
         } finally {
-            exchange.close();
+            exchange.sendResponseHeaders(500,-1);
         }
     }
 }

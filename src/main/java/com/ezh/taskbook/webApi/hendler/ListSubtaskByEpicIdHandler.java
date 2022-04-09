@@ -26,15 +26,18 @@ public class ListSubtaskByEpicIdHandler implements HttpHandler {
                 case "GET":
                     try {
                         UUID uuid = UUID.fromString(exchange.getRequestURI().getPath().substring("/tasks/subtask/epic/".length()));
-                        manager.getListSubtasksByEpicUuid(uuid);
                         String response = new Gson().toJson(manager.getListSubtasksByEpicUuid(uuid));
+                        exchange.getResponseHeaders().add("content-type", "application/json");
                         exchange.sendResponseHeaders(200, response.length());
                         exchange.getResponseBody().write(response.getBytes(StandardCharsets.UTF_8));
                         System.out.println("Subtasks were got");
                         break;
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                         exchange.sendResponseHeaders(400, -1);
+                    } catch (TaskNotFoundException e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(404,-1);
                     }
                     break;
                 case "DELETE":
@@ -43,9 +46,12 @@ public class ListSubtaskByEpicIdHandler implements HttpHandler {
                         manager.clearSubtasksInEpicByEpicUuid(uuid);
                         System.out.printf("Subtasks in Epic with uuid: %s were deleted", uuid);
                         exchange.sendResponseHeaders(204, -1);
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                         exchange.sendResponseHeaders(400, -1);
+                    } catch (TaskNotFoundException e) {
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(404,-1);
                     }
                     break;
                 default:
@@ -53,7 +59,7 @@ public class ListSubtaskByEpicIdHandler implements HttpHandler {
                     exchange.sendResponseHeaders(400, -1);
             }
         } finally {
-            exchange.close();
+            exchange.sendResponseHeaders(500,-1);
         }
     }
 }
