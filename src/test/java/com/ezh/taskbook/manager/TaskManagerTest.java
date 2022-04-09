@@ -494,12 +494,13 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         subtask1.setDescription("About something");
         subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 12, 23, 59), Duration.ofDays(5));
 
-        Assertions.assertThrows(RuntimeException.class, () ->
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
                 manager.changeSubtaskByUuid(subtask1.getUuid(), subtask1));
     }
 
     @Test
-    void test42_changeSubtaskByUuidSetSubtaskValuesFromAnotherSubtaskShouldTheSameValuesInFirstTask() throws TaskNotFoundException, TasksIntersectionException {
+    void test42_changeSubtaskByUuidSetSubtaskValuesFromAnotherSubtaskShouldTheSameValuesInFirstTask()
+            throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
@@ -788,9 +789,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask2 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 12, 20), Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 20, 12, 20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023, 12, 20, 12, 20), Duration.ofDays(40));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -808,9 +809,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask2 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 12, 20), Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 20, 12, 20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023, 12, 20, 12, 20), Duration.ofDays(40));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -828,9 +829,9 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask2 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,20,12,20), Duration.ofDays(30));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023,12,20,12,20), Duration.ofDays(40));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 12, 20), Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 20, 12, 20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2023, 12, 20, 12, 20), Duration.ofDays(40));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -847,8 +848,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20),Duration.ofDays(20));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,12,20), Duration.ofDays(30));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 12, 20), Duration.ofDays(20));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 12, 20), Duration.ofDays(30));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -861,8 +862,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,11,12,20),Duration.ofDays(20));
-        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 11, 12, 20), Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 1, 12, 20), Duration.ofDays(30));
 
         System.out.println(singleTask1.getEndTime());
         System.out.println(singleTask2.getEndTime());
@@ -878,8 +879,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20),Duration.ofDays(10));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20), Duration.ofDays(30));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 1, 12, 20), Duration.ofDays(10));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 11, 12, 20), Duration.ofDays(30));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -893,8 +894,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,11,12,20),Duration.ofDays(30));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,12,1,12,20), Duration.ofDays(10));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 11, 12, 20), Duration.ofDays(30));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 1, 12, 20), Duration.ofDays(10));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -907,8 +908,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,9,12,20),Duration.ofDays(20));
-        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20), Duration.ofDays(30));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 9, 12, 20), Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 1, 12, 20), Duration.ofDays(30));
 
         manager.addSingleTask(singleTask1);
 
@@ -920,8 +921,8 @@ abstract class TaskManagerTest<ManagerType extends TaskManager> {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,1,1,12,20),Duration.ofDays(20));
-        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2021,12,25,12,20), Duration.ofDays(10));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 1, 12, 20), Duration.ofDays(20));
+        singleTask2.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 25, 12, 20), Duration.ofDays(10));
 
         manager.addSingleTask(singleTask1);
 

@@ -24,14 +24,16 @@ class EpicTest {
     }
 
     @Test
-    public void test2_checkStatusEpicWithOneSubtaskWhichHasStatusNewShouldStatusNew() throws TasksIntersectionException {
+    public void test2_checkStatusEpicWithOneSubtaskWhichHasStatusNewShouldStatusNew()
+            throws TasksIntersectionException {
         epic1.getSubtaskList().add(subtask1);
         manager.addEpicWithSubtask(epic1);
         Assertions.assertEquals(StatusTask.NEW, epic1.getStatus());
     }
 
     @Test
-    public void test3_checkStatusEpicWithOneSubtaskWhichHasStatusDoneShouldStatusDone() throws TasksIntersectionException {
+    public void test3_checkStatusEpicWithOneSubtaskWhichHasStatusDoneShouldStatusDone()
+            throws TasksIntersectionException {
         subtask1.setStatus(StatusTask.DONE);
         epic1.getSubtaskList().add(subtask1);
 
@@ -40,7 +42,8 @@ class EpicTest {
     }
 
     @Test
-    public void test4_checkStatusEpicWithTwoSubtasksWhichHaveStatusDoneAndNewShouldStatusInProgress() throws TasksIntersectionException {
+    public void test4_checkStatusEpicWithTwoSubtasksWhichHaveStatusDoneAndNewShouldStatusInProgress()
+            throws TasksIntersectionException {
         subtask1.setStatus(StatusTask.DONE);
         subtask2.setStatus(StatusTask.NEW);
 
@@ -52,7 +55,8 @@ class EpicTest {
     }
 
     @Test
-    public void test5_checkStatusEpicWithOneSubtaskWhichHasStatusInProgressAndNewShouldStatusInProgress() throws TasksIntersectionException {
+    public void test5_checkStatusEpicWithOneSubtaskWhichHasStatusInProgressAndNewShouldStatusInProgress()
+            throws TasksIntersectionException {
         subtask1.setStatus(StatusTask.IN_PROGRESS);
         epic1.getSubtaskList().add(subtask1);
 
@@ -61,7 +65,8 @@ class EpicTest {
     }
 
     @Test
-    public void test6_checkStatusEpicIfStatusSubtaskWillChangeFromNewToDoneShouldStatusDone() throws TaskNotFoundException, TasksIntersectionException {
+    public void test6_checkStatusEpicIfStatusSubtaskWillChangeFromNewToDoneShouldStatusDone()
+            throws TaskNotFoundException, TasksIntersectionException {
         epic1.getSubtaskList().add(subtask1);
         manager.addEpicWithSubtask(epic1);
         subtask2.setStatus(StatusTask.DONE);
@@ -70,7 +75,8 @@ class EpicTest {
     }
 
     @Test
-    public void test7_checkStatusEpicIfStatusSubtaskWillChangeFromNewToInProgressShouldStatusInProgress() throws TaskNotFoundException, TasksIntersectionException {
+    public void test7_checkStatusEpicIfStatusSubtaskWillChangeFromNewToInProgressShouldStatusInProgress()
+            throws TaskNotFoundException, TasksIntersectionException {
         epic1.getSubtaskList().add(subtask1);
         manager.addEpicWithSubtask(epic1);
         subtask2.setStatus(StatusTask.IN_PROGRESS);
@@ -79,7 +85,8 @@ class EpicTest {
     }
 
     @Test
-    public void test8_checkStatusEpicIfItHasSubtaskWithStatusDoneAndWillAddSubtaskWithStatusNewShouldStatusInProgress() throws TasksIntersectionException, TaskNotFoundException {
+    public void test8_checkStatusEpicIfItHasSubtaskWithStatusDoneAndWillAddSubtaskWithStatusNewShouldStatusInProgress()
+            throws TasksIntersectionException, TaskNotFoundException {
         subtask1.setStatus(StatusTask.DONE);
         epic1.getSubtaskList().add(subtask1);
 
@@ -92,9 +99,10 @@ class EpicTest {
     }
 
     @Test /*epic calculate end time if at least one subtask does not have a duration or start time field*/
-    public void test9_getEndTimeIfAdd2SubtaskWithDurationAndStartTimeAndOneWithoutTheseFieldsShouldReturnEndTime() throws TasksIntersectionException {
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,20,15,0), Duration.ofDays(30));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,10,20,15,0), Duration.ofDays(10));
+    public void test9_getEndTimeIfAdd2SubtaskWithDurationAndStartTimeAndOneWithoutTheseFieldsShouldReturnEndTime()
+            throws TasksIntersectionException {
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 20, 15, 0), Duration.ofDays(30));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022, 10, 20, 15, 0), Duration.ofDays(10));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -105,24 +113,26 @@ class EpicTest {
     }
 
     @Test /* return the biggest time of execute (duration+start time) */
-    public void test10_getEndTimeIfAdd3SubtaskWithDurationAndStartTimeShouldReturnEndTime() throws TasksIntersectionException {
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,10,23,0),Duration.ofDays(300));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0),Duration.ofDays(10));
-        subtask3.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(20));
+    public void test10_getEndTimeIfAdd3SubtaskWithDurationAndStartTimeShouldReturnEndTime()
+            throws TasksIntersectionException {
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 10, 23, 0), Duration.ofDays(300));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2019, 1, 10, 23, 0), Duration.ofDays(10));
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2020, 1, 10, 23, 0), Duration.ofDays(20));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
         epic1.getSubtaskList().add(subtask3);
 
         manager.addEpicWithSubtask(epic1);
-        Assertions.assertEquals(LocalDateTime.of(2022,12,10,23,0).
+        Assertions.assertEquals(LocalDateTime.of(2022, 12, 10, 23, 0).
                 plus(Duration.ofDays(300)), epic1.getEndTime());
     }
 
     @Test
-    public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTimeAnotherSubtask() throws TasksIntersectionException {
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,10,23,0), Duration.ofDays(300));
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022,1,10,23,0), Duration.ofDays(10));
+    public void test11_getEndTimeIfOneOfSubtaskHasNotGotFieldStartTimeShouldReturnStartTimeAnotherSubtask()
+            throws TasksIntersectionException {
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 10, 23, 0), Duration.ofDays(300));
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2022, 1, 10, 23, 0), Duration.ofDays(10));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -134,7 +144,8 @@ class EpicTest {
     }
 
     @Test /*if no one Subtask return getEndTime as null*/
-    public void test12_getEndTimeIfNoOneOfSubtaskHasNotGotFieldStartTimeShouldReturnNull () throws TasksIntersectionException {
+    public void test12_getEndTimeIfNoOneOfSubtaskHasNotGotFieldStartTimeShouldReturnNull()
+            throws TasksIntersectionException {
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
         epic1.getSubtaskList().add(subtask3);
@@ -144,10 +155,11 @@ class EpicTest {
     }
 
     @Test
-    public void test14_getStartTimeIfAdd3SubtaskWithStartTimeFindTaskWithTheSmallestStartTime() throws TasksIntersectionException {
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2021,12,10,23,0), Duration.ofDays(5)); //without start duration
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
-        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
+    public void test14_getStartTimeIfAdd3SubtaskWithStartTimeFindTaskWithTheSmallestStartTime()
+            throws TasksIntersectionException {
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 10, 23, 0), Duration.ofDays(5)); //without start duration
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020, 1, 10, 23, 0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019, 1, 10, 23, 0), Duration.ofDays(20));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -158,9 +170,10 @@ class EpicTest {
     }
 
     @Test
-    public void test15_getStartTimeIfAddSomeSubtasksAndOneWithoutStartTimeShouldReturnTheSmallestStartTimeNotException() throws TasksIntersectionException {
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
-        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
+    public void test15_getStartTimeIfAddSomeSubtasksAndOneWithoutStartTimeShouldReturnTheSmallestStartTimeNotException()
+            throws TasksIntersectionException {
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020, 1, 10, 23, 0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019, 1, 10, 23, 0), Duration.ofDays(20));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
@@ -171,7 +184,8 @@ class EpicTest {
     }
 
     @Test
-    public void test16_getDurationIfNoOneOfSubtasksHasNotGotDurationShouldReturnNull() throws TasksIntersectionException {
+    public void test16_getDurationIfNoOneOfSubtasksHasNotGotDurationShouldReturnNull()
+            throws TasksIntersectionException {
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
         epic1.getSubtaskList().add(subtask3);
@@ -181,9 +195,10 @@ class EpicTest {
     }
 
     @Test /*duration count if subtask has start time and end time*/
-    public void test17_getDurationIfAdd2SubtasksWithStartTimeAndDurationShouldReturnDurationBetweenTwoSubtasks() throws TasksIntersectionException {
-        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020,1,10,23,0), Duration.ofDays(10)); //this is last
-        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019,1,10,23,0), Duration.ofDays(20));
+    public void test17_getDurationIfAdd2SubtasksWithStartTimeAndDurationShouldReturnDurationBetweenTwoSubtasks()
+            throws TasksIntersectionException {
+        subtask2.setStartTimeAndDuration(LocalDateTime.of(2020, 1, 10, 23, 0), Duration.ofDays(10)); //this is last
+        subtask3.setStartTimeAndDuration(LocalDateTime.of(2019, 1, 10, 23, 0), Duration.ofDays(20));
 
         epic1.getSubtaskList().add(subtask1);
         epic1.getSubtaskList().add(subtask2);
