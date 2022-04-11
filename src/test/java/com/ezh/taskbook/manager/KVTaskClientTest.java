@@ -33,13 +33,13 @@ class KVTaskClientTest {
     void afterEach() { kvServer.stop(); }
 
     @Test
-    void test1_putTryPutSomeJsonThrowKVClientWithKeyShouldAddJsonToKVServer () {
+    void test1putTryPutSomeJsonThrowKVClientWithKeyShouldAddJsonToKVServer () {
         String json = new Gson().toJson("Im JSON");
         client.put("My-most-secure-key", json);
     }
 
     @Test
-    void test2_loadPutAndLoadJsonThrowKVClientShouldGetJsonByKeyFromKVStorage () {
+    void test2loadPutAndLoadJsonThrowKVClientShouldGetJsonByKeyFromKVStorage () {
         String json = "Im JSON";
         client.put("My-most-secure-key", new Gson().toJson(json));
 

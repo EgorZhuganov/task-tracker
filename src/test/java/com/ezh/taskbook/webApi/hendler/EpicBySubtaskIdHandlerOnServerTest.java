@@ -34,7 +34,7 @@ class EpicBySubtaskIdHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test//GET
-    void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnEpicAsJsonAndStatusCode200()
+    void test1checkContextWithGetRequestIfEpicWasSentShouldReturnEpicAsJsonAndStatusCode200()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -56,7 +56,7 @@ class EpicBySubtaskIdHandlerOnServerTest {
     }
 
     @Test //GET
-    void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404()
+    void test2checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);

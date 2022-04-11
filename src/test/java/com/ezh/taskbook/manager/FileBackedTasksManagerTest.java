@@ -31,7 +31,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test1_getHistoryIfHistoryIsEmptyShouldReturnSize0() throws TasksIntersectionException {
+    void test1getHistoryIfHistoryIsEmptyShouldReturnSize0() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -46,7 +46,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test2_getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() throws TaskNotFoundException, TasksIntersectionException {
+    void test2getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -63,7 +63,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test3_getListTasksIfFileIsEmptyShouldReturn0() {
+    void test3getListTasksIfFileIsEmptyShouldReturn0() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File("test.txt"));
         Assertions.assertEquals(0, manager.getListEpics().size());
         Assertions.assertEquals(0, manager.getListSingleTasks().size());
@@ -71,7 +71,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void test4_getEpicWithoutAnySubtasks() throws TaskNotFoundException {
+    void test4getEpicWithoutAnySubtasks() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         manager.addEpic(epic1);
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File("test.txt"));
@@ -79,7 +79,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test /*subtask will add in tempStorage in method loadFromFile and then will get from it and add to own subtask*/
-    void test4_loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
+    void test5loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);

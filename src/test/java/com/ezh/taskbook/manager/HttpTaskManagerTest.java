@@ -30,7 +30,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     void afterEach() { kvServer.stop(); }
 
     @Test
-    void test1_loadFromServerIfAddOneTaskToHistoryShouldReturnSize1FromAnotherManager() throws TaskNotFoundException {
+    void test1loadFromServerIfAddOneTaskToHistoryShouldReturnSize1FromAnotherManager() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         manager.addEpic(epic1);
@@ -44,7 +44,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void test1_getHistoryIfHistoryIsEmptyShouldReturnSize0() throws TasksIntersectionException {
+    void test2getHistoryIfHistoryIsEmptyShouldReturnSize0() throws TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -58,7 +58,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void test2_getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() throws TaskNotFoundException, TasksIntersectionException {
+    void test3getHistoryIfAdd3TasksToManagerAndGet3TasksHistoryNotEmptyShouldReturn3() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         SingleTask singleTask1 = new SingleTask();
@@ -76,7 +76,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void test3_getListTasksIfFileIsEmptyShouldReturn0() {
+    void test4getListTasksIfFileIsEmptyShouldReturn0() {
         HttpTaskManager manager = new HttpTaskManager(serverUrl, "8080").loadFromServer(serverUrl, "8080");
         Assertions.assertEquals(0, manager.getListEpics().size());
         Assertions.assertEquals(0, manager.getListSingleTasks().size());
@@ -84,7 +84,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void test4_getEpicWithoutAnySubtasks() throws TaskNotFoundException {
+    void test5getEpicWithoutAnySubtasks() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         manager.addEpic(epic1);
 
@@ -93,7 +93,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void test4_loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
+    void test6loadManySubtasksAndOneEpicFromFile() throws TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1);

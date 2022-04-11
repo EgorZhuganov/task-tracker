@@ -33,7 +33,7 @@ class ListEpicHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfAddTwoEpicToStorageShouldReturnStatusCode200 ()
+    void test1checkContextWithGetRequestIfAddTwoEpicToStorageShouldReturnStatusCode200 ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -52,7 +52,7 @@ class ListEpicHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test2_checkContextWithDeleteRequestIfAddTwoEpicShouldReturnCode204WithoutBodyAndStorageWithoutEpics ()
+    void test2checkContextWithDeleteRequestIfAddTwoEpicShouldReturnCode204WithoutBodyAndStorageWithoutEpics ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();

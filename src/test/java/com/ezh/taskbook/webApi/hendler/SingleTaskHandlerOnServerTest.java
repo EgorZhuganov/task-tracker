@@ -38,7 +38,7 @@ class SingleTaskHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfSingleTaskWasSentShouldReturnStatusCode200()
+    void test1checkContextWithGetRequestIfSingleTaskWasSentShouldReturnStatusCode200()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask = new SingleTask();
 
@@ -56,7 +56,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //GET
-    void test2_checkContextWithGetRequestIfSingleTaskWasntSentShouldReturnStatusCode404()
+    void test2checkContextWithGetRequestIfSingleTaskWasntSentShouldReturnStatusCode404()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask(); //Attention! Single task won't add to storage
@@ -74,7 +74,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //GET
-    void test3_checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400()
+    void test3checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         manager.addSingleTask(singleTask1);
@@ -91,7 +91,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //POST
-    void test4_checkContextWithPostRequestShouldAddOneSingleTaskToStorageAndReturnCode201AndReturnSubtaskListSize1()
+    void test4checkContextWithPostRequestShouldAddOneSingleTaskToStorageAndReturnCode201AndReturnSubtaskListSize1()
             throws IOException, InterruptedException, TaskNotFoundException {
         SingleTask singleTask1 = new SingleTask();
 
@@ -109,7 +109,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //POST if tasks will intersect (first response code 201, second 400)
-    void test6_checkContextWithPostRequestIfAddTwoSingleTasksWithIntersectTimeShouldReturnCode400AndAddOnlyOneTask()
+    void test6checkContextWithPostRequestIfAddTwoSingleTasksWithIntersectTimeShouldReturnCode400AndAddOnlyOneTask()
             throws IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -136,7 +136,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeSingleTask1FromStorage()
+    void test7checkContextWithPutRequestShouldReturnStatus204AndChangeSingleTask1FromStorage()
             throws IOException, InterruptedException, TaskNotFoundException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -159,7 +159,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test8_checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
+    void test8checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -180,7 +180,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test9_checkContextWithPutRequestIfSingleTaskNotFoundShouldReturnStatus404()
+    void test9checkContextWithPutRequestIfSingleTaskNotFoundShouldReturnStatus404()
             throws IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask(); //single task will not add to storage
         SingleTask singleTask2 = new SingleTask(); //single task will not add to storage
@@ -199,7 +199,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test10_checkContextWithDeleteRequestIf1SingleTaskThereIsInStorageShouldReturnStatus204AndRemoveSingleTaskFromStorage()
+    void test10checkContextWithDeleteRequestIf1SingleTaskThereIsInStorageShouldReturnStatus204AndRemoveSingleTaskFromStorage()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
 
@@ -220,7 +220,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test11_checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400AndDoNotDeleteTask()
+    void test11checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400AndDoNotDeleteTask()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
 
@@ -238,7 +238,7 @@ class SingleTaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test12_checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404()
+    void test12checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask(); //won't add to storage

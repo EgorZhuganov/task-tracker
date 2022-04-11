@@ -41,7 +41,7 @@ class AllTasksHandlerOnServerTest {
     }
 
     @Test //GET
-    void checkContextWithGetRequestIfPrioritizedTasksExistShouldReturnCode200()
+    void test1checkContextWithGetRequestIfPrioritizedTasksExistShouldReturnCode200()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -68,7 +68,7 @@ class AllTasksHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void checkContextWithDeleteRequestIfWasReceivedNonGetRequestShouldReturnNoBodyAndCode400()
+    void test2checkContextWithDeleteRequestIfWasReceivedNonGetRequestShouldReturnNoBodyAndCode400()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();

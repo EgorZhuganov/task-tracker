@@ -35,7 +35,7 @@ class HistoryHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfAddTwoSingleTaskToHistoryShouldReturnStatusCode200 ()
+    void test1checkContextWithGetRequestIfAddTwoSingleTaskToHistoryShouldReturnStatusCode200 ()
             throws TasksIntersectionException, TaskNotFoundException, IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -57,7 +57,7 @@ class HistoryHandlerOnServerTest {
     }
 
     @Test //DELETE - NOT EXIST
-    void test3_checkContextWithDeleteRequestWhichNotExist()
+    void test2checkContextWithDeleteRequestWhichNotExist()
             throws TasksIntersectionException, IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();

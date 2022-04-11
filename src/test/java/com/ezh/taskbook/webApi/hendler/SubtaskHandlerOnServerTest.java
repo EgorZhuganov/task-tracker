@@ -39,7 +39,7 @@ class SubtaskHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfSubtaskWasSentShouldReturnStatusCode200()
+    void test1checkContextWithGetRequestIfSubtaskWasSentShouldReturnStatusCode200()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -58,7 +58,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //GET
-    void test2_checkContextWithGetRequestIfSubtaskWasntSentShouldReturnStatusCode404()
+    void test2checkContextWithGetRequestIfSubtaskWasntSentShouldReturnStatusCode404()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -78,7 +78,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //GET
-    void test3_checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400()
+    void test3checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -97,7 +97,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //POST
-    void test4_checkContextWithPostRequestShouldAddOneSubtaskToStorageAndReturnCode201AndReturnSubtaskListSize1()
+    void test4checkContextWithPostRequestShouldAddOneSubtaskToStorageAndReturnCode201AndReturnSubtaskListSize1()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -117,7 +117,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //POST if tasks will intersect (first response code 201, second 400)
-    void test6_checkContextWithPostRequestIfAddTwoSubtasksWithIntersectTimeShouldReturnCode400AndAddOnlyOneTask()
+    void test6checkContextWithPostRequestIfAddTwoSubtasksWithIntersectTimeShouldReturnCode400AndAddOnlyOneTask()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -146,7 +146,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeSubtask1FromStorage()
+    void test7checkContextWithPutRequestShouldReturnStatus204AndChangeSubtask1FromStorage()
             throws IOException, InterruptedException, TaskNotFoundException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -170,7 +170,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test8_checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
+    void test8checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -193,7 +193,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //PUT
-    void test9_checkContextWithPutRequestIfSubtaskNotFoundShouldReturnStatus404()
+    void test9checkContextWithPutRequestIfSubtaskNotFoundShouldReturnStatus404()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1); //subtask will not add to storage
@@ -213,7 +213,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test10_checkContextWithDeleteRequestIf1SubtaskThereIsInStorageShouldReturnStatus204AndRemoveSubtaskFromStorage()
+    void test10checkContextWithDeleteRequestIf1SubtaskThereIsInStorageShouldReturnStatus204AndRemoveSubtaskFromStorage()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -236,7 +236,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test11_checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400AndDoNotDeleteTask()
+    void test11checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400AndDoNotDeleteTask()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -256,7 +256,7 @@ class SubtaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test12_checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404()
+    void test12checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);

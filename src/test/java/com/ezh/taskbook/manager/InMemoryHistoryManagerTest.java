@@ -15,7 +15,7 @@ class InMemoryHistoryManagerTest {
     HistoryManager historyManager = new InMemoryHistoryManager();
 
     @Test
-    void test1_addIfAddTwoTheSameTasksShould1TaskInHistoryManager() {
+    void test1addIfAddTwoTheSameTasksShould1TaskInHistoryManager() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
 
@@ -26,7 +26,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test2_addIfAdd3TasksShouldAddTaskNumber3ToEndOfHistory() {
+    void test2addIfAdd3TasksShouldAddTaskNumber3ToEndOfHistory() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         Epic epic3 = new Epic();
@@ -39,7 +39,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test3_addIfAddOneTasksShouldReturnThisTaskFromHistory() {
+    void test3addIfAddOneTasksShouldReturnThisTaskFromHistory() {
         Epic epic1 = new Epic();
 
         historyManager.add(epic1);
@@ -48,7 +48,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test /*and check that task number 3 will first task*/
-    void test4_addAdd12TasksShouldReturnFromHistory10Tasks() {
+    void test4addAdd12TasksShouldReturnFromHistory10Tasks() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -83,7 +83,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test5_removeAdd3TasksRemoveFirstShouldReturnSecondHowFirstTask() {
+    void test5removeAdd3TasksRemoveFirstShouldReturnSecondHowFirstTask() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         SingleTask singleTask1 = new SingleTask();
@@ -97,7 +97,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test6_removeAdd3TasksRemoveSecondShouldReturnThirdHowSecondTask() {
+    void test6removeAdd3TasksRemoveSecondShouldReturnThirdHowSecondTask() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         SingleTask singleTask1 = new SingleTask();
@@ -111,7 +111,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test7_removeAdd3TasksRemoveThirdShouldReturnHistorySizeEquals2() {
+    void test7removeAdd3TasksRemoveThirdShouldReturnHistorySizeEquals2() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         SingleTask singleTask1 = new SingleTask();
@@ -125,7 +125,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test8_getHistoryAdd0TasksShouldReturnSizeHistoryEquals0() {
+    void test8getHistoryAdd0TasksShouldReturnSizeHistoryEquals0() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
         Epic epic1 = new Epic();
@@ -134,7 +134,7 @@ class InMemoryHistoryManagerTest {
 
     @Test /* after remove singleTask2 and epic1 (two first tasks) expected that next task will first and order will save
      ** will use duplicate tasks */
-    void test9_getHistoryAdd12TasksShouldReturn10TasksInRightOrder() {
+    void test9getHistoryAdd12TasksShouldReturn10TasksInRightOrder() {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
 
@@ -170,7 +170,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test10_asStringAdd5TasksShouldReturnUuidOwnTheseTasks() {
+    void test10asStringAdd5TasksShouldReturnUuidOwnTheseTasks() {
         SingleTask singleTask1 = new SingleTask();
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -190,7 +190,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void test11_fromStringAdd5TasksShouldReturnUuidOwnTheseTasks() {
+    void test11fromStringAdd5TasksShouldReturnUuidOwnTheseTasks() {
         SingleTask singleTask1 = new SingleTask();
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();

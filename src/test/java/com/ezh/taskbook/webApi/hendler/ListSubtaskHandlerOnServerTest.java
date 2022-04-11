@@ -35,7 +35,7 @@ class ListSubtaskHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfAddTwoSubtasksToStorageShouldReturnStatusCode200 ()
+    void test1checkContextWithGetRequestIfAddTwoSubtasksToStorageShouldReturnStatusCode200 ()
             throws TasksIntersectionException, IOException, InterruptedException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -56,7 +56,7 @@ class ListSubtaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test2_checkContextWithDeleteRequestIfAddTwoSubtasksShouldReturnCode204WithoutBodyAndStorageWithoutSubtasks ()
+    void test2checkContextWithDeleteRequestIfAddTwoSubtasksShouldReturnCode204WithoutBodyAndStorageWithoutSubtasks ()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();

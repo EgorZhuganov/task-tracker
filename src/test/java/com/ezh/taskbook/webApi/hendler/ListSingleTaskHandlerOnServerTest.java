@@ -34,7 +34,7 @@ class ListSingleTaskHandlerOnServerTest {
     void afterEach() { server.stop(); }
 
     @Test //GET
-    void test1_checkContextWithGetRequestIfAddTwoSingleTasksToStorageShouldReturnStatusCode200 ()
+    void test1checkContextWithGetRequestIfAddTwoSingleTasksToStorageShouldReturnStatusCode200 ()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -53,7 +53,7 @@ class ListSingleTaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    void test2_checkContextWithDeleteRequestIfAddTwoSingleTasksShouldReturnCode204WithoutBodyAndStorageWithoutSingleTasks ()
+    void test2checkContextWithDeleteRequestIfAddTwoSingleTasksShouldReturnCode204WithoutBodyAndStorageWithoutSingleTasks ()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
