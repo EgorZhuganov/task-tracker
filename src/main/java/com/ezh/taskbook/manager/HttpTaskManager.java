@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -21,11 +20,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public HttpTaskManager(URI urlKvServer, String keyStoragePrefix) {
         storageKey = keyStoragePrefix + "STORAGE_KEY";
         historyKey = keyStoragePrefix + "HISTORY_KEY";
-        try {
-            client = new KVTaskClient(urlKvServer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        client = new KVTaskClient(urlKvServer);
     }
 
     @Override
