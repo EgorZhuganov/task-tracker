@@ -25,23 +25,23 @@ import java.util.List;
 class AllTasksHandlerOnServerTest {
 
     private final TaskManager manager = new FileBackedTasksManager(new File("test.txt"));
-    private final HttpTaskServer server = new HttpTaskServer(manager,8080);
+    private final HttpTaskServer server = new HttpTaskServer(manager, 8080);
     private final HttpClient client = HttpClient.newHttpClient();
     private HttpRequest request;
     private final URI url = URI.create("http://localhost:8080/tasks/");
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         server.start();
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         server.stop();
     }
 
     @Test //GET
-    public void test2_checkContextWithGetRequestIfPrioritizedTasksExistShouldReturnResponseAsJsonAndCode200()
+    void checkContextWithGetRequestIfPrioritizedTasksExistShouldReturnCode200()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -49,9 +49,9 @@ class AllTasksHandlerOnServerTest {
         Subtask subtask1 = new Subtask(epic1);
         epic1.getSubtaskList().add(subtask1);
 
-        subtask1.setStartTimeAndDuration(LocalDateTime.of(2021,12,31,23,59), Duration.ofDays(10));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,31,23,59), Duration.ofDays(10));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,10,31,23,59), Duration.ofDays(10));
+        subtask1.setStartTimeAndDuration(LocalDateTime.of(2021, 12, 31, 23, 59), Duration.ofDays(10));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 31, 23, 59), Duration.ofDays(10));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 10, 31, 23, 59), Duration.ofDays(10));
 
         manager.addSingleTask(singleTask1);
         manager.addSingleTask(singleTask2);
@@ -68,11 +68,12 @@ class AllTasksHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test3_checkContextWithDeleteRequestIfWasReceivedNonGetRequestShouldReturnNoBodyAndCode400() throws IOException, InterruptedException, TasksIntersectionException {
+    void checkContextWithDeleteRequestIfWasReceivedNonGetRequestShouldReturnNoBodyAndCode400()
+            throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,12,31,23,59), Duration.ofDays(10));
-        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022,10,31,23,59), Duration.ofDays(10));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 12, 31, 23, 59), Duration.ofDays(10));
+        singleTask1.setStartTimeAndDuration(LocalDateTime.of(2022, 10, 31, 23, 59), Duration.ofDays(10));
 
         manager.addSingleTask(singleTask1);
         manager.addSingleTask(singleTask2);

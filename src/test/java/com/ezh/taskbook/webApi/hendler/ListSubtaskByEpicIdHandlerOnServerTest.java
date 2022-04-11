@@ -30,15 +30,13 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/tasks/subtask/epic/");
 
     @BeforeEach
-    public void beforeEach() { server.start(); }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextGetRequestIfAddEpicWith3SubtasksShouldReturnCode200()
+    void test1_checkContextGetRequestIfAddEpicWith3SubtasksShouldReturnCode200()
             throws TasksIntersectionException, IOException, InterruptedException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -61,7 +59,7 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     }
 
     @Test //GET
-    public void test2_checkContextGetRequestIfTryToFindEpicWithWrongFormatUuidShouldReturnCode400 ()
+    void test2_checkContextGetRequestIfTryToFindEpicWithWrongFormatUuidShouldReturnCode400 ()
             throws TasksIntersectionException, IOException, InterruptedException {
 
         Epic epic1 = new Epic();
@@ -84,7 +82,7 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     }
 
     @Test //GET
-    public void test3_checkContextGetRequestIfTryToFindEpicWithUuidWhichNotExistInStorageShouldReturnCode404 ()
+    void test3_checkContextGetRequestIfTryToFindEpicWithUuidWhichNotExistInStorageShouldReturnCode404 ()
             throws TasksIntersectionException, IOException, InterruptedException {
 
         Epic epic1 = new Epic();
@@ -108,7 +106,7 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test4_checkContextDeleteRequestIfAddEpicWith3SubtasksShouldReturnCode204AndSubtasksListSize0()
+    void test4_checkContextDeleteRequestIfAddEpicWith3SubtasksShouldReturnCode204AndSubtasksListSize0()
             throws TasksIntersectionException, IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -135,7 +133,7 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test5_checkContextDeleteRequestIfTryFindEpicWithWrongUuidShouldReturnCode400 ()
+    void test5_checkContextDeleteRequestIfTryFindEpicWithWrongUuidShouldReturnCode400 ()
             throws TasksIntersectionException, IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -161,7 +159,7 @@ class ListSubtaskByEpicIdHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test6_checkContextDeleteRequestIfTryFindEpicInStorageWithNotExistingUuidShouldReturnCode404()
+    void test6_checkContextDeleteRequestIfTryFindEpicInStorageWithNotExistingUuidShouldReturnCode404()
             throws TasksIntersectionException, IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic(); //won't add to storage

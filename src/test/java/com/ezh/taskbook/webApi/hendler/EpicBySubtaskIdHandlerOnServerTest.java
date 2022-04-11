@@ -22,23 +22,20 @@ import java.net.http.HttpResponse;
 class EpicBySubtaskIdHandlerOnServerTest {
 
     private final TaskManager manager = new FileBackedTasksManager(new File("test.txt"));
-    private final HttpTaskServer server = new HttpTaskServer(manager,8080);
+    private final HttpTaskServer server = new HttpTaskServer(manager, 8080);
     private final HttpClient client = HttpClient.newHttpClient();
     private HttpRequest request;
     private final URI url = URI.create("http://localhost:8080/tasks/epic/subtask/");
 
     @BeforeEach
-    public void beforeEach() {
-        server.start();
-    }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
-    @Test //GET
-    public void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnEpicAsJsonAndStatusCode200 () throws IOException, InterruptedException, TasksIntersectionException {
+    @Test//GET
+    void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnEpicAsJsonAndStatusCode200()
+            throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         epic1.getSubtaskList().add(subtask1);
@@ -59,7 +56,8 @@ class EpicBySubtaskIdHandlerOnServerTest {
     }
 
     @Test //GET
-    public void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404 () throws IOException, InterruptedException, TasksIntersectionException {
+    void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404()
+            throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
         Subtask subtask2 = new Subtask(epic1); //Attention, Subtask won't add to manager and Epic's subtask list

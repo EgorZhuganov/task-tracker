@@ -29,13 +29,13 @@ class ListSubtaskHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/task/subtask");
 
     @BeforeEach
-    public void beforeEach() { server.start(); }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() { server.stop(); }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfAddTwoSubtasksToStorageShouldReturnStatusCode200 ()
+    void test1_checkContextWithGetRequestIfAddTwoSubtasksToStorageShouldReturnStatusCode200 ()
             throws TasksIntersectionException, IOException, InterruptedException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -56,7 +56,7 @@ class ListSubtaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test2_checkContextWithDeleteRequestIfAddTwoSubtasksShouldReturnCode204WithoutBodyAndStorageWithoutSubtasks ()
+    void test2_checkContextWithDeleteRequestIfAddTwoSubtasksShouldReturnCode204WithoutBodyAndStorageWithoutSubtasks ()
             throws IOException, InterruptedException, TasksIntersectionException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();

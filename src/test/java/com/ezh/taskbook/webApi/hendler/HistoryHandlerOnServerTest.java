@@ -29,15 +29,13 @@ class HistoryHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/tasks/history");
 
     @BeforeEach
-    public void beforeEach() { server.start(); }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfAddTwoSingleTaskToHistoryShouldReturnStatusCode200 ()
+    void test1_checkContextWithGetRequestIfAddTwoSingleTaskToHistoryShouldReturnStatusCode200 ()
             throws TasksIntersectionException, TaskNotFoundException, IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -59,7 +57,7 @@ class HistoryHandlerOnServerTest {
     }
 
     @Test //DELETE - NOT EXIST
-    public void test3_checkContextWithDeleteRequestWhichNotExist()
+    void test3_checkContextWithDeleteRequestWhichNotExist()
             throws TasksIntersectionException, IOException, InterruptedException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();

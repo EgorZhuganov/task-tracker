@@ -19,7 +19,7 @@ class KVTaskClientTest {
     private URI url = URI.create("http://localhost:8078/");
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         try {
             kvServer = new KVServer();
             kvServer.start();
@@ -30,18 +30,16 @@ class KVTaskClientTest {
     }
 
     @AfterEach
-    public void afterEach() {
-        kvServer.stop();
-    }
+    void afterEach() { kvServer.stop(); }
 
     @Test
-    public void test1_putTryPutSomeJsonThrowKVClientWithKeyShouldAddJsonToKVServer () {
+    void test1_putTryPutSomeJsonThrowKVClientWithKeyShouldAddJsonToKVServer () {
         String json = new Gson().toJson("Im JSON");
         client.put("My-most-secure-key", json);
     }
 
     @Test
-    public void test2_loadPutAndLoadJsonThrowKVClientShouldGetJsonByKeyFromKVStorage () {
+    void test2_loadPutAndLoadJsonThrowKVClientShouldGetJsonByKeyFromKVStorage () {
         String json = "Im JSON";
         client.put("My-most-secure-key", new Gson().toJson(json));
 

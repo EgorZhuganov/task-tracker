@@ -27,15 +27,13 @@ class ListEpicHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/tasks/epic");
 
     @BeforeEach
-    public void beforeEach() { server.start(); }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfAddTwoEpicToStorageShouldReturnStatusCode200 ()
+    void test1_checkContextWithGetRequestIfAddTwoEpicToStorageShouldReturnStatusCode200 ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -54,7 +52,7 @@ class ListEpicHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test2_checkContextWithDeleteRequestIfAddTwoEpicShouldReturnCode204WithoutBodyAndStorageWithoutEpics ()
+    void test2_checkContextWithDeleteRequestIfAddTwoEpicShouldReturnCode204WithoutBodyAndStorageWithoutEpics ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();

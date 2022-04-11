@@ -25,17 +25,13 @@ class EpicHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/tasks/epic/");
 
     @BeforeEach
-    public void beforeEach() {
-        server.start();
-    }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnStatusCode200() throws IOException, InterruptedException {
+    void test1_checkContextWithGetRequestIfEpicWasSentShouldReturnStatusCode200() throws IOException, InterruptedException {
         Epic epic1 = new Epic();
 
         manager.addEpic(epic1);
@@ -52,7 +48,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //GET
-    public void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404() throws IOException, InterruptedException {
+    void test2_checkContextWithGetRequestIfEpicWasntSentShouldReturnStatusCode404() throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic(); //Attention! Epic won't add to storage
         manager.addEpic(epic1);
@@ -69,7 +65,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //GET
-    public void test3_checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400() throws IOException, InterruptedException {
+    void test3_checkContextWithGetRequestIfRequestHasWrongUuidFormatShouldReturnStatusCode400() throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         manager.addEpic(epic1);
 
@@ -85,7 +81,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //POST
-    public void test4_checkContextWithPostRequestAddEpicWhichHas2SubtasksShouldAddEpicWithSubtasksToStorageAndReturnCode201And2SubtaskAnd1EpicFromManager()
+    void test4_checkContextWithPostRequestAddEpicWhichHas2SubtasksShouldAddEpicWithSubtasksToStorageAndReturnCode201And2SubtaskAnd1EpicFromManager()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Subtask subtask1 = new Subtask(epic1);
@@ -108,7 +104,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //POST
-    public void test6_checkContextWithPostRequestIfAddOnlyOneEpicShouldReturnCode201AndReturnEpicFromStorage()
+    void test6_checkContextWithPostRequestIfAddOnlyOneEpicShouldReturnCode201AndReturnEpicFromStorage()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
 
@@ -124,7 +120,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //PUT
-    public void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeEpic1FromStorage()
+    void test7_checkContextWithPutRequestShouldReturnStatus204AndChangeEpic1FromStorage()
             throws IOException, InterruptedException, TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -147,7 +143,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //PUT
-    public void test8_checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
+    void test8_checkContextWithPutRequestIfWrongFormatUuidShouldReturnStatusCode400()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
@@ -168,7 +164,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //PUT
-    public void test9_checkContextWithPutRequestIfEpicNotFoundShouldReturnStatus404 ()
+    void test9_checkContextWithPutRequestIfEpicNotFoundShouldReturnStatus404 ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic(); //epic will not add to storage
         Epic epic2 = new Epic(); //epic will not add to storage
@@ -187,7 +183,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test10_checkContextWithDeleteRequestIf1EpicThereIsInStorageShouldReturnStatus204AndRemoveEpicFromStorage()
+    void test10_checkContextWithDeleteRequestIf1EpicThereIsInStorageShouldReturnStatus204AndRemoveEpicFromStorage()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
 
@@ -208,7 +204,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test11_checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400 ()
+    void test11_checkContextWithDeleteRequestIfTryToUseUrlWithWrongFormatUuidShouldReturnStatus400 ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
 
@@ -226,7 +222,7 @@ class EpicHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test12_checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404 ()
+    void test12_checkContextWithDeleteRequestIfTryToUseUrlWithUuidWhichNotExistingInStorageShouldReturnStatus404 ()
             throws IOException, InterruptedException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic(); //won't add to storage

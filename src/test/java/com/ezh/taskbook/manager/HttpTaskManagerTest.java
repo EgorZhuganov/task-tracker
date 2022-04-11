@@ -27,12 +27,10 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @AfterEach
-    public void afterEach() {
-        kvServer.stop();
-    }
+    void afterEach() { kvServer.stop(); }
 
     @Test
-    public void test1_loadFromServerIfAddOneTaskToHistoryShouldReturnSize1FromAnotherManager() throws TaskNotFoundException {
+    void test1_loadFromServerIfAddOneTaskToHistoryShouldReturnSize1FromAnotherManager() throws TaskNotFoundException {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
         manager.addEpic(epic1);

@@ -28,15 +28,13 @@ class ListSingleTaskHandlerOnServerTest {
     private final URI url = URI.create("http://localhost:8080/tasks/single-task");
 
     @BeforeEach
-    public void beforeEach() { server.start(); }
+    void beforeEach() { server.start(); }
 
     @AfterEach
-    public void afterEach() {
-        server.stop();
-    }
+    void afterEach() { server.stop(); }
 
     @Test //GET
-    public void test1_checkContextWithGetRequestIfAddTwoSingleTasksToStorageShouldReturnStatusCode200 ()
+    void test1_checkContextWithGetRequestIfAddTwoSingleTasksToStorageShouldReturnStatusCode200 ()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
@@ -55,7 +53,7 @@ class ListSingleTaskHandlerOnServerTest {
     }
 
     @Test //DELETE
-    public void test2_checkContextWithDeleteRequestIfAddTwoSingleTasksShouldReturnCode204WithoutBodyAndStorageWithoutSingleTasks ()
+    void test2_checkContextWithDeleteRequestIfAddTwoSingleTasksShouldReturnCode204WithoutBodyAndStorageWithoutSingleTasks ()
             throws IOException, InterruptedException, TasksIntersectionException {
         SingleTask singleTask1 = new SingleTask();
         SingleTask singleTask2 = new SingleTask();
