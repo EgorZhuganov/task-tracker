@@ -8,12 +8,12 @@ import java.net.http.HttpResponse;
 
 public class KVTaskClient {
 
-    private static String SERVER_KEY;
+    private String serverKey = "";
     private HttpRequest request;
     private HttpClient client;
     private URI url;
 
-    public KVTaskClient(URI urlKvServer) throws IOException {
+    public KVTaskClient(URI urlKvServer) {
         client = HttpClient.newHttpClient();
         url = urlKvServer;
         register();
@@ -27,14 +27,14 @@ public class KVTaskClient {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            SERVER_KEY = response.body();
+            serverKey = response.body();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public void put(String key, String json) {
-        String pathToSave = url.toString().concat(String.format("save/%s?API_KEY=%s", key, SERVER_KEY));
+        String pathToSave = url.toString().concat(String.format("save/%s?API_KEY=%s", key, serverKey));
         URI path = URI.create(pathToSave);
         request = HttpRequest.newBuilder()
                 .uri(path)
@@ -49,7 +49,7 @@ public class KVTaskClient {
 
     public String load(String key) {
         String response = "";
-        String pathToSave = url.toString().concat(String.format("load/%s?API_KEY=%s", key, SERVER_KEY));
+        String pathToSave = url.toString().concat(String.format("load/%s?API_KEY=%s", key, serverKey));
         URI path = URI.create(pathToSave);
         request = HttpRequest.newBuilder()
                 .uri(path)
