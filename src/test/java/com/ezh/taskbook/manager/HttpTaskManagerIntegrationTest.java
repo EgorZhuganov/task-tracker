@@ -36,17 +36,17 @@ class HttpTaskManagerIntegrationTest {
         kvServer.stop();
     }
 
-    @Test
-    public void test1_() {
-    }
-
-    @Test
-    public void test2_() {
-    }
-
-    @Test
-    public void test3_() {
-    }
+//    @Test
+//    public void test1_() {
+//    }
+//
+//    @Test
+//    public void test2_() {
+//    }
+//
+//    @Test
+//    public void test3_() {
+//    }
 
 
 }

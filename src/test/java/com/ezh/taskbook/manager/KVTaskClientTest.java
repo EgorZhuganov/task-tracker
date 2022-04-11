@@ -23,10 +23,10 @@ class KVTaskClientTest {
         try {
             kvServer = new KVServer();
             kvServer.start();
-            client = new KVTaskClient(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        client = new KVTaskClient(url);
     }
 
     @AfterEach
