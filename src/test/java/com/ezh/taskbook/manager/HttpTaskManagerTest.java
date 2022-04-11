@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
 class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     private KVServer kvServer; //port 8078
-    URI serverUrl = URI.create("http://localhost:8078/");
+    private final URI serverUrl = URI.create("http://localhost:8078/");
 
     @BeforeEach
     public void beforeEach() throws IOException {
