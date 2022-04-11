@@ -1,28 +1,20 @@
 package com.ezh.taskbook;
 
-import com.ezh.taskbook.manager.HttpTaskManager;
-import com.ezh.taskbook.webApi.HttpTaskServer;
+import com.ezh.taskbook.kvserver.KVServer;
+import com.ezh.taskbook.manager.Managers;
 
-import java.net.URI;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        HttpTaskServer myServer1 = new HttpTaskServer(
-                new HttpTaskManager(URI.create("http://localhost:8078/"), "8080"), 8080);
-        myServer1.start();
+        KVServer kvServer = new KVServer();
+        kvServer.start();
 
-        HttpTaskServer myServer2 = new HttpTaskServer(
-                new HttpTaskManager(URI.create("http://localhost:8078/"), "8081"), 8081);
-        myServer2.start();
+        Managers managers = new Managers();
+        managers.getDefault();
 
-        HttpTaskServer myServer3 = new HttpTaskServer(
-                new HttpTaskManager(URI.create("http://localhost:8078/"), "8082"), 8082);
-        myServer3.start();
-
-        myServer1.stop();
-        myServer2.stop();
-        myServer3.stop();
+        kvServer.stop();
     }
 }
