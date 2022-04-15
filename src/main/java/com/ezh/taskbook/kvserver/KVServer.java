@@ -12,27 +12,28 @@ import java.util.Map;
 
 public class KVServer {
 
-    public static final int PORT = 8078;
+    private final int port;
     private final String apiKey;
-    private HttpServer server;
-    private Map<String, String> data = new HashMap<>();
+    private final HttpServer server;
+    private final Map<String, String> data = new HashMap<>();
 
-    public KVServer() throws IOException {
+    public KVServer(int port) throws IOException {
+        this.port = port;
         apiKey = generateApiKey();
-        server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+        server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
         createAllContext();
     }
 
     public void start() {
-        System.out.println("Server starts (KVServer) on the port " + PORT);
-        System.out.println("Open in the browser http://localhost:" + PORT + "/");
+        System.out.println("Server starts (KVServer) on the port " + port);
+        System.out.println("Open in the browser http://localhost:" + port + "/");
         System.out.println("API_KEY: " + apiKey);
         server.start();
     }
 
     public void stop() {
         server.stop(0);
-        System.out.println("Server (KVServer) was stopped on the port " + PORT);
+        System.out.println("Server (KVServer) was stopped on the port " + port);
     }
 
     private String generateApiKey() {
