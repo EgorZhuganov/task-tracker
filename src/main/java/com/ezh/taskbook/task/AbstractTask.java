@@ -33,4 +33,19 @@ public abstract class AbstractTask {
     public abstract LocalDateTime getStartTime();
 
     public abstract LocalDateTime getEndTime();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractTask that = (AbstractTask) o;
+
+        return uuid != null ? uuid.equals(that.uuid) : that.uuid == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
+    }
 }
