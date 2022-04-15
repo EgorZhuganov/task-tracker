@@ -19,7 +19,7 @@ class HttpTaskManagerIntegrationTest {
 
     @BeforeEach
     public void beforeEach() throws IOException {
-        kvServer = new KVServer();
+        kvServer = new KVServer(8078);
         manager1 = new HttpTaskManager(URI.create("http://localhost:8080/"), "8080");
         manager2 = new HttpTaskManager(URI.create("http://localhost:8081/"), "8081");
         taskServer1 = new HttpTaskServer(manager1, 8080);

@@ -21,7 +21,7 @@ class KVTaskClientTest {
     @BeforeEach
     void beforeEach() {
         try {
-            kvServer = new KVServer();
+            kvServer = new KVServer(8078);
             kvServer.start();
         } catch (IOException e) {
             e.printStackTrace();

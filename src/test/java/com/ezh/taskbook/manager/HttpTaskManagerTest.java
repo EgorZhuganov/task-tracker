@@ -21,7 +21,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     @BeforeEach
     public void beforeEach() throws IOException {
-        kvServer = new KVServer();
+        kvServer = new KVServer(8078);
         kvServer.start();
         manager = new HttpTaskManager(serverUrl, "8080");
     }

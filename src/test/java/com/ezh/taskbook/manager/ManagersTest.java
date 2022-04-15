@@ -12,7 +12,7 @@ class ManagersTest {
 
     @Test
     void getDefault() throws TaskNotFoundException, IOException {
-        KVServer server = new KVServer();
+        KVServer server = new KVServer(8078);
         server.start();
         TaskManager manager = new Managers().getDefault(); //если дефолтное значение это HttpTaskManager
         Epic epic = new Epic();

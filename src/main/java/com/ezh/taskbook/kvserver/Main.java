@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        KVServer kvServer = new KVServer();
+        KVServer kvServer = new KVServer(8078);
         kvServer.start(); //port 8078
         kvServer.stop();
     }
