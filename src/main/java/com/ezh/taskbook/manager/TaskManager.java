@@ -29,21 +29,21 @@ public interface TaskManager {
 
     void addEpic(Epic epic);
 
-    /*When use this method in API, you have to prepare JSON it have to have subtasks in Epic's */
+    /*When use this method in API, you have to prepare JSON it has to have subtasks in Epic's */
     void addEpicWithSubtask(Epic epic) throws TasksIntersectionException;
 
     void addSingleTask(SingleTask task) throws TasksIntersectionException;
 
-    /*Before use this is method you have to put Subtask's epic in storage*/
+    /*Before use this method you have to put Subtask's epic in storage*/
     void addSubtaskInAddedEpic(Subtask subtask) throws TasksIntersectionException, TaskNotFoundException;
 
-    /*Before change SingleTask you have to put in taskList one or more SingleTask*/
+    /*Before change SingleTask you have to put in storage one or more SingleTask*/
     void changeSingleTaskByUuid(UUID uuid, SingleTask newTask) throws TaskNotFoundException, TasksIntersectionException;
 
-    /*Before change subtask you have to put in Map Epic with old Subtask*/
+    /*Before change subtask you have to put Epic in storage*/
     void changeEpicByUuid(UUID uuid, Epic newEpic) throws TaskNotFoundException;
 
-    /*Before change subtask you have to put in Map Epic with Subtask*/
+    /*Before change subtask you have to put in storage Epic with Subtask*/
     void changeSubtaskByUuid(UUID uuid, Subtask newSubtask) throws TaskNotFoundException, TasksIntersectionException;
 
     void clearSingleTasks();
